@@ -105,3 +105,35 @@ bool KalmanFilter::filterUpdate(Eigen::VectorXd &xk,
     
 }
 
+
+// Unscented Kalman Filter Prediction
+bool KalmanFilter::filterUkfPredict(Eigen::VectorXd &Wi,
+                                    Eigen::MatrixXd &yi,
+                                    Eigen::VectorXd &xkp1,
+                                    Eigen::MatrixXd &Pkp1) {
+    
+    // Get Dimension of State Vector
+    int numStates = xkp1.size();
+
+    // Verify Vectors/Matrices have Correct Dimensions
+    if ((Pkp1.rows() != numStates) || (Pkp1.cols() != numStates)) {
+        // Add Logging
+        return false;
+    } else if (Wi.size() != (2*numStates + 1)) {
+        // Add Logging
+        return false;
+    } else if ((yi.rows() != numStates) || (yi.cols() != (2*numStates + 1))) {
+        // Add Logging
+        return false;
+    }
+
+    // Predict State Vector
+    
+
+    // Predict Covariance
+    
+
+    // Return Statement for Successful Prediction
+    return true;
+
+}
