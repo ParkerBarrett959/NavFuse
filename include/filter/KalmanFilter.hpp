@@ -43,7 +43,7 @@ class KalmanFilter {
             Inputs:
                 xk: nx1 dimensional state vector
                 Pk: nxn dimensional covariance matrix
-                z: mx1 measurement vector
+                zk: mx1 measurement vector
                 H: mxn discrete time measurement Jacobian matrix
                 Rk: nxn measurement noise matrix
                 K: Kalman Gain matrix
@@ -90,23 +90,35 @@ class KalmanFilter {
 
         /* @filterUkfUpdate
             Inputs:
+                xk: nx1 dimensional state vector
+                Pk: nxn dimensional covariance matrix
+                yi: nx(2n+1) dimensional matrix of sigma vectors (each column) propagated through the system dynamics
                 Wi: (2n+1)x1 dimensional vector of sigma vector weights
-                yi: nx(2n+1) dimensional matrix of sigma vectors (each column) propagated through the system dynamics 
-                Qk: nxn process noise matrix 
+                zi: mx(2n+1) dimensional matrix of sigma measurement vectors (each column) propagated through the nonlinear measurement model
+                zk: mx1 measurement vector
+                Rk: nxn measurement noise matrix 
             Outputs:
-                xkp1: nx1 predicted weighted sample mean
-                Pkp1: nxn predicted weighted sample covariance
+                xkp1: nx1 dimensional measurement updated state vector
+                Pkp1: nxn dimensional measurement updated covariance matrix
             Description:
-                Function which takes in a matrix of UKF sigma vectors which have been propagated through the 
-                system dynamics as follows: yi = g(Xi). Each column of the matrix corresponds to each of the
-                sigma vectors being propagated through the nonlinear dynamics. The indices of each column also
-                correspond each row of the sigma weights vector, which is also inluded. The function computes 
-                the weighted mean and covariance based on these inputs 
+                Function which takes in a matrix of UKF sigma measurement vectors which have been propagated 
+                through the measurement model as follows: zi = h(Xi). Each column of the matrix corresponds to
+                each measurment vector being propagated through the nonlinear model. The indices of each column also
+                correspond each row of the sigma weights vector, which is also inluded. The function also takes in the
+                a-priori predicted state ans covariance matrices. The function next computes the measurement mean,
+                followed by measurement space covariance and cross-correlation. This is used to compute the Kalman gain.
+                This is used in the standard Kalman Filter measurement update equations to compute the filter updated 
+                state and covariance.
         */
-        bool filterUkfUpdate(Eigen::VectorXd &Wi,
-                              Eigen::MatrixXd &yi,
-                              Eigen::VectorXd &xkp1,
-                              Eigen::MatrixXd &Pkp1);
+        bool filterUkfUpdate(Eigen::VectorXd &xk,
+                             Eigen::MatrixXd &Pk,
+                             Eigen::MatrixXd &yi,
+                             Eigen::VectorXd &Wi,
+                             Eigen::MatrixXd &zi,
+                             Eigen::VectorXd &zk,
+                             Eigen::MatrixXd &Rk,
+                             Eigen::VectorXd &xkp1,
+                             Eigen::MatrixXd &Pkp1);
 
     // Private Class Members/Function
     private:

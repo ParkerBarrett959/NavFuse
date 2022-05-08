@@ -144,3 +144,80 @@ bool KalmanFilter::filterUkfPredict(Eigen::VectorXd &Wi,
     return true;
 
 }
+
+
+// Unscented Kalman Filter Update
+bool KalmanFilter::filterUkfUpdate(Eigen::VectorXd &xk,
+                                   Eigen::MatrixXd &Pk,
+                                   Eigen::MatrixXd &yi,
+                                   Eigen::VectorXd &Wi,
+                                   Eigen::MatrixXd &zi,
+                                   Eigen::VectorXd &zk,
+                                   Eigen::MatrixXd &Rk,
+                                   Eigen::VectorXd &xkp1,
+                                   Eigen::MatrixXd &Pkp1) {
+    
+    // Get Dimension of State and Measurement Vector
+    int numStates = xk.size();
+    int numMeasDimensions = zi.rows();
+
+    // Verify Vectors/Matrices have Correct Dimensions
+    if ((Pk.rows() != numStates) || (Pk.cols() != numStates)) {
+        // Add Logging
+        return false;
+    } else if (Wi.size() != (2*numStates + 1)) {
+        // Add Logging
+        return false;
+    } else if ((zi.rows() != numMeasDimensions) || (zi.cols() != (2*numStates + 1))) {
+        // Add Logging
+        return false;
+    } else if ((Rk.rows() != numMeasDimensions) || (Rk.cols() != numMeasDimensions)) {
+        // Add Logging
+        return false;
+    } else if (xkp1.size() != numStates) {
+        // Add Logging
+        return false;
+    } else if ((Pkp1.rows() != numStates) || (Pkp1.cols() != numStates)) {
+        // Add Logging
+        return false;
+    }
+
+    // Compute Measurement Mean
+    Eigen::VectorXd zhat = Eigen::VectorXd::Zero(numMeasDimensions);
+    for (int i = 0; i < (2*numStates + 1); i++) {
+        zhat += Wi.row(i) * zi.col(i);
+    }   
+
+    // Compute Measurement Covariance
+    Eigen::MatrixXd S = Rk;
+    for (int i = 0; i < (2*numStates + 1); i++) {
+        S += Wi.row(i) * (zi.col(i) - zhat) * (zi.col(i) - zhat).transpose();
+    }  
+
+    // Compute Cross-Correlation Between Measurement and State Space
+    Eigen::MatrixXd T = Eigen::VectorXd::Zero(numStates, numMeasDimensions);
+    for (int i = 0; i < (2*numStates + 1); i++) {
+        T += Wi.row(i) * (yi.col(i) - xk) * (zi.col(i) - zhat).transpose();
+    }  
+
+    // Compute Kalman Gain
+    Eigen::MatrixXd K = T * S.inverse();
+    if ((K.rows() != numStates) || (K.cols() != numMeasDimensions)) {
+        // Add Logging
+        return false;
+    } 
+
+    // Get Measurement Residual
+    Eigen::VectorXd nu = zk - zhat;
+
+    // Update State
+    xkp1 = xk + (K * nu);
+
+    // Update Covariance
+    Eigen::MatrixXd IKT = Eigen::MatrixXd::Identity(numStates, numStates) - (K * T);
+    Pkp1 = IKT * Pk;
+
+    // Return Statement for Successful Prediction
+    return true;
+
+}
