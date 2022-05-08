@@ -87,6 +87,25 @@ class KalmanFilter {
                               Eigen::VectorXd &xkp1,
                               Eigen::MatrixXd &Pkp1);
 
+        /* @filterUkfUpdate
+            Inputs:
+                Wi: (2n+1)x1 dimensional vector of sigma vector weights
+                yi: nx(2n+1) dimensional matrix of sigma vectors (each column) propagated through the system dynamics 
+            Outputs:
+                xkp1: nx1 predicted weighted sample mean
+                Pkp1: nxn predicted weighted sample covariance
+            Description:
+                Function which takes in a matrix of UKF sigma vectors which have been propagated through the 
+                system dynamics as follows: yi = g(Xi). Each column of the matrix corresponds to each of the
+                sigma vectors being propagated through the nonlinear dynamics. The indices of each column also
+                correspond each row of the sigma weights vector, which is also inluded. The function computes 
+                the weighted mean and covariance based on these inputs 
+        */
+        // bool filterUkfUpdate(Eigen::VectorXd &Wi,
+        //                       Eigen::MatrixXd &yi,
+        //                       Eigen::VectorXd &xkp1,
+        //                       Eigen::MatrixXd &Pkp1);
+
     // Private Class Members/Function
     private:
 

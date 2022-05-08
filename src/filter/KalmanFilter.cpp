@@ -127,11 +127,18 @@ bool KalmanFilter::filterUkfPredict(Eigen::VectorXd &Wi,
         return false;
     }
 
+    // Zero Out Previous State Vector Estimate
+    xkp1 = Eigen::VectorXd::Zero(numStates);
+
     // Predict State Vector
-    
+    for (int i = 0; i < (2*numStates + 1); i++) {
+        xkp1 += Wi.row(i) * yi.col(i);
+    }
 
     // Predict Covariance
-    
+    for (int i = 0; i < (2*numStates + 1); i++) {
+        Pkp1 += Wi.row(i) * (yi.col(i) - xkp1) * (yi.col(i) - xkp1).transpose();
+    }    
 
     // Return Statement for Successful Prediction
     return true;
