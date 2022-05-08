@@ -109,6 +109,7 @@ bool KalmanFilter::filterUpdate(Eigen::VectorXd &xk,
 // Unscented Kalman Filter Prediction
 bool KalmanFilter::filterUkfPredict(Eigen::VectorXd &Wi,
                                     Eigen::MatrixXd &yi,
+                                    Eigen::MatrixXd &Qk,
                                     Eigen::VectorXd &xkp1,
                                     Eigen::MatrixXd &Pkp1) {
     
@@ -127,15 +128,14 @@ bool KalmanFilter::filterUkfPredict(Eigen::VectorXd &Wi,
         return false;
     }
 
-    // Zero Out Previous State Vector Estimate
-    xkp1 = Eigen::VectorXd::Zero(numStates);
-
     // Predict State Vector
+    xkp1 = Eigen::VectorXd::Zero(numStates);
     for (int i = 0; i < (2*numStates + 1); i++) {
         xkp1 += Wi.row(i) * yi.col(i);
     }
 
     // Predict Covariance
+    Pkp1 = Qk;
     for (int i = 0; i < (2*numStates + 1); i++) {
         Pkp1 += Wi.row(i) * (yi.col(i) - xkp1) * (yi.col(i) - xkp1).transpose();
     }    
