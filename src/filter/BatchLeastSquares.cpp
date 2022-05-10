@@ -19,7 +19,7 @@ bool BatchLeastSquares::UnweightedLinearLeastSquares(Eigen::VectorXd &yk,
                                                      Eigen::VectorXd &xk,
                                                      double &J) {
     
-    // Get Dimension of State Vector
+    // Get Dimension of State and Measurement Vector
     int numStates = xk.size();
     int measBatchSize = yk.size();
 
@@ -50,7 +50,7 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
                                                    Eigen::VectorXd &xk,
                                                    double &J) {
     
-    // Get Dimension of State Vector
+    // Get Dimension of State and Measurement Vector
     int numStates = xk.size();
     int measBatchSize = yk.size();
 
@@ -77,7 +77,124 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
 
 }
 
-// Linear Weighted Batch Least Squares
+// Nonlinear Unweighted Batch Least Squares
+bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
+                                                        Eigen::MatrixXd &Hk,
+                                                        Eigen::VectorXd &xk,
+                                                        double &eps,
+                                                        Eigen::VectorXd &xkp1,
+                                                        double &J) {
+    
+    // Get Dimension of State and Measurement Vector
+    int numStates = xk.size();
+    int measBatchSize = yk.size();
+
+    // Verify Vectors/Matrices have Correct Dimensions
+    if ((Hk.rows() != measBatchSize) || (Hk.cols() != numStates)) {
+        // Add Logging
+        return false;
+    } else if (xkp1.size() != numStates) {
+        // Add Logging
+        return false;
+    } 
+
+    // Initialize Predicted Measurment Vector
+    Eigen::VectorXd yx;
+
+    // Define Residual between Previous and Current State
+    Eigen::VectorXd res = xkp1 - xk;
+
+    // Loop Recursively until Convergence Criteria is Met
+    while (res.norm() > eps) {
+
+        // Compute Predicted Nonlinear Measurement
+        if (!ComputePredictedNonlinearMeasurement(xk, yx)) {
+            // add logging
+            return false;
+        }
+
+        // Iterate State Estimate
+        xkp1 = xk + ((Hk.transpose() * Hk).inverse() * Hk.transpose() * (yk - yx));
+
+        // Compute New Residual
+        res = xkp1 - xk;
+
+        // Update Previous Estimate
+        xk = xkp1;
+
+    }
+
+    // Compute Cost Function
+    if (!ComputeCostFunction(yk, Hk, xkp1, J)) {
+        // Add Logging
+        return false;
+    }
+
+    // Return Statement for Successful Prediction
+    return true;
+
+}
+
+// Nonlinear Weighted Batch Least Squares
+bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
+                                                      Eigen::MatrixXd &Hk,
+                                                      Eigen::VectorXd &xk,
+                                                      Eigen::MatrixXd &Wk,
+                                                      double &eps,
+                                                      Eigen::VectorXd &xkp1,
+                                                      double &J) {
+    
+    // Get Dimension of State and Measurement Vector
+    int numStates = xk.size();
+    int measBatchSize = yk.size();
+
+    // Verify Vectors/Matrices have Correct Dimensions
+    if ((Hk.rows() != measBatchSize) || (Hk.cols() != numStates)) {
+        // Add Logging
+        return false;
+    } else if (xkp1.size() != numStates) {
+        // Add Logging
+        return false;
+    } 
+
+    // Initialize Predicted Measurment Vector
+    Eigen::VectorXd yx;
+
+    // Define Residual between Previous and Current State
+    Eigen::VectorXd res = xkp1 - xk;
+
+    // Loop Recursively until Convergence Criteria is Met
+    while (res.norm() > eps) {
+
+        // Compute Predicted Nonlinear Measurement
+        if (!ComputePredictedNonlinearMeasurement(xk, yx)) {
+            // add logging
+            return false;
+        }
+
+        // Iterate State Estimate
+        xkp1 = xk + ((Hk.transpose() * Wk * Hk).inverse() * Hk.transpose() * Wk * (yk - yx));
+
+        // Compute New Residual
+        res = xkp1 - xk;
+
+        // Update Previous Estimate
+        xk = xkp1;
+
+    }
+
+    // Compute Cost Function
+    if (!ComputeCostFunction(yk, Hk, xkp1, J)) {
+        // Add Logging
+        return false;
+    }
+
+    // Return Statement for Successful Prediction
+    return true;
+
+}
+
+// Utility Function: Compute Cost Value Estimate
 bool BatchLeastSquares::ComputeCostFunction(Eigen::VectorXd &yk,
                                             Eigen::MatrixXd &Hk,
                                             Eigen::VectorXd &xk,
@@ -105,4 +222,13 @@ bool BatchLeastSquares::ComputeCostFunction(Eigen::VectorXd &yk,
 
 }
 
+// 
+bool BatchLeastSquares::ComputePredictedNonlinearMeasurement(Eigen::VectorXd &xk,
+                                                             Eigen::VectorXd &yx) {
 
+    // Implement your nonlinear dynamics model of form yx = h(xk) here!
+
+    // Return Statement
+    return true;
+
+}
