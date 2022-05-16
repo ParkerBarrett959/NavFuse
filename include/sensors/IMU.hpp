@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                  // 
 // Author:      Parker Barrett                                                                      //
-// Overview:    Header file for inertial measuremet unit sensor class                               //           
+// Overview:    Header file for inertial measurement unit sensor class                              //           
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,29 +29,46 @@ class ImuSensor {
                 compute the new position, velocity and attitude of the platform. The outputs are stored as 
                 class variables and are not explicitly listed as outputs in this function.
         */
-        bool strapdownIntegrate(Eigen::VectorXd &xk,
-                           Eigen::MatrixXd &Pk,
-                           Eigen::MatrixXd &Phik,
-                           Eigen::MatrixXd &Qk,
-                           Eigen::VectorXd &xkp1,
-                           Eigen::MatrixXd &Pkp1);
+        bool strapdownIntegrate(Eigen::VectorXd &dV,
+                                Eigen::VectorXd &dTh,
+                                double &tov);
 
         /* @compensateImu
             Inputs:
-                Insert here
+                dV: 3x1 dimensional vector of raw delta velocity measurements 
+                dTh: 3x1 dimensional vector of raw delta theta measurments
+                ba: 3x1 dimensional vector of accelerometr biases
+                sfa: 3x1 dimensional vector of accelerometer scale factor errors
+                ma: 6x1 dimensional vector of accelerometer misalignment errors
+                bg: 3x1 dimensional vector of gyro biases
+                sfg: 3x1 dimensional vector of gyro scale factor errors
+                mg: 6x1 dimensional vector of gyro misalignment errors
             Outputs:
+                dV: 3x1 dimensional vector of compensated delta velocity measurements 
+                dTh: 3x1 dimensional vector of compensated delta theta measurments
             Description:
-                Insert here
+                Function which takes in raw IMU measurments and gyro/accelerometer estimates of bias,
+                scale factor and misalignment. Measurmentds are compensated for tese effects and
+                returned to be used in strapdown integration.
         */
-        bool compensateImu(Eigen::VectorXd &xk,
-                           Eigen::MatrixXd &Pk,
-                           Eigen::MatrixXd &Phik,
-                           Eigen::MatrixXd &Qk,
-                           Eigen::VectorXd &xkp1,
-                           Eigen::MatrixXd &Pkp1); 
+        bool compensateImu(Eigen::VectorXd &dV,
+                           Eigen::VectorXd &dTh,
+                           Eigen::VectorXd &ba,
+                           Eigen::VectorXd &sfa,
+                           Eigen::VectorXd &ma,
+                           Eigen::VectorXd &bg,
+                           Eigen::VectorXd &sfg,
+                           Eigen::VectorXd &mg); 
 
     // Private Class Members/Function
     private:
+
+        // Position/Velocity/Attitude Values
+
+        // Previous Strapdown Integration Quantities
+        Eigen::VectorXd dV_prev;
+        Eigen::VectorXd dTh_prev;
+        double tov_prev;
 
 
 };
