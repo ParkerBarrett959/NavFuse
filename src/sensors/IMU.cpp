@@ -12,6 +12,46 @@
 // Include Headers
 #include "IMU.hpp"
 
+// Strapdown Initialization
+bool ImuSensor::strapdownInit(Eigen::VectorXd &rInit,
+                              Eigen::VectorXd &vInit,
+                              Eigen::VectorXd &qB2IInit,
+                              double &tovInit) {
+
+    // Verify Correct Dimensions
+    if (rInit.size() != 3) {
+        // Add Logging
+        return false;
+    } else if (vInit.size() != 3) {
+        // Add Logging
+        return false;
+    } else if (qB2IInit.size() != 3) {
+        // Add Logging
+        return false;
+    }
+
+    // Verify Valid TOV
+    if (tovInit <= 0.0) {
+        // Add Logging
+        return false;
+    }
+
+    // Set Class Variables
+    rI_ = rInit;
+    vI_ = vInit;
+    qB2I_ = qB2IInit;
+    tov_ = tovInit;
+    rI_prev_ = rInit;
+    vI_prev_ = vInit;
+    qB2I_prev_ = qB2IInit;
+    tov_prev_ = tovInit;
+
+    // Return Statement for Successful Initialization
+    return true;
+
+}
+
+
 // Strapdown Integration
 bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
                                    Eigen::VectorXd &dTh,
@@ -33,6 +73,7 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
     }
 
     // Insert Strapdown Integration Algorithm
+
 
     // Return True for Successful Integration
     return true;
@@ -100,6 +141,7 @@ bool ImuSensor::compensateImu(Eigen::VectorXd &dV,
     return true;
     
 }
+
 
 // Compensate Measurement 
 bool ImuSensor::compensateMeasurement(Eigen::VectorXd &meas,

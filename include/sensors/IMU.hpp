@@ -18,6 +18,28 @@ class ImuSensor {
     // Public Class Members/Functions
     public:
 
+        // Position/Velocity/Attitude Values
+        Eigen::VectorXd rI_;
+        Eigen::VectorXd vI_;;
+        Eigen::VectorXd qB2I_;
+        double tov_;
+
+        /* @strapdownInit
+            Inputs:
+                rInit: 3x1 dimensional vector of initial position  
+                vInit: 3x1 dimensional vector of initial velocity
+                qB2IInit: 4x1 dimensional vector of initial attitude quaternion
+                tovInit: Initial time of validity
+            Outputs:
+            Description:
+                Function which takes in initial values of the position, velocity, attitude and time of
+                validity and sets the class variables.
+        */
+        bool strapdownInit(Eigen::VectorXd &rInit,
+                           Eigen::VectorXd &vInit,
+                           Eigen::VectorXd &qB2IInit,
+                           double &tovInit);
+
         /* @strapdownIntegrate
             Inputs:
                 dV: 3x1 dimensional vector of delta velocity measurements 
@@ -66,6 +88,9 @@ class ImuSensor {
     private:
 
         // Position/Velocity/Attitude Values
+        Eigen::VectorXd rI_prev_;
+        Eigen::VectorXd vI_prev_;
+        Eigen::VectorXd qB2I_prev_;
 
         // Previous Strapdown Integration Quantities
         Eigen::VectorXd dV_prev_;
