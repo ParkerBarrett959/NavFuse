@@ -92,10 +92,23 @@ class ImuSensor {
         Eigen::VectorXd vI_prev_;
         Eigen::VectorXd qB2I_prev_;
 
-        // Previous Strapdown Integration Quantities
+        // Strapdown Integration Quantities
+        Eigen::VectorXd qBprev2Bcurr_;
         Eigen::VectorXd dV_prev_;
         Eigen::VectorXd dTh_prev_;
         double tov_prev_;
+
+        /* @computeqPrev2Curr
+            Inputs:
+                dTh: 3x1 dimensional vector of raw delta theta measurments 
+            Outputs:
+                qBprev2Bcurr_: 4x1 dimensional quaternion relating the previous body frame to the current
+            Description:
+                Function which takes in a gyroscope delta theta measurmeent and computes the quaternion
+                relating the previous body frame to the current body frame.
+        */
+        bool computeqPrev2Curr(Eigen::VectorXd &dTh,
+                               Eigen::VectorXd &qBprev2Bcurr_); 
 
         /* @compensateMeasurement
             Inputs:

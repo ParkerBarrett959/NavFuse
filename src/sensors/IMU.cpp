@@ -72,7 +72,21 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
         return false;
     }
 
-    // Insert Strapdown Integration Algorithm
+    // Compute Rotation from Previous to Current Body Attitude
+    if (!computeqPrev2Curr(dTh, qBprev2Bcurr_)) {
+        // Add Logging
+        return false;
+    };
+
+    // Update Current Attitude Estimate
+
+    // Rotate Specific Force to Inertial Frame
+
+    // Perform gravity Compensation
+
+    // Perform Velocity Integration
+
+    // Perform Position Integration
 
 
     // Return True for Successful Integration
@@ -140,6 +154,37 @@ bool ImuSensor::compensateImu(Eigen::VectorXd &dV,
     // Return Statement for Successful Compensation
     return true;
     
+}
+
+
+// Compute Quaternion from Previous Body Frame to Current Body Frame
+bool ImuSensor::computeqPrev2Curr(Eigen::VectorXd &dTh,
+                                  Eigen::VectorXd &qBprev2Bcurr_) {
+
+    // Check Measurement Size
+    if (dTh.size() != 3) {
+        // Add Logging
+        return false;
+    }
+
+    // Compute Rotation Vector from Measurement
+    Eigen::VectorXd phi = dTh; 
+
+    // Compute Quaternion from Rotation Vector
+    double phiMag = std::sqrt( (phi[0]*phi[0]) + (phi[1]*phi[1]) + (phi[2]*phi[2]) );
+    double q0 = std::cos(phiMag / 2.0);
+    double q1 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[0];
+    double q2 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[1];
+    double q3 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[2];
+
+    // Set Values
+    qBprev2Bcurr_[0] = q0;
+    qBprev2Bcurr_[1] = q1;
+    qBprev2Bcurr_[2] = q2;
+    qBprev2Bcurr_[3] = q3;
+
+    // Return Statement
+    return true;
 }
 
 
