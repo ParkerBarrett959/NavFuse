@@ -79,6 +79,10 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
     };
 
     // Update Current Attitude Estimate
+    if (!updateAttitude()) {
+        // Add Logging
+        return false;
+    }
 
     // Rotate Specific Force to Inertial Frame
 
@@ -185,6 +189,45 @@ bool ImuSensor::computeqPrev2Curr(Eigen::VectorXd &dTh,
 
     // Return Statement
     return true;
+
+}
+
+
+// Update Attitude
+bool ImuSensor::updateAttitude() {
+
+    // Save Current Attitude to Previous Attitude
+    qB2I_prev_ = qB2I_;
+    
+    // Build 4x4 Quaterinion Equivalent Matrix
+    Eigen::MatrixXd qMat = Eigen::MatrixXd::Zero(4,4);
+    qMat(0,0) = qBprev2Bcurr_(0,0);
+    qMat(1,1) = qBprev2Bcurr_(0,0);
+    qMat(2,2) = qBprev2Bcurr_(0,0);
+    qMat(3,3) = qBprev2Bcurr_(0,0);
+    qMat(1,0) = qBprev2Bcurr_(1,0);
+    qMat(0,1) = -qBprev2Bcurr_(1,0);
+    qMat(2,0) = qBprev2Bcurr_(2,0);
+    qMat(0,2) = -qBprev2Bcurr_(2,0);
+    qMat(3,0) = qBprev2Bcurr_(3,0);
+    qMat(0,3) = -qBprev2Bcurr_(3,0);
+    qMat(2,1) = qBprev2Bcurr_(3,0);
+    qMat(1,2) = -qBprev2Bcurr_(3,0);
+    qMat(3,1) = -qBprev2Bcurr_(2,0);
+    qMat(1,3) = qBprev2Bcurr_(2,0);
+    qMat(3,2) = qBprev2Bcurr_(1,0);
+    qMat(2,3) = -qBprev2Bcurr_(1,0);
+
+    // Update Body to Inertial Quaternion
+    qB2I_ = qMat.transpose() * qB2I_prev_;
+
+    // Normalize Quaternion
+    double qB2IMag = qB2I_.norm();
+    qB2I_ = qB2I_ / qB2IMag;
+
+    // Return Statement
+    return true;
+
 }
 
 

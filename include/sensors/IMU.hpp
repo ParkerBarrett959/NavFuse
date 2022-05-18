@@ -108,7 +108,16 @@ class ImuSensor {
                 relating the previous body frame to the current body frame.
         */
         bool computeqPrev2Curr(Eigen::VectorXd &dTh,
-                               Eigen::VectorXd &qBprev2Bcurr_); 
+                               Eigen::VectorXd &qBprev2Bcurr_);
+
+        /* @updateAttitude
+            Inputs:
+            Outputs:
+            Description:
+                Function which uses the previous estimate of attitude and the change in attitude quaternion
+                over the interval and computes the updates attitude.
+        */
+        bool updateAttitude(); 
 
         /* @compensateMeasurement
             Inputs:
