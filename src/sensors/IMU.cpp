@@ -11,6 +11,7 @@
 
 // Include Headers
 #include "IMU.hpp"
+#include "NavUtils.hpp"
 
 // Strapdown Initialization
 bool ImuSensor::strapdownInit(Eigen::VectorXd &rInit,
@@ -85,6 +86,13 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
     }
 
     // Rotate Specific Force to Inertial Frame
+    Eigen::MatrixXd RB2I;
+    NavUtils NavUtil;
+    if (!NavUtil.computeRotationFromQuaternion(qB2I_, RB2I)) {
+        // Add Logging
+        return false;
+    }
+    Eigen::VectorXd dV_I = RB2I * dV;
 
     // Perform gravity Compensation
 
