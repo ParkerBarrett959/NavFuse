@@ -10,9 +10,9 @@
 // Include Headers
 #include "NavUtils.hpp"
 
-// Strapdown Initialization
-bool NavUtils::computeRotationFromQuaternion(Eigen::VectorXd &qA2B,
-                                             Eigen::MatrixXd &RA2B) {
+// Compute DCM from Quaternion
+bool NavUtils::computeDcmFromQuaternion(Eigen::VectorXd &qA2B,
+                                        Eigen::MatrixXd &RA2B) {
 
     // Verify Correct Dimensions
     if (qA2B.size() != 4) {
@@ -46,6 +46,66 @@ bool NavUtils::computeRotationFromQuaternion(Eigen::VectorXd &qA2B,
             R31, R32, R33;
 
     // Return Statement for Successful Initialization
+    return true;
+
+}
+
+
+// Compute Quaternion from Rotation Vector
+bool NavUtils::computeQuaternionFromRotationVec(Eigen::VectorXd &phi,
+                                                Eigen::VectorXd &qA2B) {
+
+    // Verify Correct Dimensions
+    if (phi.size() != 3) {
+        // Add Logging
+        return false;
+    } else if (qA2B.sizez() != 4) {
+        // Add Logging
+        return false;
+    }
+
+    // Compute Quaternion from Rotation Vector
+    double phiMag = std::sqrt( (phi[0]*phi[0]) + (phi[1]*phi[1]) + (phi[2]*phi[2]) );
+    double q0 = std::cos(phiMag / 2.0);
+    double q1 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[0];
+    double q2 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[1];
+    double q3 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[2];
+
+    // Set Values
+    qA2B[0] = q0;
+    qA2B[1] = q1;
+    qA2B[2] = q2;
+    qA2B[3] = q3;
+
+    // Return Statement
+    return true;
+
+}
+
+
+// Build Quaternion Equivalent Matrix
+bool NavUtils::buildQuaternionEquivalent(Eigen::VectorXd &qA2B,
+                                         Eigen::MatrixXd &QA2B) {
+
+    // Verify Correct Dimensions
+    if (qA2B.size() != 4) {
+        // Add Logging
+        return false;
+    }
+
+    // Get Quaternion Elements
+    double q0 = qA2B[0];
+    double q1 = qA2B[1];
+    double q2 = qA2B[2];
+    double q3 = qA2B[3];
+
+    // Build 4x4 Quaternion Equivalent Matrix
+    QA2B << q0,  -q1,  -q2,  -q3,
+            q1,   q0,  -q3,   q2,
+            q2,   q3,   q0,  -q1,
+            q3,  -q2,   q1,   q0;
+
+    // Return Statement
     return true;
 
 }

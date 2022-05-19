@@ -88,7 +88,7 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
     // Rotate Specific Force to Inertial Frame
     Eigen::MatrixXd RB2I;
     NavUtils NavUtil;
-    if (!NavUtil.computeRotationFromQuaternion(qB2I_, RB2I)) {
+    if (!NavUtil.computeDcmFromQuaternion(qB2I_, RB2I)) {
         // Add Logging
         return false;
     }
@@ -183,17 +183,11 @@ bool ImuSensor::computeqPrev2Curr(Eigen::VectorXd &dTh,
     Eigen::VectorXd phi = dTh; 
 
     // Compute Quaternion from Rotation Vector
-    double phiMag = std::sqrt( (phi[0]*phi[0]) + (phi[1]*phi[1]) + (phi[2]*phi[2]) );
-    double q0 = std::cos(phiMag / 2.0);
-    double q1 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[0];
-    double q2 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[1];
-    double q3 =  (1.0 / phiMag) * std::sin(phiMag / 2.0) * phi[2];
-
-    // Set Values
-    qBprev2Bcurr_[0] = q0;
-    qBprev2Bcurr_[1] = q1;
-    qBprev2Bcurr_[2] = q2;
-    qBprev2Bcurr_[3] = q3;
+    NavUtils NavUtil;
+    if (!NavUtil.computeQuaternionFromRotationVec(phi, qBprev2Bcurr_)) {
+        // Add Logging
+        return false;
+    }
 
     // Return Statement
     return true;
@@ -207,24 +201,13 @@ bool ImuSensor::updateAttitude() {
     // Save Current Attitude to Previous Attitude
     qB2I_prev_ = qB2I_;
     
-    // Build 4x4 Quaterinion Equivalent Matrix
-    Eigen::MatrixXd qMat = Eigen::MatrixXd::Zero(4,4);
-    qMat(0,0) = qBprev2Bcurr_(0,0);
-    qMat(1,1) = qBprev2Bcurr_(0,0);
-    qMat(2,2) = qBprev2Bcurr_(0,0);
-    qMat(3,3) = qBprev2Bcurr_(0,0);
-    qMat(1,0) = qBprev2Bcurr_(1,0);
-    qMat(0,1) = -qBprev2Bcurr_(1,0);
-    qMat(2,0) = qBprev2Bcurr_(2,0);
-    qMat(0,2) = -qBprev2Bcurr_(2,0);
-    qMat(3,0) = qBprev2Bcurr_(3,0);
-    qMat(0,3) = -qBprev2Bcurr_(3,0);
-    qMat(2,1) = qBprev2Bcurr_(3,0);
-    qMat(1,2) = -qBprev2Bcurr_(3,0);
-    qMat(3,1) = -qBprev2Bcurr_(2,0);
-    qMat(1,3) = qBprev2Bcurr_(2,0);
-    qMat(3,2) = qBprev2Bcurr_(1,0);
-    qMat(2,3) = -qBprev2Bcurr_(1,0);
+    // Build 4x4 Quaternion Equivalent Matrix
+    Eigen::MatrixXd qMat;
+    NavUtils NavUtil;
+    if (!NavUtil.buildQuaternionEquivalent(qBprev2Bcurr_, qMat)) {
+        // Add Logging
+        return false;
+    }
 
     // Update Body to Inertial Quaternion
     qB2I_ = qMat.transpose() * qB2I_prev_;
