@@ -12,7 +12,7 @@
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 
-// IMU Sensor Class
+// Nav Utilities Class
 class NavUtils {
 
     // Public Class Members/Functions
