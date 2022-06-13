@@ -9,6 +9,8 @@
 
 // Include Headers
 #include <Eigen/Dense>
+#include "NavUtils.hpp"
+#include "Gravity.hpp"
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
 

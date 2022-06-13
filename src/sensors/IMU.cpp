@@ -11,7 +11,6 @@
 
 // Include Headers
 #include "IMU.hpp"
-#include "NavUtils.hpp"
 
 // Strapdown Initialization
 bool ImuSensor::strapdownInit(Eigen::VectorXd &rInit,
@@ -94,7 +93,15 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
     }
     Eigen::VectorXd dV_I = RB2I * dV;
 
-    // Perform gravity Compensation
+    // Perform Gravity Compensation
+    Gravity GravityModel;
+    Eigen::VectorXd gA;
+    if (!GravityModel.simpleGravity(rI_prev_, gA)) {
+        // Add Logging
+        return false;
+    }
+    dV_I += gA;
+
 
     // Perform Velocity Integration
 
