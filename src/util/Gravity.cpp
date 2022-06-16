@@ -11,8 +11,8 @@
 #include "Gravity.hpp"
 
 // Compute DCM from Quaternion
-bool Gravity::simpleGravity(Eigen::VectorXd &rA,
-                            Eigen::VectorXd &gA) {
+bool Gravity::simpleGravity(Eigen::Vector3d &rA,
+                            Eigen::Vector3d &gA) {
 
     // Verify Correct Dimensions
     if (rA.size() != 3) {

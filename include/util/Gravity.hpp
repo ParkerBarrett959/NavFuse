@@ -28,8 +28,8 @@ class Gravity {
                 a simple approximation of the gravity vector in this frame. For geodetic applications, 
                 the sipmlified approximation is accurate to approximately 1-2%.
         */
-        bool simpleGravity(Eigen::VectorXd &rA,
-                           Eigen::VectorXd &gA);
+        bool simpleGravity(Eigen::Vector3d &rA,
+                           Eigen::Vector3d &gA);
 
     // Private Class Members/Function
     private:

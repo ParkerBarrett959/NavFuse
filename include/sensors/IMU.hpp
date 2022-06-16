@@ -9,6 +9,7 @@
 
 // Include Headers
 #include <Eigen/Dense>
+#include <math.h>
 #include "NavUtils.hpp"
 #include "Gravity.hpp"
 using Eigen::MatrixXd;
@@ -21,10 +22,11 @@ class ImuSensor {
     public:
 
         // Position/Velocity/Attitude Values
-        Eigen::VectorXd rI_;
-        Eigen::VectorXd vI_;;
+        Eigen::Vector3d rI_;
+        Eigen::Vector3d vI_;;
         Eigen::VectorXd qB2I_;
-        double tov_;
+        int64_t tov_;
+        double dt_;
 
         /* @strapdownInit
             Inputs:
@@ -37,10 +39,10 @@ class ImuSensor {
                 Function which takes in initial values of the position, velocity, attitude and time of
                 validity and sets the class variables.
         */
-        bool strapdownInit(Eigen::VectorXd &rInit,
-                           Eigen::VectorXd &vInit,
+        bool strapdownInit(Eigen::Vector3d &rInit,
+                           Eigen::Vector3d &vInit,
                            Eigen::VectorXd &qB2IInit,
-                           double &tovInit);
+                           int64_t &tovInit);
 
         /* @strapdownIntegrate
             Inputs:
@@ -53,15 +55,33 @@ class ImuSensor {
                 compute the new position, velocity and attitude of the platform. The outputs are stored as 
                 class variables and are not explicitly listed as outputs in this function.
         */
-        bool strapdownIntegrate(Eigen::VectorXd &dV,
-                                Eigen::VectorXd &dTh,
-                                double &tov);
+        bool strapdownIntegrate(Eigen::Vector3d &dV,
+                                Eigen::Vector3d &dTh,
+                                int64_t &tov);
+
+    // Private Class Members/Function
+    private:
+
+        // Position/Velocity/Attitude Values
+        Eigen::Vector3d rI_prev_;
+        Eigen::Vector3d vI_prev_;
+        Eigen::VectorXd qB2I_prev_;
+
+        // Strapdown Integration Quantities
+        int64_t tov_prev_;
+
+        // Compensator Quantities
+        Eigen::Vector3d ba_;
+        Eigen::Vector3d sfa_;
+        Eigen::VectorXd ma_;
+        Eigen::Vector3d bg_;
+        Eigen::Vector3d sfg_;
+        Eigen::VectorXd mg_;
 
         /* @compensateImu
             Inputs:
                 dV: 3x1 dimensional vector of raw delta velocity measurements 
                 dTh: 3x1 dimensional vector of raw delta theta measurments
-                tov: measurement time of validity
                 ba: 3x1 dimensional vector of accelerometr biases
                 sfa: 3x1 dimensional vector of accelerometer scale factor errors
                 ma: 6x1 dimensional vector of accelerometer misalignment errors
@@ -76,55 +96,40 @@ class ImuSensor {
                 scale factor and misalignment. Measurmentds are compensated for tese effects and
                 returned to be used in strapdown integration.
         */
-        bool compensateImu(Eigen::VectorXd &dV,
-                           Eigen::VectorXd &dTh,
-                           double &tov,
-                           Eigen::VectorXd &ba,
-                           Eigen::VectorXd &sfa,
+        bool compensateImu(Eigen::Vector3d &dV,
+                           Eigen::Vector3d &dTh,
+                           Eigen::Vector3d &ba,
+                           Eigen::Vector3d &sfa,
                            Eigen::VectorXd &ma,
-                           Eigen::VectorXd &bg,
-                           Eigen::VectorXd &sfg,
-                           Eigen::VectorXd &mg); 
-
-    // Private Class Members/Function
-    private:
-
-        // Position/Velocity/Attitude Values
-        Eigen::VectorXd rI_prev_;
-        Eigen::VectorXd vI_prev_;
-        Eigen::VectorXd qB2I_prev_;
-
-        // Strapdown Integration Quantities
-        Eigen::VectorXd qBprev2Bcurr_;
-        Eigen::VectorXd dV_prev_;
-        Eigen::VectorXd dTh_prev_;
-        double tov_prev_;
+                           Eigen::Vector3d &bg,
+                           Eigen::Vector3d &sfg,
+                           Eigen::VectorXd &mg);         
 
         /* @computeqPrev2Curr
             Inputs:
                 dTh: 3x1 dimensional vector of raw delta theta measurments 
             Outputs:
-                qBprev2Bcurr_: 4x1 dimensional quaternion relating the previous body frame to the current
+                qBprev2Bcurr: 4x1 dimensional quaternion relating the previous body frame to the current
             Description:
                 Function which takes in a gyroscope delta theta measurmeent and computes the quaternion
                 relating the previous body frame to the current body frame.
         */
-        bool computeqPrev2Curr(Eigen::VectorXd &dTh,
-                               Eigen::VectorXd &qBprev2Bcurr_);
+        bool computeqPrev2Curr(Eigen::Vector3d &dTh,
+                               Eigen::VectorXd &qBprev2Bcurr);
 
         /* @updateAttitude
             Inputs:
+                qBprev2Bcurr: 4x1 dimensional quaternion relating the previous body frame to the current
             Outputs:
             Description:
                 Function which uses the previous estimate of attitude and the change in attitude quaternion
                 over the interval and computes the updates attitude.
         */
-        bool updateAttitude(); 
+        bool updateAttitude(Eigen::VectorXd &qBprev2Bcurr); 
 
         /* @compensateMeasurement
             Inputs:
                 meas: 3x1 dimensional vector of raw measurement values 
-                tov: measurement time of validity
                 b: 3x1 dimensional vector of biases
                 sf: 3x1 dimensional vector of scale factor errors
                 mis: 6x1 dimensional vector of misalignment errors
@@ -134,10 +139,9 @@ class ImuSensor {
                 Function which takes in a raw measurement and applies the compensation algorithm
                 to correct for bias, scale factor and misalignment.
         */
-        bool compensateMeasurement(Eigen::VectorXd &meas,
-                                   double &tov,
-                                   Eigen::VectorXd &b,
-                                   Eigen::VectorXd &sf,
+        bool compensateMeasurement(Eigen::Vector3d &meas,
+                                   Eigen::Vector3d &b,
+                                   Eigen::Vector3d &sf,
                                    Eigen::VectorXd &mis);  
 
 

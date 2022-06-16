@@ -13,10 +13,10 @@
 #include "IMU.hpp"
 
 // Strapdown Initialization
-bool ImuSensor::strapdownInit(Eigen::VectorXd &rInit,
-                              Eigen::VectorXd &vInit,
+bool ImuSensor::strapdownInit(Eigen::Vector3d &rInit,
+                              Eigen::Vector3d &vInit,
                               Eigen::VectorXd &qB2IInit,
-                              double &tovInit) {
+                              int64_t &tovInit) {
 
     // Verify Correct Dimensions
     if (rInit.size() != 3) {
@@ -31,7 +31,7 @@ bool ImuSensor::strapdownInit(Eigen::VectorXd &rInit,
     }
 
     // Verify Valid TOV
-    if (tovInit <= 0.0) {
+    if (tovInit <= 0) {
         // Add Logging
         return false;
     }
@@ -53,9 +53,9 @@ bool ImuSensor::strapdownInit(Eigen::VectorXd &rInit,
 
 
 // Strapdown Integration
-bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
-                                   Eigen::VectorXd &dTh,
-                                   double &tov) {
+bool ImuSensor::strapdownIntegrate(Eigen::Vector3d &dV,
+                                   Eigen::Vector3d &dTh,
+                                   int64_t &tov) {
 
     // Verify Correct Measurment Dimensions
     if (dV.size() != 3) {
@@ -72,14 +72,25 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
         return false;
     }
 
-    // Compute Rotation from Previous to Current Body Attitude
-    if (!computeqPrev2Curr(dTh, qBprev2Bcurr_)) {
+    // Set Current tov and dt
+    tov_ = tov;
+    dt_ = (tov_ - tov_prev_) / 1e6;
+
+    // Perform IMU Measurement Compensation
+    if (!compensateImu(dV, dTh, ba_, sfa_, ma_, bg_, sfg_, mg_)) {
         // Add Logging
         return false;
-    };
+    }
+
+    // Compute Rotation from Previous to Current Body Attitude
+    Eigen::VectorXd qBprev2Bcurr;
+    if (!computeqPrev2Curr(dTh, qBprev2Bcurr)) {
+        // Add Logging
+        return false;
+    }
 
     // Update Current Attitude Estimate
-    if (!updateAttitude()) {
+    if (!updateAttitude(qBprev2Bcurr)) {
         // Add Logging
         return false;
     }
@@ -95,18 +106,27 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
 
     // Perform Gravity Compensation
     Gravity GravityModel;
-    Eigen::VectorXd gA;
-    if (!GravityModel.simpleGravity(rI_prev_, gA)) {
+    Eigen::Vector3d gI;
+    if (!GravityModel.simpleGravity(rI_prev_, gI)) {
         // Add Logging
         return false;
     }
-    dV_I += gA;
-
+    double wEMag = 2.0 * M_PI / 86400.0;
+    Eigen::Vector3d wE_(0, 0, wEMag);
+    Eigen::VectorXd dVg_I = dt_ * (gI - (2 * wE_.cross(vI_prev_)));
+    dV_I += dVg_I;
 
     // Perform Velocity Integration
+    vI_ = vI_prev_ + dV_I;
 
     // Perform Position Integration
+    rI_ = rI_prev_ + (dt_ * vI_prev_) + (0.5 * dt_ * dV_I);
 
+    // Update Previous Class Variables
+    tov_prev_ = tov_;
+    rI_prev_ = rI_;
+    vI_prev_ = vI_;
+    qB2I_prev_ = qB2I_;
 
     // Return True for Successful Integration
     return true;
@@ -115,14 +135,13 @@ bool ImuSensor::strapdownIntegrate(Eigen::VectorXd &dV,
 
 
 // IMU Measurement Compensation 
-bool ImuSensor::compensateImu(Eigen::VectorXd &dV,
-                              Eigen::VectorXd &dTh,
-                              double &tov,
-                              Eigen::VectorXd &ba,
-                              Eigen::VectorXd &sfa,
+bool ImuSensor::compensateImu(Eigen::Vector3d &dV,
+                              Eigen::Vector3d &dTh,
+                              Eigen::Vector3d &ba,
+                              Eigen::Vector3d &sfa,
                               Eigen::VectorXd &ma,
-                              Eigen::VectorXd &bg,
-                              Eigen::VectorXd &sfg,
+                              Eigen::Vector3d &bg,
+                              Eigen::Vector3d &sfg,
                               Eigen::VectorXd &mg) {
 
     // Verify Correct Dimensions
@@ -152,20 +171,14 @@ bool ImuSensor::compensateImu(Eigen::VectorXd &dV,
         return false; 
     }
 
-    // Verify Valid TOV
-    if (tov <= tov_prev_) {
-        // Add Logging
-        return false;
-    }
-
     // Compensate Accelerometer Measurement
-    if (!compensateMeasurement(dV, tov, ba, sfa, ma)) {
+    if (!compensateMeasurement(dV, ba, sfa, ma)) {
         // Add Logging
         return false;
     }
 
     // Compensate Gyro Measurement
-    if (!compensateMeasurement(dTh, tov, bg, sfg, mg)) {
+    if (!compensateMeasurement(dTh, bg, sfg, mg)) {
         // Add Logging
         return false;
     }
@@ -177,8 +190,8 @@ bool ImuSensor::compensateImu(Eigen::VectorXd &dV,
 
 
 // Compute Quaternion from Previous Body Frame to Current Body Frame
-bool ImuSensor::computeqPrev2Curr(Eigen::VectorXd &dTh,
-                                  Eigen::VectorXd &qBprev2Bcurr_) {
+bool ImuSensor::computeqPrev2Curr(Eigen::Vector3d &dTh,
+                                  Eigen::VectorXd &qBprev2Bcurr) {
 
     // Check Measurement Size
     if (dTh.size() != 3) {
@@ -191,7 +204,7 @@ bool ImuSensor::computeqPrev2Curr(Eigen::VectorXd &dTh,
 
     // Compute Quaternion from Rotation Vector
     NavUtils NavUtil;
-    if (!NavUtil.computeQuaternionFromRotationVec(phi, qBprev2Bcurr_)) {
+    if (!NavUtil.computeQuaternionFromRotationVec(phi, qBprev2Bcurr)) {
         // Add Logging
         return false;
     }
@@ -203,15 +216,12 @@ bool ImuSensor::computeqPrev2Curr(Eigen::VectorXd &dTh,
 
 
 // Update Attitude
-bool ImuSensor::updateAttitude() {
-
-    // Save Current Attitude to Previous Attitude
-    qB2I_prev_ = qB2I_;
+bool ImuSensor::updateAttitude(Eigen::VectorXd &qBprev2Bcurr) {
     
     // Build 4x4 Quaternion Equivalent Matrix
     Eigen::MatrixXd qMat;
     NavUtils NavUtil;
-    if (!NavUtil.buildQuaternionEquivalent(qBprev2Bcurr_, qMat)) {
+    if (!NavUtil.buildQuaternionEquivalent(qBprev2Bcurr, qMat)) {
         // Add Logging
         return false;
     }
@@ -230,10 +240,9 @@ bool ImuSensor::updateAttitude() {
 
 
 // Compensate Measurement 
-bool ImuSensor::compensateMeasurement(Eigen::VectorXd &meas,
-                                      double &tov,
-                                      Eigen::VectorXd &b,
-                                      Eigen::VectorXd &sf,
+bool ImuSensor::compensateMeasurement(Eigen::Vector3d &meas,
+                                      Eigen::Vector3d &b,
+                                      Eigen::Vector3d &sf,
                                       Eigen::VectorXd &mis) {
                         
     // Verify Correct Dimensions
@@ -249,12 +258,6 @@ bool ImuSensor::compensateMeasurement(Eigen::VectorXd &meas,
     } else if (mis.size() != 6) {
         // Add Logging
         return false; 
-    }
-
-    // Verify Valid TOV
-    if (tov <= tov_prev_) {
-        // Add Logging
-        return false;
     }
 
     // Generate Scale Factor Matrix
@@ -281,11 +284,8 @@ bool ImuSensor::compensateMeasurement(Eigen::VectorXd &meas,
     bias(1,0) = b[1];
     bias(2,0) = b[2];
 
-    // Get Current IMU Delta Time
-    double deltaT = tov - tov_prev_;
-
     // Compensate Measurement
-    meas = sfMis.inverse() * (meas - (bias * deltaT));
+    meas = sfMis.inverse() * (meas - (bias * dt_));
 
     // Return Statement
     return true;
