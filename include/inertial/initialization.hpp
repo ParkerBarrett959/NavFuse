@@ -53,7 +53,7 @@ class Initialization {
                 KF: Kalman Filter Object
             Outputs:
                 xkp1: 8x1 vector of predicted alignment states (Attitude, gyro biases, and level velocity errors)
-                Pkp1: 8x8 covarance matrix of pedicted alignment states
+                Pkp1: 8x8 covarance matrix of predicted alignment states
             Description:
                 Function which takes in geodetic latitude, earth parameters (rotation rate and geodetic position),
                 along with the fine alignment satte vector and covariance which consist of 3 attitude, 3 gyro bias 
@@ -68,6 +68,41 @@ class Initialization {
                                   KalmanFilter &KF,
                                   Eigen::VectorXd &xkp1,
                                   Eigen::MatrixXd &Pkp1);
+
+        /* @fineAlignmentUpdate
+            Inputs:
+                velValid: boolean indicating whether the velocity measurement is valid
+                azValid: boolean indicating whether the azimuth measurement is valid
+                velMeas: 2x1 vector of level (North/East) velocity observations
+                azMeas: scalar double representing azimuth observation [rad]
+                dtVel: scalar double representing the time between velocity measurements
+                dtAz: scalar double representing the time between azimuth measurements
+                azEst: scalar double representing the current system azimuth estimate [rad]
+                xk: 8x1 vector of alignment states (Attitude, gyro biases, and level velocity errors)
+                Pk: 8x8 covarance matrix of alignment states
+                KF: Kalman Filter Object
+            Outputs:
+                xkp1: 8x1 vector of updated alignment states (Attitude, gyro biases, and level velocity errors)
+                Pkp1: 8x8 covarance matrix of updated alignment states
+            Description:
+                Function which takes in geodetic latitude, earth parameters (rotation rate and geodetic position),
+                along with the fine alignment satte vector and covariance which consist of 3 attitude, 3 gyro bias 
+                and 2 level velocity error states. The Kalman Filter Prediction is computed.
+        */
+        bool fineAlignmentUpdate(bool &velValid,
+                                 bool &azValid,
+                                 Eigen::Vector2d velMeas,
+                                 double &azMeas,
+                                 double &dtVel,
+                                 double &dtAz,
+                                 double &azEst,
+                                 double &sigVel,
+                                 double &sigAz,
+                                 Eigen::VectorXd &xk,
+                                 Eigen::MatrixXd &Pk,
+                                 KalmanFilter &KF,
+                                 Eigen::VectorXd &xkp1,
+                                 Eigen::MatrixXd &Pkp1);
 
     // Private Class Members/Function
     private:

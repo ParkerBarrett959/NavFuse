@@ -66,7 +66,6 @@ bool KalmanFilter::filterUpdate(Eigen::VectorXd &xk,
                                 Eigen::VectorXd &zk,
                                 Eigen::MatrixXd &H,
                                 Eigen::MatrixXd &Rk,
-                                Eigen::MatrixXd &K,
                                 Eigen::VectorXd &xkp1,
                                 Eigen::MatrixXd &Pkp1) {
     
@@ -87,10 +86,6 @@ bool KalmanFilter::filterUpdate(Eigen::VectorXd &xk,
         std::cout << "[KalmanFilter::filterUpdate] Rk has incorrect dimensions: Expected " << 
                 numStates << "x" << numStates << ", Got " << Rk.rows() << "x" << Rk.cols() << std::endl;
         return false;
-    } else if ((K.rows() != numStates) || (K.cols() != numMeasDimensions)) {
-        std::cout << "[KalmanFilter::filterUpdate] K has incorrect dimensions: Expected " << 
-                numStates << "x" << numMeasDimensions << ", Got " << K.rows() << "x" << K.cols() << std::endl;
-        return false;
     } else if (xkp1.size() != numStates) {
         std::cout << "[KalmanFilter::filterUpdate] xkp1 has incorrect dimensions: Expected " << 
                 numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
@@ -103,6 +98,9 @@ bool KalmanFilter::filterUpdate(Eigen::VectorXd &xk,
 
     // Get Measurement Residual
     Eigen::VectorXd nu = zk - (H * xk);
+
+    // Compute Kalman Gain
+    Eigen::MatrixXd K = Pk * H.transpose() * (H * Pk * H.transpose() + Rk).inverse();
 
     // Update State
     xkp1 = xk + (K * nu);

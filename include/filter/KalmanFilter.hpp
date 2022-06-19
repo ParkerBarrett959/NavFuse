@@ -45,7 +45,6 @@ class KalmanFilter {
                 zk: mx1 measurement vector
                 H: mxn discrete time measurement Jacobian matrix
                 Rk: nxn measurement noise matrix
-                K: Kalman Gain matrix
                 xkp1: nx1 dimensional measurement updated state vector
                 Pkp1: nxn dimensional measurement updated covariance matrix
             Outputs:
@@ -63,7 +62,6 @@ class KalmanFilter {
                           Eigen::VectorXd &zk,
                           Eigen::MatrixXd &H,
                           Eigen::MatrixXd &Rk,
-                          Eigen::MatrixXd &K,
                           Eigen::VectorXd &xkp1,
                           Eigen::MatrixXd &Pkp1);
 
