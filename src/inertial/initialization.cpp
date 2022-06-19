@@ -9,7 +9,6 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Include Headers
-#include <cmath>
 #include "initialization.hpp"
 
 // Coarse Attitude Initialization
@@ -28,7 +27,7 @@ bool Initialization::coarseAttitudeAlignment(double &lat,
     Eigen::Matrix3d A;
     A << 0.0,        0.0,         -g, 
          wE*clat,    0.0,         -wE*slat, 
-         0.0,        g*wE*clat,   0.0;
+         0.0,        g*wE*clat,    0.0;
 
     // Define B Matrix
     Eigen::Matrix3d B = Eigen::Matrix3d::Zero();
