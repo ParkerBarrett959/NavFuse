@@ -11,6 +11,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Include Headers
+#include <iostream>
 #include "BatchLeastSquares.hpp"
 
 // Linear Unweighted Batch Least Squares
@@ -25,7 +26,8 @@ bool BatchLeastSquares::UnweightedLinearLeastSquares(Eigen::VectorXd &yk,
 
     // Verify Vectors/Matrices have Correct Dimensions
     if ((Hk.rows() != measBatchSize) || (Hk.cols() != numStates)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::UnweightedLinearLeastSquares] Hk has incorrect dimensions: Expected " << 
+                measBatchSize << "x" << numStates << ", Got " << Hk.rows() << "x" << Hk.cols() << std::endl;
         return false;
     }
 
@@ -34,7 +36,7 @@ bool BatchLeastSquares::UnweightedLinearLeastSquares(Eigen::VectorXd &yk,
 
     // Compute Cost Function
     if (!ComputeCostFunction(yk, Hk, xk, J)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::UnweightedLinearLeastSquares] Failed to compute cost function" << std::endl;
         return false;
     }
 
@@ -56,10 +58,12 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
 
     // Verify Vectors/Matrices have Correct Dimensions
     if ((Hk.rows() != measBatchSize) || (Hk.cols() != numStates)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::WeightedLinearLeastSquares] Hk has incorrect dimensions: Expected " << 
+                measBatchSize << "x" << numStates << ", Got " << Hk.rows() << "x" << Hk.cols() << std::endl;
         return false;
     } else if ((Wk.rows() != measBatchSize) || (Wk.cols() != measBatchSize)) {
-        //Add Logging
+        std::cout << "[BatchLeastSquares::WeightedLinearLeastSquares] Wk has incorrect dimensions: Expected " << 
+                measBatchSize << "x" << measBatchSize << ", Got " << Wk.rows() << "x" << Wk.cols() << std::endl;
         return false;
     }
 
@@ -68,7 +72,7 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
 
     // Compute Cost Function
     if (!ComputeCostFunction(yk, Hk, xk, J)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::WeightedLinearLeastSquares] Failed to compute cost function" << std::endl;
         return false;
     }
 
@@ -91,10 +95,12 @@ bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 
     // Verify Vectors/Matrices have Correct Dimensions
     if ((Hk.rows() != measBatchSize) || (Hk.cols() != numStates)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Hk has incorrect dimensions: Expected " << 
+                measBatchSize << "x" << numStates << ", Got " << Hk.rows() << "x" << Hk.cols() << std::endl;
         return false;
     } else if (xkp1.size() != numStates) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] xkp1 has incorrect dimensions: Expected " << 
+                numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
         return false;
     } 
 
@@ -109,7 +115,7 @@ bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 
         // Compute Predicted Nonlinear Measurement
         if (!ComputePredictedNonlinearMeasurement(xk, yx)) {
-            // add logging
+            std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Unable to compute predicted measurement" << std::endl;
             return false;
         }
 
@@ -126,7 +132,7 @@ bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 
     // Compute Cost Function
     if (!ComputeCostFunction(yk, Hk, xkp1, J)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Failed to compute cost function" << std::endl;
         return false;
     }
 
@@ -150,10 +156,12 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 
     // Verify Vectors/Matrices have Correct Dimensions
     if ((Hk.rows() != measBatchSize) || (Hk.cols() != numStates)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Hk has incorrect dimensions: Expected " << 
+                measBatchSize << "x" << numStates << ", Got " << Hk.rows() << "x" << Hk.cols() << std::endl;
         return false;
     } else if (xkp1.size() != numStates) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] xkp1 has incorrect dimensions: Expected " << 
+                numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
         return false;
     } 
 
@@ -168,7 +176,7 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 
         // Compute Predicted Nonlinear Measurement
         if (!ComputePredictedNonlinearMeasurement(xk, yx)) {
-            // add logging
+            std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Unable to compute predicted measurement" << std::endl;
             return false;
         }
 
@@ -185,7 +193,7 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 
     // Compute Cost Function
     if (!ComputeCostFunction(yk, Hk, xkp1, J)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Failed to compute cost function" << std::endl;
         return false;
     }
 
@@ -206,7 +214,8 @@ bool BatchLeastSquares::ComputeCostFunction(Eigen::VectorXd &yk,
 
     // Verify Vectors/Matrices have Correct Dimensions
     if ((Hk.rows() != measBatchSize) || (Hk.cols() != numStates)) {
-        // Add Logging
+        std::cout << "[BatchLeastSquares::ComputeCostFunction] Hk has incorrect dimensions: Expected " << 
+                measBatchSize << "x" << numStates << ", Got " << Hk.rows() << "x" << Hk.cols() << std::endl;
         return false;
     }
 

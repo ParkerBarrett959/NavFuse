@@ -8,9 +8,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Include Headers
+#include <iostream>
 #include <Eigen/Dense>
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
 
 // Kalman Filter Class
 class BatchLeastSquares {
