@@ -52,7 +52,7 @@ bool KalmanFilter::filterPredict(Eigen::VectorXd &xk,
     xkp1 = Phik * xk;
 
     // Predict Covariance
-    Pkp1 = (Phik * xk * Phik.transpose()) + Qk;
+    Pkp1 = (Phik * Pk * Phik.transpose()) + Qk;
 
     // Return Statement for Successful Prediction
     return true;

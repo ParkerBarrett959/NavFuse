@@ -10,6 +10,7 @@
 // Include Headers
 #include <cmath>
 #include <Eigen/Dense>
+#include "KalmanFilter.hpp"
 
 // Inertial Navigation Initialization and Alignment Class
 class Initialization {
@@ -41,16 +42,32 @@ class Initialization {
                                      Eigen::Vector3d &wIB_B,
                                      Eigen::Matrix3d &RB2N);
 
-        /* @fineAttitudeAlignment
+        /* @fineAlignmentPredict
             Inputs:
-                rA:3x1 dimensional position vector in arbitrary reference frame A
+                lat: scalar double representing the geodetic latitude [rad]
+                wE: scalar double representing Earth rotational rate magnitude [rad/s]
+                g: scalar double representing gravitational acceleration magnitude [m/s^2]
+                r: scalar double representing Earth geodetic radius plus the height above the ellipsoid [m]
+                xk: 8x1 vector of alignment states (Attitude, gyro biases, and level velocity errors)
+                Pk: 8x8 covarance matrix of alignment states
+                KF: Kalman Filter Object
             Outputs:
-                gA: 3x1 dimensional gravitational acceleration vector in reference frame A
+                xkp1: 8x1 vector of predicted alignment states (Attitude, gyro biases, and level velocity errors)
+                Pkp1: 8x8 covarance matrix of pedicted alignment states
             Description:
-                Function which takes in a position vector in an arbitrary reference frame and computes
-                a simple approximation of the gravity vector in this frame. For geodetic applications, 
-                the sipmlified approximation is accurate to approximately 1-2%.
+                Function which takes in geodetic latitude, earth parameters (rotation rate and geodetic position),
+                along with the fine alignment satte vector and covariance which consist of 3 attitude, 3 gyro bias 
+                and 2 level velocity error states. The Kalman Filter Prediction is computed.
         */
+        bool fineAlignmentPredict(double &lat,
+                                  double &wE,
+                                  double &g,
+                                  double &r,
+                                  Eigen::VectorXd &xk,
+                                  Eigen::MatrixXd &Pk,
+                                  KalmanFilter &KF,
+                                  Eigen::VectorXd &xkp1,
+                                  Eigen::MatrixXd &Pkp1);
 
     // Private Class Members/Function
     private:
