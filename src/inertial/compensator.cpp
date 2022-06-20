@@ -107,9 +107,9 @@ bool Compensator::compensateMeasurement(Eigen::Vector3d &meas, std::string &meas
 
     // Define Scale Factor Error Matrix
     Eigen::Matrix3d SF;
-    SF << sf[0], 0.0,   0.0,
-          0.0,   sf[1], 0.0,
-          0.0,   0.0,   sf[2];
+    SF << sf[0],  0.0,    0.0,
+          0.0,    sf[1],  0.0,
+          0.0,    0.0,    sf[2];
 
     // Define Misalignment Matrix
     Eigen::Matrix3d MIS;
