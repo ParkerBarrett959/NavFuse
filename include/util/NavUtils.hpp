@@ -51,6 +51,18 @@ class NavUtils {
         bool buildQuaternionEquivalent(Eigen::VectorXd &qA2B,
                                        Eigen::MatrixXd &QA2B);
 
+        /* @skewSymmetric
+            Inputs:
+                vec: 3x1 dimensional vector
+            Outputs:
+                vecX: 3x3 dimensional skew symmetric matrix
+            Description:
+                Function which takes in a vector and computes the skew symmetric (cross-product equivalent)
+                matrix.
+        */
+        bool skewSymmetric(Eigen::Vector3d &vec,
+                           Eigen::Matrix3d &vecX);
+
     // Private Class Members/Function
     private:
 

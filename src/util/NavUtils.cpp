@@ -59,7 +59,7 @@ bool NavUtils::computeQuaternionFromRotationVec(Eigen::VectorXd &phi,
     if (phi.size() != 3) {
         // Add Logging
         return false;
-    } else if (qA2B.sizez() != 4) {
+    } else if (qA2B.size() != 4) {
         // Add Logging
         return false;
     }
@@ -104,6 +104,25 @@ bool NavUtils::buildQuaternionEquivalent(Eigen::VectorXd &qA2B,
             q1,   q0,  -q3,   q2,
             q2,   q3,   q0,  -q1,
             q3,  -q2,   q1,   q0;
+
+    // Return Statement
+    return true;
+
+}
+
+// Skew Symmetric Matrix Function
+bool NavUtils::skewSymmetric(Eigen::Vector3d &vec,
+                             Eigen::Matrix3d &vecX) {
+
+    // Get Elements of Vector
+    double v1 = vec[0];
+    double v2 = vec[1];
+    double v3 = vec[2];
+
+    // Set Elements of Skew Symmetric
+    vecX << 0.0, -v3, v2,
+            v3,  0.0, -v1,
+            -v2, v1,  0.0;
 
     // Return Statement
     return true;
