@@ -181,5 +181,8 @@ bool Initialization::fineAlignmentUpdate(bool &velValid,
         std::cout << "[Initialization::fineAlignmentUpdate] Unable to perform filter update" << std::endl;
         return false;
     }
+
+    // Return Statement for Successful Fine Alignment Update
+    return true;
                
 }
