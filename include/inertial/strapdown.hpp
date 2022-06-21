@@ -11,6 +11,7 @@
 #include <iostream>
 #include <Eigen/Dense>
 #include "NavUtils.hpp"
+#include "Gravity.hpp"
 
 // Inertial Navigation Strapdown Class
 class Strapdown {
@@ -65,6 +66,10 @@ class Strapdown {
         Eigen::Vector3d vNedPrev_;
         Eigen::Vector3d rphPrev_;
         int64_t tovPrev_;
+
+        // Utility Object Instantiations
+        NavUtils NavUtil;
+        Gravity Gravity;
 
 };
 

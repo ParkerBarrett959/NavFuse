@@ -44,6 +44,10 @@ bool Strapdown::integrate(Eigen::Vector3d &dV,
     vNedPrev_ = vNed_;
     rphPrev_ = rph_;
     tovPrev_ = tov_;
+    
+    // Set Current Class Variables
+    tov_ = tov;
+    dt_ = (tov_ - tovPrev_) / 1e6;
 
     // Update Attitude
 
