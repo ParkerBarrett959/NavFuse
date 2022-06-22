@@ -63,6 +63,18 @@ class NavUtils {
         bool skewSymmetric(Eigen::Vector3d &vec,
                            Eigen::Matrix3d &vecX);
 
+        /* @rph2Dcm
+            Inputs:
+                rph: 3x1 dimensional vector containing roll pitch and heading [rad]
+            Outputs:
+                RB2N: 3x3 dimensional DCM relating the body frame to the NED frame
+            Description:
+                Function which takes in a vector and computes the skew symmetric (cross-product equivalent)
+                matrix.
+        */
+        bool rph2Dcm(Eigen::Vector3d &rph,
+                     Eigen::Matrix3d &RB2N);
+
     // Private Class Members/Function
     private:
 

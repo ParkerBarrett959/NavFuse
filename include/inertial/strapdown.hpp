@@ -10,6 +10,7 @@
 // Include Headers
 #include <iostream>
 #include <Eigen/Dense>
+#include <cmath>
 #include "NavUtils.hpp"
 #include "Gravity.hpp"
 
@@ -22,7 +23,7 @@ class Strapdown {
         // Public Class Members
         Eigen::Vector3d lla_;
         Eigen::Vector3d vNed_;
-        Eigen::Vector3d rph_;
+        Eigen::Matrix3d RB2N_;
         int64_t tov_;
         double dt_;
 
@@ -45,7 +46,7 @@ class Strapdown {
         /* @integrate
             Inputs:
                 dV: 3x1 vector of change in velocity measurement [m/s^2]
-                dTh: 3x1 vector of angle measurement [rad]
+                dTh: 3x1 vector of change of angle measurement [rad]
                 tov: scalar int64 representing measurement time of validity [micro-seconds Unix] 
             Outputs:
             Description:
@@ -64,12 +65,23 @@ class Strapdown {
         // Private Class Members
         Eigen::Vector3d llaPrev_;
         Eigen::Vector3d vNedPrev_;
-        Eigen::Vector3d rphPrev_;
+        Eigen::Matrix3d RB2NPrev_;
         int64_t tovPrev_;
 
         // Utility Object Instantiations
-        NavUtils NavUtil;
-        Gravity Gravity;
+        NavUtils NavUtil_;
+        Gravity Gravity_;
+
+        /* @updateAttitude
+            Inputs:
+                dTh: 3x1 vector of change of angle measurement [rad]
+            Outputs:
+            Description:
+                Function which takes in the gyroscope measurements, and uses the previous attitude to
+                compute the updated attitude. The algorithm used assumes that the IMU internally 
+                compensates for coning and sculling corrections.
+        */
+        bool updateAttitude(Eigen::Vector3d &dTh);
 
 };
 

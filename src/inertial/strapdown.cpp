@@ -20,13 +20,16 @@ bool Strapdown::initialize(Eigen::Vector3d &lla,
     // Initialize Current Class Variables
     lla_ = lla;
     vNed_ = vNed;
-    rph_ = rph;
     tov_ = tov;
+    if (!NavUtil_.rph2Dcm(rph, RB2N_)) {
+        std::cout << "[Strapdown::initialize] Unable to compute RB2N from rph" << std::endl;
+        return false; 
+    }
 
     // Initialize Previous Class Variables
     llaPrev_ = lla;
     vNedPrev_ = vNed;
-    rphPrev_ = rph;
+    RB2NPrev_ = RB2N_;
     tovPrev_ = tov;
 
     // Return for Successful Initialization
@@ -42,7 +45,7 @@ bool Strapdown::integrate(Eigen::Vector3d &dV,
     // Update Class Variables from Previous Step
     llaPrev_ = lla_;
     vNedPrev_ = vNed_;
-    rphPrev_ = rph_;
+    RB2NPrev_ = RB2N_;
     tovPrev_ = tov_;
     
     // Set Current Class Variables
@@ -50,6 +53,10 @@ bool Strapdown::integrate(Eigen::Vector3d &dV,
     dt_ = (tov_ - tovPrev_) / 1e6;
 
     // Update Attitude
+    if (!updateAttitude(dTh)) {
+        std::cout << "[Strapdown::integrate] Unable to update attitude" << std::endl;
+        return false;
+    }
 
     // Rotate Specific Force to Updated Attitude Frame
 
@@ -60,6 +67,30 @@ bool Strapdown::integrate(Eigen::Vector3d &dV,
     // Position Integration
 
     // Return for Successful Integration
+    return true;
+
+}
+
+// Attitude Update
+bool Strapdown::updateAttitude(Eigen::Vector3d &dTh) {
+
+    // Get Helpful Quantities
+    double dThMag = dTh.norm();
+    Eigen::Matrix3d dThX;
+    if (!NavUtil_.skewSymmetric(dTh, dThX)) {
+        std::cout << "[Strapdown::updateAttitude] Unable to get skew symmetric" << std::endl;
+        return false;
+    }
+
+    // Compute Rotation from Previous to Current Time step
+    Eigen::Matrix3d B1 = (std::sin(dThMag) / dThMag) * dThX;
+    Eigen::Matrix3d B2 = ((1 - std::cos(dThMag))/(dThMag * dThMag)) * dThX * dThX;
+    Eigen::Matrix3d B = Eigen::Matrix3d::Identity() + B1 + B2; 
+
+    // Update Attitude
+    RB2N_ = RB2NPrev_ * B;
+
+    // Return for Successful Attitude Update
     return true;
 
 }
