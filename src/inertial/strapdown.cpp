@@ -59,8 +59,14 @@ bool Strapdown::integrate(Eigen::Vector3d &dV,
     }
 
     // Rotate Specific Force to Updated Attitude Frame
+    Eigen::Vector3d dVN = RB2N_ * dV;
 
     // Gravity Compensation
+    Eigen::Vector3d gN;
+    if (!Gravity_.gravityNed(lla_[0], lla_[2], gN)) {
+        std::cout << "[Strapdown::integrate] Unable to compute gravity" << std::endl;
+        return false;
+    }
 
     // Velocity Integration
 
