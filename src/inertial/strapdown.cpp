@@ -67,6 +67,7 @@ bool Strapdown::integrate(Eigen::Vector3d &dV,
         std::cout << "[Strapdown::integrate] Unable to compute gravity" << std::endl;
         return false;
     }
+    dVN += gN * dt_;
 
     // Velocity Integration
 
