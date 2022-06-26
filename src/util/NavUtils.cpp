@@ -16,10 +16,12 @@ bool NavUtils::computeDcmFromQuaternion(Eigen::VectorXd &qA2B,
 
     // Verify Correct Dimensions
     if (qA2B.size() != 4) {
-        // Add Logging
+        std::cout << "[NavUtils::computeDcmFromQuaternion] qA2B has incorrect dimensions: Expected " << 
+                "4x1, Got " << qA2B.size() << "x1" << std::endl;
         return false;
     } else if ((RA2B.rows() != 3) || (RA2B.cols() != 3)) {
-        // Add Logging
+        std::cout << "[NavUtils::computeDcmFromQuaternion] RA2B has incorrect dimensions: Expected " << 
+                "3x3, Got " << RA2B.rows() << "x" << RA2B.cols() << std::endl;
         return false;
     }
 
@@ -57,10 +59,12 @@ bool NavUtils::computeQuaternionFromRotationVec(Eigen::VectorXd &phi,
 
     // Verify Correct Dimensions
     if (phi.size() != 3) {
-        // Add Logging
+        std::cout << "[NavUtils::computeQuaternionFromRotationVec] phi has incorrect dimensions: Expected " << 
+                "3x1, Got " << phi.size() << "x1" << std::endl;
         return false;
     } else if (qA2B.size() != 4) {
-        // Add Logging
+        std::cout << "[NavUtils::computeQuaternionFromRotationVec] qA2B has incorrect dimensions: Expected " << 
+                "4x1, Got " << qA2B.size() << "x1" << std::endl;
         return false;
     }
 
@@ -89,7 +93,12 @@ bool NavUtils::buildQuaternionEquivalent(Eigen::VectorXd &qA2B,
 
     // Verify Correct Dimensions
     if (qA2B.size() != 4) {
-        // Add Logging
+        std::cout << "[NavUtils::buildQuaternionEquivalent] qA2B has incorrect dimensions: Expected " << 
+                "4x1, Got " << qA2B.size() << "x1" << std::endl;
+        return false;
+    } else if ((QA2B.rows() != 4) || (QA2B.cols() != 4)) {
+        std::cout << "[NavUtils::buildQuaternionEquivalent] QA2B has incorrect dimensions: Expected " << 
+                "4x4, Got " << QA2B.rows() << "x" << QA2B.cols() << std::endl;
         return false;
     }
 
@@ -122,7 +131,7 @@ bool NavUtils::skewSymmetric(Eigen::Vector3d &vec,
     // Set Elements of Skew Symmetric
     vecX << 0.0, -v3, v2,
             v3,  0.0, -v1,
-            -v2, v1,  0.0;
+           -v2,  v1,  0.0;
 
     // Return Statement
     return true;
@@ -159,6 +168,128 @@ bool NavUtils::rph2Dcm(Eigen::Vector3d &rph,
     // Compute Final Rotation
     RB2N = R3 * R2 * R1;
     
+    // Return Statement
+    return true;
+
+}
+
+// Strapdown 4th Order Runge Kutta Position/Velocity Integration
+bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
+                            double &dt,
+                            Eigen::Vector3d &dVN,
+                            Eigen::Vector3d &gN,
+                            Eigen::VectorXd &yk) {
+
+    // Verify Correct Dimensions
+    if (ykm1.size() != 6) {
+        std::cout << "[NavUtils::strapdownRk4] ykm1 has incorrect dimensions: Expected " << 
+                "6x1, Got " << ykm1.size() << "x1" << std::endl;
+        return false;
+    } else if (yk.size() != 6) {
+        std::cout << "[NavUtils::strapdownRk4] yk has incorrect dimensions: Expected " << 
+                "6x1, Got " << yk.size() << "x1" << std::endl;
+        return false;
+    }
+
+    // Define K1
+    Eigen::VectorXd y;
+    Eigen::VectorXd f1;
+    Eigen::VectorXd K1;
+    y = ykm1;
+    if (!strapdownDynamics(y, f1, dVN, gN, dt)) {
+        std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
+        return false;
+    }
+    K1 = dt * f1;
+
+    // Define K2
+    Eigen::VectorXd f2;
+    Eigen::VectorXd K2;
+    y = ykm1 + (K1 / 2.0);
+    if (!strapdownDynamics(y, f2, dVN, gN, dt)) {
+        std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
+        return false;
+    }
+    K2 = dt * f2;
+
+    // Define K3
+    Eigen::VectorXd f3;
+    Eigen::VectorXd K3;
+    y = ykm1 + (K2 / 2.0);
+    if (!strapdownDynamics(y, f2, dVN, gN, dt)) {
+        std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
+        return false;
+    }
+    K3 = dt * f3;
+
+    // Define K4
+    Eigen::VectorXd f4;
+    Eigen::VectorXd K4;
+    y = ykm1 + K3;
+    if (!strapdownDynamics(y, f4, dVN, gN, dt)) {
+        std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
+        return false;
+    }
+    K4 = dt * f4;
+
+    // Compute Integration
+    yk = ykm1 + ((1.0/6.0) * K1) + ((1.0/3.0) * K2) + ((1.0/3.0) * K3)  + ((1.0/6.0) * K4);
+
+    // Return True for Successful Integration
+    return true;
+
+}
+
+// Strapdown Dynamics Function
+bool NavUtils::strapdownDynamics(Eigen::VectorXd &y,
+                                 Eigen::VectorXd &f,
+                                 Eigen::Vector3d &dVN,
+                                 Eigen::Vector3d &gN,
+                                 double &dt) {
+
+    // Verify Correct Dimensions
+    if (y.size() != 6) {
+        std::cout << "[NavUtils::strapdownDynamics] y has incorrect dimensions: Expected " << 
+                "6x1, Got " << y.size() << "x1" << std::endl;
+        return false;
+    } else if (f.size() != 6) {
+        std::cout << "[NavUtils::strapdownDynamics] f has incorrect dimensions: Expected " << 
+                "6x1, Got " << f.size() << "x1" << std::endl;
+        return false;
+    }
+
+    // Unpack Previous States
+    double lat = y[0];
+    double lon = y[1];
+    double h = y[2];
+    double vN = y[3];
+    double vE = y[4];
+    double vD = y[5];
+
+    // Get Earth Constants and Parameters
+    double wE = Gravity.gravityParams.wE;
+    double fE = Gravity.gravityParams.f;
+    double a = Gravity.gravityParams.a;
+
+    // Compute Useful Quantities
+    Eigen::Vector3d aN = dVN / dt;
+    double eSq = (2.0 * fE) - std::pow(fE, 2); 
+    double slat = std::sin(lat);
+    double clat = std::cos(lat);
+    double N = a / (std::sqrt(1 - (eSq * std::pow(slat, 2))));
+    double M = (a * (1 - eSq)) / std::pow(1 - (eSq * std::pow(slat, 2)), 1.5);
+    double latDot = vN / (M + h);
+    double lonDot = vE / ((N + h) * clat);
+    double hDot = -vD;
+
+    // Compute Dynamics
+    f << y[0],
+         y[1],
+         y[3],
+         aN[0] + gN[0] - (2 * wE * slat * vE) + (latDot * vD) - (lonDot * slat * vE),
+         aN[1] + gN[1] + (2 * wE * slat * vN) + (2 * wE * clat * vD) + (lonDot * slat * vN) + (lonDot * clat * vD),
+         aN[2] + gN[2] - (2 * wE * clat * vE) - (lonDot * clat * vE) - (latDot * vN);
+
     // Return Statement
     return true;
 
