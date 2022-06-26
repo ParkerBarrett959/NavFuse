@@ -20,6 +20,20 @@ class Gravity {
     // Public Class Members/Functions
     public:
 
+        // Gravity Constants and Parameters
+        struct {
+            double a = 6378137;                 // Earth Equatorial Radius [m]
+            double b = 6356752.3141;            // Earth Ellipsoid Semi-Major Axis [m]
+            double J2 = 1.08263 * 1e-3;         // Earth Dynamical Flattening Term
+            double kM = 3.986005 * 1e14;        // Newtonian Gravitational Constant [m^3/s^2]
+            double wE = 7.292115 * 1e-5;        // Earth Rotation Rate [rad/s]
+            double G = 6.674 * 1e-11;           // Universal Gravitation (N m^2 kg^-2)
+            double mE = 5.972 * 1e24;           // Mass of Earth (kg) 
+            double gEq = 9.7803267715;          // Normal Gravity at Equator [m/s^2]
+            double gPole = 9.8321863685;        // Normal Gravity at Poles [m/s^2]
+            double f = 1.0 / 298.257222101;     // Earth Ellipsoid Flattening
+        } gravityParams;
+
         /* @simpleGravity
             Inputs:
                 rA:3x1 dimensional position vector in arbitrary reference frame A
@@ -53,20 +67,6 @@ class Gravity {
 
     // Private Class Members/Function
     private:
-
-        // Gravity Constants and Parameters
-        struct {
-            double a = 6378137;                 // Earth Equatorial Radius [m]
-            double b = 6356752.3141;            // Earth Ellipsoid Semi-Major Axis [m]
-            double J2 = 1.08263 * 1e-3;         // Earth Dynamical Flattening Term
-            double kM = 3.986005 * 1e14;        // Newtonian Gravitational Constant [m^3/s^2]
-            double wE = 7.292115 * 1e-5;        // Earth Rotation Rate [rad/s]
-            double G = 6.674 * 1e-11;           // Universal Gravitation (N m^2 kg^-2)
-            double mE = 5.972 * 1e24;           // Mass of Earth (kg) 
-            double gEq = 9.7803267715;          // Normal Gravity at Equator [m/s^2]
-            double gPole = 9.8321863685;        // Normal Gravity at Poles [m/s^2]
-            double f = 1.0 / 298.257222101;     // Earth Ellipsoid Flattening
-        } gravityParams;
 
 };
 
