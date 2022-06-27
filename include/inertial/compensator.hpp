@@ -76,12 +76,12 @@ class Compensator {
     private:
 
         // Private Class Variables
-        Eigen::Vector3d ba;
-        Eigen::VectorXd ma;
-        Eigen::Vector3d sfa;
-        Eigen::Vector3d bg;
-        Eigen::VectorXd mg;
-        Eigen::Vector3d sfg;
+        Eigen::Vector3d ba_;
+        Eigen::VectorXd ma_;
+        Eigen::Vector3d sfa_;
+        Eigen::Vector3d bg_;
+        Eigen::VectorXd mg_;
+        Eigen::Vector3d sfg_;
 
         /* @compensateMeasurement
             Inputs:

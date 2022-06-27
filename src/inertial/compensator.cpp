@@ -17,16 +17,16 @@ bool Compensator::setAccelerometerErrors(Eigen::Vector3d &baEst,
                                          Eigen::Vector3d &sfaEst) {
 
     // Check for Correct Input Sizes
-    if (ma.size() != 6) {
+    if (maEst.size() != 6) {
         std::cout << "[Compensator::setAccelerometerErrors] misalignment has incorrect dimensions: Expected " << 
                 "6x1, Got " << maEst.size() << "x1" << std::endl;
         return false;
     }
 
     // Set Class Variables
-    ba = baEst;
-    ma = maEst;
-    sfa = sfaEst;
+    ba_ = baEst;
+    ma_ = maEst;
+    sfa_ = sfaEst;
 
     // Return for Successful Set Accelerometer Errors
     return true;
@@ -39,16 +39,16 @@ bool Compensator::setGyroscopeErrors(Eigen::Vector3d &bgEst,
                                      Eigen::Vector3d &sfgEst) {
 
     // Check for Correct Input Sizes
-    if (mg.size() != 6) {
+    if (mgEst.size() != 6) {
         std::cout << "[Compensator::setGyroscopeErrors] misalignment has incorrect dimensions: Expected " << 
                 "6x1, Got " << mgEst.size() << "x1" << std::endl;
         return false;
     }
 
     // Set Class Variables
-    bg = bgEst;
-    mg = mgEst;
-    sfg = sfgEst;
+    bg_ = bgEst;
+    mg_ = mgEst;
+    sfg_ = sfgEst;
 
     // Return for Successful Set Gyroscope Errors
     return true;
@@ -93,13 +93,13 @@ bool Compensator::compensateMeasurement(Eigen::Vector3d &meas, std::string &meas
     Eigen::VectorXd m;
     Eigen::Vector3d sf;
     if (measType == "accel") {
-        b = ba;
-        m = ma;
-        sf = sfa;
+        b = ba_;
+        m = ma_;
+        sf = sfa_;
     } else if (measType == "gyro") {
-        b = bg;
-        m = mg;
-        sf = sfg;
+        b = bg_;
+        m = mg_;
+        sf = sfg_;
     } else {
         std::cout << "[Compensator::compensateMeasurement] Invalid measurement type" << std::endl;
         return false;
