@@ -72,6 +72,7 @@ class InertialErrorDynamics {
                 RS2N: 3x3 rotation matrix relating the sensor frame to the NED frame 
                 lla: 3x1 vector containing latitude, longitude and altitude
                 llaDot: 3x1 vector containing time derivatives of latitude, longitude and altitude
+                llaDDot: 3x1 vector containing second time derivatives of latitude, longitude and altitude
             Outputs:
                 F: 9x9 NED frame error model state transition matrix
                 G: 9x9 NED frame error model forcing matrix
@@ -89,6 +90,7 @@ class InertialErrorDynamics {
                               Eigen::Matrix3d &RS2N,
                               Eigen::Vector3d &lla,
                               Eigen::Vector3d &llaDot,
+                              Eigen::Vector3d &llaDDot,
                               Eigen::MatrixXd &F,
                               Eigen::MatrixXd &G);
 
