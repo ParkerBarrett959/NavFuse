@@ -8,13 +8,12 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Include Headers
+#pragma once
 #include <iostream>
 #include <cmath>
 #include <Eigen/Dense>
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
-#ifndef GRAVITY_H
-#define GRAVITY_H
 
 // Gravity Class
 class Gravity {
@@ -71,6 +70,3 @@ class Gravity {
     private:
 
 };
-
-#endif /* GRAVITY_H */
-
