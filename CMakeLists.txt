@@ -1,9 +1,50 @@
-# Cmake Build of Static Library
+############################################################
+#              Cmake Build of Static Library               #
+############################################################
+
+# Project Setup
 cmake_minimum_required(VERSION 3.24.0)
 project(navigation_library)
+set(CMAKE_CXX_STANDARD 11)
 
-# Set Source File 
-set(SOURCE_FILES main.cpp)
+# Define Static Library Output Path
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/BUILD)
 
-# Added Executable
-add_executable(main ${SOURCE_FILES}) 
+# Add Source List
+set(SOURCE_LIST ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares.cpp
+                ${PROJECT_SOURCE_DIR}/src/filter/KalmanFilter.cpp
+                ${PROJECT_SOURCE_DIR}/src/inertial/compensator.cpp
+                ${PROJECT_SOURCE_DIR}/src/inertial/errorDynamics.cpp
+                ${PROJECT_SOURCE_DIR}/src/inertial/initialization.cpp
+                ${PROJECT_SOURCE_DIR}/src/inertial/strapdown.cpp
+                ${PROJECT_SOURCE_DIR}/src/util/Gravity.cpp
+                ${PROJECT_SOURCE_DIR}/src/util/NavUtils.cpp)
+
+# Add Header List
+set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
+                ${PROJECT_SOURCE_DIR}/include/filter/KalmanFilter.hpp
+                ${PROJECT_SOURCE_DIR}/include/inertial/compensator.hpp
+                ${PROJECT_SOURCE_DIR}/include/inertial/errorDynamics.hpp
+                ${PROJECT_SOURCE_DIR}/include/inertial/initialization.hpp
+                ${PROJECT_SOURCE_DIR}/include/inertial/strapdown.hpp
+                ${PROJECT_SOURCE_DIR}/include/util/Gravity.hpp
+                ${PROJECT_SOURCE_DIR}/include/util/NavUtils.hpp)
+
+# Add Library
+add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares.cpp
+                              ${PROJECT_SOURCE_DIR}/src/filter/KalmanFilter.cpp
+                              ${PROJECT_SOURCE_DIR}/src/inertial/compensator.cpp
+                              ${PROJECT_SOURCE_DIR}/src/inertial/errorDynamics.cpp
+                              ${PROJECT_SOURCE_DIR}/src/inertial/initialization.cpp
+                              ${PROJECT_SOURCE_DIR}/src/inertial/strapdown.cpp
+                              ${PROJECT_SOURCE_DIR}/src/util/Gravity.cpp
+                              ${PROJECT_SOURCE_DIR}/src/util/NavUtils.cpp ${HEADER_LIST})
+
+# Target Include Directories
+target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filter
+                                      PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
+                                      PUBLIC ${PROJECT_SOURCE_DIR}/include/util)
+
+# Link External Dependencies
+target_link_libraries(navigation PRIVATE Eigen::Dense)
+
