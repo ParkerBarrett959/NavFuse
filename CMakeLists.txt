@@ -13,6 +13,13 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build)
 # External Dependencies
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 include_directories(${EIGEN3_INCLUDE_DIR})
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG release-1.12.1
+)
+FetchContent_MakeAvailable(googletest)
 
 # Add Header List
 set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
@@ -39,3 +46,18 @@ target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filte
                                       PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
                                       PUBLIC ${PROJECT_SOURCE_DIR}/include/util
                                       PUBLIC ${EIGEN_INSTALL_PATH})
+
+# Unit Testing Build
+enable_testing()
+
+add_executable(
+  test_navigation_library
+  ${PROJECT_SOURCE_DIR}/test/testMain.cpp
+)
+target_link_libraries(
+  test_navigation_library
+  GTest::gtest_main
+)
+
+include(GoogleTest)
+gtest_discover_tests(test_navigation_library)
