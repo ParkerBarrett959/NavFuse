@@ -100,7 +100,7 @@ class NavUtils {
     private:
 
         // Class Instantiations
-        Gravity Gravity;
+        ::Gravity Gravity;
 
         /* @strapdownDynamics
             Inputs:

@@ -99,7 +99,7 @@ class InertialErrorDynamics {
     private:
 
         // Object Instantiations
-        Gravity Gravity;
+        ::Gravity Gravity;
 
 };
 
