@@ -1,9 +1,22 @@
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                     Main Unit Testing Executable                                 //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                  // 
+// Author:      Parker Barrett                                                                      //
+// Overview:    Main entry point for Navigation Library unit testing.                               //
+//                                                                                                  //
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Include Headersr
 #include <gtest/gtest.h>
 
-// Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
-  // Expect two strings not to be equal.
-  EXPECT_STRNE("hello", "world");
-  // Expect equality.
-  EXPECT_EQ(7 * 6, 42);
+// Main Function
+int main(int argc, char **argv)
+{
+    // Initialize Google Test
+    testing::InitGoogleTest(&argc, argv);
+
+    // Run Tests
+    return RUN_ALL_TESTS();
+
 }
