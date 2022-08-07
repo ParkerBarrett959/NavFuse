@@ -30,7 +30,7 @@ bool BatchLeastSquares::UnweightedLinearLeastSquares(Eigen::VectorXd &yk,
                 measBatchSize << "x" << numStates << ", Got " << Hk.rows() << "x" << Hk.cols() << std::endl;
         return false;
     } else if (Hk.cols() > Hk.rows()) {
-        std::cout << "[BatchLeastSquares::UnweightedLinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        std::cout << "[BatchLeastSquares::UnweightedLinearLeastSquares] Hk is underdetermined (more columns than rows) " << std::endl;
         return false;
     }
 
@@ -69,7 +69,7 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
                 measBatchSize << "x" << measBatchSize << ", Got " << Wk.rows() << "x" << Wk.cols() << std::endl;
         return false;
     } else if (Hk.cols() > Hk.rows()) {
-        std::cout << "[BatchLeastSquares::WeightedLinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        std::cout << "[BatchLeastSquares::WeightedLinearLeastSquares] Hk is underdetermined (more columns than rows) " << std::endl;
         return false;
     }
 
@@ -109,7 +109,7 @@ bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
                 numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
         return false;
     } else if (Hk.cols() > Hk.rows()) {
-        std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Hk is underdetermined (more columns than rows) " << std::endl;
         return false;
     }
 
@@ -173,7 +173,7 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
                 numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
         return false;
     } else if (Hk.cols() > Hk.rows()) {
-        std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Hk is underdetermined (more columns than rows) " << std::endl;
         return false;
     }
 
