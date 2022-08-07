@@ -29,6 +29,9 @@ bool BatchLeastSquares::UnweightedLinearLeastSquares(Eigen::VectorXd &yk,
         std::cout << "[BatchLeastSquares::UnweightedLinearLeastSquares] Hk has incorrect dimensions: Expected " << 
                 measBatchSize << "x" << numStates << ", Got " << Hk.rows() << "x" << Hk.cols() << std::endl;
         return false;
+    } else if (Hk.cols() > Hk.rows()) {
+        std::cout << "[BatchLeastSquares::UnweightedLinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        return false;
     }
 
     // Compute State Estimate
@@ -40,7 +43,7 @@ bool BatchLeastSquares::UnweightedLinearLeastSquares(Eigen::VectorXd &yk,
         return false;
     }
 
-    // Return Statement for Successful Prediction
+    // Return Statement for Successful Least Squares Solve
     return true;
 
 }
@@ -65,6 +68,9 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
         std::cout << "[BatchLeastSquares::WeightedLinearLeastSquares] Wk has incorrect dimensions: Expected " << 
                 measBatchSize << "x" << measBatchSize << ", Got " << Wk.rows() << "x" << Wk.cols() << std::endl;
         return false;
+    } else if (Hk.cols() > Hk.rows()) {
+        std::cout << "[BatchLeastSquares::WeightedLinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        return false;
     }
 
     // Compute State Estimate
@@ -76,7 +82,7 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
         return false;
     }
 
-    // Return Statement for Successful Prediction
+    // Return Statement for Successful Least Squares Solve
     return true;
 
 }
@@ -102,7 +108,10 @@ bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
         std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] xkp1 has incorrect dimensions: Expected " << 
                 numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
         return false;
-    } 
+    } else if (Hk.cols() > Hk.rows()) {
+        std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        return false;
+    }
 
     // Initialize Predicted Measurment Vector
     Eigen::VectorXd yx;
@@ -163,7 +172,10 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
         std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] xkp1 has incorrect dimensions: Expected " << 
                 numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
         return false;
-    } 
+    } else if (Hk.cols() > Hk.rows()) {
+        std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Hk is underdetermined (more rows than columns) " << std::endl;
+        return false;
+    }
 
     // Initialize Predicted Measurment Vector
     Eigen::VectorXd yx;
