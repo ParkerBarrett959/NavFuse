@@ -50,11 +50,18 @@ target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filte
 # Unit Testing Build
 enable_testing()
 add_executable( test_navigation_library ${PROJECT_SOURCE_DIR}/test/testMain.cpp 
-	                                ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp)
+	                                ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp ${HEADER_LIST})
 target_link_libraries(
   test_navigation_library
   GTest::gtest_main
+  navigation
 )
+
+# Target Include Directories
+target_include_directories(test_navigation_library PUBLIC ${PROJECT_SOURCE_DIR}/include/filter
+                                                   PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
+                                                   PUBLIC ${PROJECT_SOURCE_DIR}/include/util
+                                                   PUBLIC ${EIGEN_INSTALL_PATH})
 
 include(GoogleTest)
 gtest_discover_tests(test_navigation_library)
