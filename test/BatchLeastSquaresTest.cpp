@@ -28,8 +28,16 @@ TEST(UnweightedLinearLeastSquares, IncorrectHDimensions)
     // H Matrix has Incorrect Number of Columns
     EXPECT_FALSE(bls.UnweightedLinearLeastSquares(yk, Hk, xk, J));
 
+    // Redefine H
+    Hk = Eigen::MatrixXd::Zero(3,4);
+
     // H Matrix has Incorrect Number of Rows
+    EXPECT_FALSE(bls.UnweightedLinearLeastSquares(yk, Hk, xk, J));
+
+    // Redefine H
+    Hk = Eigen::MatrixXd::Zero(2,4);
 
     // H Matrix has More Columns than Rows
+    EXPECT_FALSE(bls.UnweightedLinearLeastSquares(yk, Hk, xk, J));
 
 }
