@@ -49,11 +49,8 @@ target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filte
 
 # Unit Testing Build
 enable_testing()
-
-add_executable(
-  test_navigation_library
-  ${PROJECT_SOURCE_DIR}/test/testMain.cpp
-)
+add_executable( test_navigation_library ${PROJECT_SOURCE_DIR}/test/testMain.cpp 
+	                                ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp)
 target_link_libraries(
   test_navigation_library
   GTest::gtest_main
