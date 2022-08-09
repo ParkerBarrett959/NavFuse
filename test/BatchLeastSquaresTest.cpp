@@ -191,3 +191,144 @@ TEST(WeightedLinearLeastSquares, ComputeLeastSquaresEstimate)
 
 }
 
+// Unweighted Nonlinear Least Squares: Incorrect H Dimensions
+TEST(UnweightedNonlinearLeastSquares, IncorrectHDimensions)
+{
+
+    // Create Least Squares Object
+    BatchLeastSquares bls;
+
+    // Initialize Variables
+    Eigen::MatrixXd Hk = Eigen::MatrixXd::Zero(2, 5);
+    Eigen::VectorXd yk = Eigen::VectorXd::Zero(2);
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    double eps;
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    double J;
+
+    // H Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(bls.UnweightedNonlinearLeastSquares(yk, Hk, xk, eps, xkp1, J));
+
+    // Redefine H
+    Hk = Eigen::MatrixXd::Zero(3, 4);
+
+    // H Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(bls.UnweightedNonlinearLeastSquares(yk, Hk, xk, eps, xkp1, J));
+
+    // Redefine H
+    Hk = Eigen::MatrixXd::Zero(2, 4);
+
+    // H Matrix has More Columns than Rows
+    ASSERT_FALSE(bls.UnweightedNonlinearLeastSquares(yk, Hk, xk, eps, xkp1, J));
+
+}
+
+// Unweighted Nonlinear Least Squares: Incorrect xkp1 Dimensions
+TEST(UnweightedNonlinearLeastSquares, IncorrectXkp1Dimensions)
+{
+
+    // Create Least Squares Object
+    BatchLeastSquares bls;
+
+    // Initialize Variables
+    Eigen::MatrixXd Hk = Eigen::MatrixXd::Zero(3, 3);
+    Eigen::VectorXd yk = Eigen::VectorXd::Zero(3);
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(3);
+    double eps;
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    double J;
+
+    // xkp1 has Incorrect Size
+    ASSERT_FALSE(bls.UnweightedNonlinearLeastSquares(yk, Hk, xk, eps, xkp1, J));
+
+}
+
+// Insert Test for Nonlinear Solver----------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------
+
+// Weighted Nonlinear Least Squares: Incorrect H Dimensions
+TEST(WeightedNonlinearLeastSquares, IncorrectHDimensions)
+{
+
+    // Create Least Squares Object
+    BatchLeastSquares bls;
+
+    // Initialize Variables
+    Eigen::MatrixXd Hk = Eigen::MatrixXd::Zero(2, 5);
+    Eigen::VectorXd yk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Wk = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    double eps;
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    double J;
+
+    // H Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(bls.WeightedNonlinearLeastSquares(yk, Hk, xk, Wk, eps, xkp1, J));
+
+    // Redefine H
+    Hk = Eigen::MatrixXd::Zero(3, 4);
+
+    // H Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(bls.WeightedNonlinearLeastSquares(yk, Hk, xk, Wk, eps, xkp1, J));
+
+    // Redefine H
+    Hk = Eigen::MatrixXd::Zero(2, 4);
+
+    // H Matrix has More Columns than Rows
+    ASSERT_FALSE(bls.WeightedNonlinearLeastSquares(yk, Hk, xk, Wk, eps, xkp1, J));
+
+}
+
+// Weighted Nonlinear Least Squares: Incorrect xkp1 Dimensions
+TEST(WeightedNonlinearLeastSquares, IncorrectXkp1Dimensions)
+{
+
+    // Create Least Squares Object
+    BatchLeastSquares bls;
+
+    // Initialize Variables
+    Eigen::MatrixXd Hk = Eigen::MatrixXd::Zero(3, 3);
+    Eigen::VectorXd yk = Eigen::VectorXd::Zero(3);
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Wk = Eigen::MatrixXd::Zero(3, 3);
+    double eps;
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    double J;
+
+    // xkp1 has Incorrect Size
+    ASSERT_FALSE(bls.WeightedNonlinearLeastSquares(yk, Hk, xk, Wk, eps, xkp1, J));
+
+}
+
+// Weighted Nonlinear Least Squares: Incorrect Wk Dimensions
+TEST(WeightedNonlinearLeastSquares, IncorrectWDimensions)
+{
+
+    // Create Least Squares Object
+    BatchLeastSquares bls;
+
+    // Initialize Variables
+    Eigen::MatrixXd Hk = Eigen::MatrixXd::Zero(3, 3);
+    Eigen::VectorXd yk = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Wk = Eigen::MatrixXd::Zero(3, 2);
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(3);
+    double eps;
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(3);
+    double J;
+
+    // W Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(bls.WeightedNonlinearLeastSquares(yk, Hk, xk, Wk, eps, xkp1, J));
+
+    // Redefine W
+    Wk = Eigen::MatrixXd::Zero(2, 3);
+
+    // W Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(bls.WeightedNonlinearLeastSquares(yk, Hk, xk, Wk, eps, xkp1, J));
+
+}
+
+// Insert Test for Nonlinear Solver----------------------------------------------------------
+
+//-------------------------------------------------------------------------------------------
+
