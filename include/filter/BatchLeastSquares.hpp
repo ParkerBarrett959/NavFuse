@@ -133,6 +133,19 @@ class BatchLeastSquares {
         */
         bool ComputePredictedNonlinearMeasurement(Eigen::VectorXd &xk,
                                                   Eigen::VectorXd &yx);
+        
+	/* @RelinearizeH
+            Inputs:
+                xk: nx1 dimensional estimated state vector
+            Outputs:
+                Hk: (nxm)xn dimensional matrix of measurement models (stacked)
+            Description:
+                Function which takes in the state vector and computes the linearized measurement
+		model. The template function is a pass through, the actual nonlinear dynamics of
+		the system must be filled.
+        */
+	bool RelinearizeH(Eigen::VectorXd &xk,
+                          Eigen::MatrixXd &Hk);
 
 
 };

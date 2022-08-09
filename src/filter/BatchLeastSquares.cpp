@@ -122,11 +122,17 @@ bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
     // Loop Recursively until Convergence Criteria is Met
     while (res.norm() > eps) {
 
-        // Compute Predicted Nonlinear Measurement
+        // Compute Predicted Nonlinear Measurement - REPLACE EXAMPLE CODE IN CLASS FUNCTION WITH YOUR OWN DYNAMICS
         if (!ComputePredictedNonlinearMeasurement(xk, yx)) {
             std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Unable to compute predicted measurement" << std::endl;
             return false;
         }
+
+	    // Re-Linearize H - REPLACE EXAMPLE CODE IN CLASS FUNCTION WITH YOUR OWN DYNAMICS
+	    if (!RelinearizeH(xk, Hk)) {
+            std::cout << "[BatchLeastSquares::UnweightedNonlinearLeastSquares] Unable to re-linearize H" << std::endl;
+	        return false;
+	    }
 
         // Iterate State Estimate
         xkp1 = xk + ((Hk.transpose() * Hk).inverse() * Hk.transpose() * (yk - yx));
@@ -175,6 +181,10 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
     } else if (Hk.cols() > Hk.rows()) {
         std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Hk is underdetermined (more columns than rows) " << std::endl;
         return false;
+    } else if ((Wk.rows() != measBatchSize) || (Wk.cols() != measBatchSize)) {
+        std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Wk has incorrect dimensions: Expected " << 
+                measBatchSize << "x" << measBatchSize << ", Got " << Wk.rows() << "x" << Wk.cols() << std::endl;
+        return false;
     }
 
     // Initialize Predicted Measurment Vector
@@ -186,11 +196,17 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
     // Loop Recursively until Convergence Criteria is Met
     while (res.norm() > eps) {
 
-        // Compute Predicted Nonlinear Measurement
+        // Compute Predicted Nonlinear Measurement - REPLACE EXAMPLE CODE IN CLASS FUNCTION WITH YOUR OWN DYNAMICS
         if (!ComputePredictedNonlinearMeasurement(xk, yx)) {
             std::cout << "[BatchLeastSquares::WeightedNonlinearLeastSquares] Unable to compute predicted measurement" << std::endl;
             return false;
         }
+
+        // Re-Linearize H - REPLACE EXAMPLE CODE IN CLASS FUNCTION WITH YOUR OWN DYNAMICS
+	    if (!RelinearizeH(xk, Hk)) {
+            std::cout << "[BatchLeastSquares: WeightedNonlinearLeastSquares] Unable to re-linearize H" << std::endl;
+	        return false;
+	    }
 
         // Iterate State Estimate
         xkp1 = xk + ((Hk.transpose() * Wk * Hk).inverse() * Hk.transpose() * Wk * (yk - yx));
@@ -243,11 +259,24 @@ bool BatchLeastSquares::ComputeCostFunction(Eigen::VectorXd &yk,
 
 }
 
-// 
+// Utility Function: Compute Predicted Nonlinear Measurement - REPLACE WITH YOUR SYSTEM DYNAMICS
 bool BatchLeastSquares::ComputePredictedNonlinearMeasurement(Eigen::VectorXd &xk,
                                                              Eigen::VectorXd &yx) {
 
     // Implement your nonlinear dynamics model of form yx = h(xk) here!
+
+
+    // Return Statement
+    return true;
+
+}
+
+// Utility Function: Relinearize H - REPLACE WITH YOUR SYSTEM DYNAMICS
+bool BatchLeastSquares::RelinearizeH(Eigen::VectorXd &xk,
+                                     Eigen::MatrixXd &Hk) {
+
+    // Implement your own dynamics model here!
+
 
     // Return Statement
     return true;
