@@ -243,10 +243,6 @@ TEST(UnweightedNonlinearLeastSquares, IncorrectXkp1Dimensions)
 
 }
 
-// Insert Test for Nonlinear Solver----------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------
-
 // Weighted Nonlinear Least Squares: Incorrect H Dimensions
 TEST(WeightedNonlinearLeastSquares, IncorrectHDimensions)
 {
@@ -327,8 +323,3 @@ TEST(WeightedNonlinearLeastSquares, IncorrectWDimensions)
     ASSERT_FALSE(bls.WeightedNonlinearLeastSquares(yk, Hk, xk, Wk, eps, xkp1, J));
 
 }
-
-// Insert Test for Nonlinear Solver----------------------------------------------------------
-
-//-------------------------------------------------------------------------------------------
-
