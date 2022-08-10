@@ -4,10 +4,8 @@
 //                                                                                                  // 
 // Author:      Parker Barrett                                                                      //
 // Overview:    Class implementation which defines a robust and flexible Kalman Filter design.      //   
-//              The model currently supports a high-bandwidth INS navigation error dynamics         //
-//              formulation as the process model a tightly coupled GPS measurement update. Future   //
-//              improvements will be made to include additional process models and measurement      //
-//              modalities.                                                                         //           
+//              The model currently supports linear, extended and unscented Kalman Filter           //
+//              variations.                                                                         //           
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
