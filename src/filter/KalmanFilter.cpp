@@ -136,6 +136,10 @@ bool KalmanFilter::filterUkfPredict(Eigen::VectorXd &Wi,
         std::cout << "[KalmanFilter::filterUkfPredict] yi has incorrect dimensions: Expected " << 
                 numStates << "x" << 2*numStates+1 << ", Got " << yi.rows() << "x" << yi.cols() << std::endl;
         return false;
+    } else if ((Qk.rows() != numStates) || (Qk.cols() != numStates)) {
+        std::cout << "[KalmanFilter::filterUkfPredict] Qk has incorrect dimensions: Expected " << 
+                numStates << "x" << numStates << ", Got " << Qk.rows() << "x" << Qk.cols() << std::endl;
+        return false;
     }
 
     // Predict State Vector
