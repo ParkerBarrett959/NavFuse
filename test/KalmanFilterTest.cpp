@@ -359,20 +359,96 @@ TEST(FilterUpdate, ComputeFilterUpdate)
 
 }
 
+// Filter UKF Predict: Incorrect Pkp1 Dimensions
+TEST(filterUkfPredict, IncorrectPkp1Dimensions)
+{
 
+    // Create Kalman Filter Object
+    KalmanFilter kf;
 
+    // Initialize Variables
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(7);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(3, 7);
+    Eigen::MatrixXd Qk = Eigen::MatrixXd::Zero(3, 3);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(3, 4);
 
+    // Pkp1 Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
 
+    // Redefine Pkp1
+    Pkp1 = Eigen::MatrixXd::Zero(4, 3);
 
+    // Pkp1 Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
 
+}
 
+// Filter UKF Predict: Incorrect Wi Dimensions
+TEST(filterUkfPredict, IncorrectWiDimensions)
+{
 
+    // Create Kalman Filter Object
+    KalmanFilter kf;
 
+    // Initialize Variables
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(6);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(3, 7);
+    Eigen::MatrixXd Qk = Eigen::MatrixXd::Zero(3, 3);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(3, 3);
 
+    // Wi Vector has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
 
+}
 
+// Filter UKF Predict: Incorrect yi Dimensions
+TEST(filterUkfPredict, IncorrectyiDimensions)
+{
 
+    // Create Kalman Filter Object
+    KalmanFilter kf;
 
+    // Initialize Variables
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(7);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(3, 6);
+    Eigen::MatrixXd Qk = Eigen::MatrixXd::Zero(3, 3);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(3, 3);
 
+    // yi Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
 
+    // Redefine yi
+    yi = Eigen::MatrixXd::Zero(4, 7);
 
+    // yi Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Predict: Incorrect Qk Dimensions
+TEST(filterUkfPredict, IncorrectQkDimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(7);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(3, 7);
+    Eigen::MatrixXd Qk = Eigen::MatrixXd::Zero(3, 4);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(3, 3);
+
+    // Qk Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
+
+    // Redefine Qk
+    Qk = Eigen::MatrixXd::Zero(4, 3);
+
+    // Qk Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
+
+}
