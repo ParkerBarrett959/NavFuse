@@ -173,12 +173,16 @@ bool KalmanFilter::filterUkfUpdate(Eigen::VectorXd &xk,
     
     // Get Dimension of State and Measurement Vector
     int numStates = xk.size();
-    int numMeasDimensions = zi.rows();
+    int numMeasDimensions = zk.size();
 
     // Verify Vectors/Matrices have Correct Dimensions
     if ((Pk.rows() != numStates) || (Pk.cols() != numStates)) {
         std::cout << "[KalmanFilter::filterUkfUpdate] Pk has incorrect dimensions: Expected " << 
                 numStates << "x" << numStates << ", Got " << Pk.rows() << "x" << Pk.cols() << std::endl;
+        return false;
+    } else if ((yi.rows() != numStates) || (yi.cols() != (2*numStates + 1))) {
+        std::cout << "[KalmanFilter::filterUkfUpdate] yi has incorrect dimensions: Expected " << 
+                numStates << "x" << 2*numStates+1 << ", Got " << yi.rows() << "x" << yi.cols() << std::endl;
         return false;
     } else if (Wi.size() != (2*numStates + 1)) {
         std::cout << "[KalmanFilter::filterUkfUpdate] Wi has incorrect dimensions: Expected " << 
@@ -205,19 +209,19 @@ bool KalmanFilter::filterUkfUpdate(Eigen::VectorXd &xk,
     // Compute Measurement Mean
     Eigen::VectorXd zhat = Eigen::VectorXd::Zero(numMeasDimensions);
     for (int i = 0; i < (2*numStates + 1); i++) {
-        zhat += Wi.row(i) * zi.col(i);
+        zhat += Wi(i) * zi.col(i);
     }   
 
     // Compute Measurement Covariance
     Eigen::MatrixXd S = Rk;
     for (int i = 0; i < (2*numStates + 1); i++) {
-        S += Wi.row(i) * (zi.col(i) - zhat) * (zi.col(i) - zhat).transpose();
+        S += Wi(i) * (zi.col(i) - zhat) * (zi.col(i) - zhat).transpose();
     }  
 
     // Compute Cross-Correlation Between Measurement and State Space
     Eigen::MatrixXd T = Eigen::VectorXd::Zero(numStates, numMeasDimensions);
     for (int i = 0; i < (2*numStates + 1); i++) {
-        T += Wi.row(i) * (yi.col(i) - xk) * (zi.col(i) - zhat).transpose();
+        T += Wi(i) * (yi.col(i) - xk) * (zi.col(i) - zhat).transpose();
     }  
 
     // Compute Kalman Gain
