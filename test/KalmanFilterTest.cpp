@@ -478,7 +478,7 @@ TEST(filterUkfPredict, ComputeFilterUkfPrediction)
 
     // Successfully Performed Filter Prediction 
     EXPECT_TRUE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
-    /*
+    
     // Define Expected Solutions
     Eigen::VectorXd xkSol(4);
     xkSol << 0.469500, 0.326000, 0.445000, 0.544000;
@@ -492,6 +492,6 @@ TEST(filterUkfPredict, ComputeFilterUkfPrediction)
     EXPECT_TRUE(xkp1.isApprox(xkSol, 1e-6));
 
     // Correct Covariance
-    EXPECT_TRUE(Pkp1.isApprox(PkSol, 1e-6));
- */
+    EXPECT_TRUE(Pkp1.isApprox(PkSol, 1e-5));
+ 
 }
