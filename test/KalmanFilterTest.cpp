@@ -452,3 +452,46 @@ TEST(filterUkfPredict, IncorrectQkDimensions)
     ASSERT_FALSE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
 
 }
+
+// Kalman Filter UKF Predict: Compute Kalman Filter UKF Prediction
+TEST(filterUkfPredict, ComputeFilterUkfPrediction)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd Wi(9);
+    Wi << 0.05, 0.10, 0.10, 0.20, 0.15, 0.20, 0.10, 0.10, 0.00;
+    Eigen::MatrixXd yi(4, 9);
+    yi << 0.21, 0.84, 0.19, 0.20, 0.92, 0.82, 0.02, 0.12, 0.36,
+          0.67, 0.15, 0.13, 0.13, 0.11, 0.92, 0.28, 0.10, 0.23,
+          0.25, 0.28, 0.93, 0.84, 0.15, 0.12, 0.15, 0.82, 0.73,
+          0.31, 0.49, 0.19, 0.47, 0.63, 0.46, 0.89, 0.91, 0.16;
+    Eigen::MatrixXd Qk(4, 4);
+    Qk << 3.284, 0.000, 0.000, 0.000,
+          0.000, 8.284, 0.000, 0.000,
+          0.000, 0.000, 8.394, 0.000,
+          0.000, 0.000, 0.000, 3.219;
+    Eigen::VectorXd xkp1(4);
+    Eigen::MatrixXd Pkp1(4, 4);
+
+    // Successfully Performed Filter Prediction 
+    EXPECT_TRUE(kf.filterUkfPredict(Wi, yi, Qk, xkp1, Pkp1));
+    /*
+    // Define Expected Solutions
+    Eigen::VectorXd xkSol(4);
+    xkSol << 0.469500, 0.326000, 0.445000, 0.544000;
+    Eigen::MatrixXd PkSol(4, 4);
+    PkSol << 3.4109,    0.0421,   -0.0810,   -0.0135,
+             0.0421,    8.3874,   -0.0616,   -0.0159,
+            -0.0810,   -0.0616,    8.5103,   -0.0147,
+            -0.0135,   -0.0159,   -0.0147,    3.2635;
+
+    // Correct State
+    EXPECT_TRUE(xkp1.isApprox(xkSol, 1e-6));
+
+    // Correct Covariance
+    EXPECT_TRUE(Pkp1.isApprox(PkSol, 1e-6));
+ */
+}
