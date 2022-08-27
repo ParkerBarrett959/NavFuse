@@ -495,3 +495,197 @@ TEST(filterUkfPredict, ComputeFilterUkfPrediction)
     EXPECT_TRUE(Pkp1.isApprox(PkSol, 1e-5));
  
 }
+
+// Filter UKF Update: Incorrect Pk Dimensions
+TEST(FilterUkfUpdate, IncorrectPkDimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(4, 3);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(4, 9);
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(9);
+    Eigen::MatrixXd zi = Eigen::MatrixXd::Zero(2, 9);
+    Eigen::VectorXd zk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Rk = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(4, 4);
+
+    // Pk Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+    // Redefine Pk
+    Pk = Eigen::MatrixXd::Zero(3, 4);
+
+    // Pk Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Update: Incorrect yi Dimensions
+TEST(FilterUkfUpdate, IncorrectyiDimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(4, 4);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(4, 8);
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(9);
+    Eigen::MatrixXd zi = Eigen::MatrixXd::Zero(2, 9);
+    Eigen::VectorXd zk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Rk = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(4, 4);
+
+    // yi Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+    // Redefine yi
+    yi = Eigen::MatrixXd::Zero(3, 9);
+
+    // yi Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Update: Incorrect Wi Dimensions
+TEST(FilterUkfUpdate, IncorrectWiDimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(4, 4);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(4, 9);
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd zi = Eigen::MatrixXd::Zero(2, 9);
+    Eigen::VectorXd zk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Rk = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(4, 4);
+
+    // Wi Vector has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Update: Incorrect zi Dimensions
+TEST(FilterUkfUpdate, IncorrectziDimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(4, 4);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(4, 9);
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(9);
+    Eigen::MatrixXd zi = Eigen::MatrixXd::Zero(2, 8);
+    Eigen::VectorXd zk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Rk = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(4, 4);
+
+    // zi Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+    // Redefine zi
+    zi = Eigen::MatrixXd::Zero(3, 9);
+
+    // zi Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Update: Incorrect Rk Dimensions
+TEST(FilterUkfUpdate, IncorrectRkDimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(4, 4);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(4, 9);
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(9);
+    Eigen::MatrixXd zi = Eigen::MatrixXd::Zero(2, 9);
+    Eigen::VectorXd zk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Rk = Eigen::MatrixXd::Zero(2, 3);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(4, 4);
+
+    // Rk Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+    // Redefine Rk
+    Rk = Eigen::MatrixXd::Zero(3, 2);
+
+    // Rk Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Update: Incorrect xkp1 Dimensions
+TEST(FilterUkfUpdate, Incorrectxkp1Dimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(4, 4);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(4, 9);
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(9);
+    Eigen::MatrixXd zi = Eigen::MatrixXd::Zero(2, 9);
+    Eigen::VectorXd zk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Rk = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(4, 4);
+
+    // xkp1 Vector has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Update: Incorrect Pkp1 Dimensions
+TEST(FilterUkfUpdate, IncorrectPkp1Dimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(4, 4);
+    Eigen::MatrixXd yi = Eigen::MatrixXd::Zero(4, 9);
+    Eigen::VectorXd Wi = Eigen::VectorXd::Zero(9);
+    Eigen::MatrixXd zi = Eigen::MatrixXd::Zero(2, 9);
+    Eigen::VectorXd zk = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd Rk = Eigen::MatrixXd::Zero(2, 2);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(4, 3);
+
+    // Pkp1 Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+    // Redefine Rk
+    Pkp1 = Eigen::MatrixXd::Zero(3, 4);
+
+    // Pkp1 Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+
+}
+
+// Filter UKF Update: Compute Filter UKF Update
+// Insert test code here...
