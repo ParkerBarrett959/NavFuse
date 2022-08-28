@@ -51,7 +51,8 @@ target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filte
 enable_testing()
 add_executable( test_navigation_library ${PROJECT_SOURCE_DIR}/test/testMain.cpp 
 	                                ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp 
-					${PROJECT_SOURCE_DIR}/test/KalmanFilterTest.cpp ${HEADER_LIST})
+					${PROJECT_SOURCE_DIR}/test/KalmanFilterTest.cpp 
+					${PROJECT_SOURCE_DIR}/test/CompensatorTest.cpp ${HEADER_LIST})
 target_link_libraries(
   test_navigation_library
   GTest::gtest_main
