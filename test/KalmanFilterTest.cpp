@@ -360,7 +360,7 @@ TEST(FilterUpdate, ComputeFilterUpdate)
 }
 
 // Filter UKF Predict: Incorrect Pkp1 Dimensions
-TEST(filterUkfPredict, IncorrectPkp1Dimensions)
+TEST(FilterUkfPredict, IncorrectPkp1Dimensions)
 {
 
     // Create Kalman Filter Object
@@ -385,7 +385,7 @@ TEST(filterUkfPredict, IncorrectPkp1Dimensions)
 }
 
 // Filter UKF Predict: Incorrect Wi Dimensions
-TEST(filterUkfPredict, IncorrectWiDimensions)
+TEST(FilterUkfPredict, IncorrectWiDimensions)
 {
 
     // Create Kalman Filter Object
@@ -404,7 +404,7 @@ TEST(filterUkfPredict, IncorrectWiDimensions)
 }
 
 // Filter UKF Predict: Incorrect yi Dimensions
-TEST(filterUkfPredict, IncorrectyiDimensions)
+TEST(FilterUkfPredict, IncorrectyiDimensions)
 {
 
     // Create Kalman Filter Object
@@ -429,7 +429,7 @@ TEST(filterUkfPredict, IncorrectyiDimensions)
 }
 
 // Filter UKF Predict: Incorrect Qk Dimensions
-TEST(filterUkfPredict, IncorrectQkDimensions)
+TEST(FilterUkfPredict, IncorrectQkDimensions)
 {
 
     // Create Kalman Filter Object
@@ -454,7 +454,7 @@ TEST(filterUkfPredict, IncorrectQkDimensions)
 }
 
 // Kalman Filter UKF Predict: Compute Kalman Filter UKF Prediction
-TEST(filterUkfPredict, ComputeFilterUkfPrediction)
+TEST(FilterUkfPredict, ComputeFilterUkfPrediction)
 {
 
     // Create Kalman Filter Object
@@ -687,5 +687,55 @@ TEST(FilterUkfUpdate, IncorrectPkp1Dimensions)
 
 }
 
-// Filter UKF Update: Compute Filter UKF Update
-// Insert test code here...
+// Kalman Filter UKF Update: Compute Filter UKF Update
+TEST(FilterUkfUpdate, ComputeFilterUkfUpdate)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Initialize Variables
+    Eigen::VectorXd xk(4);
+    xk << 3.452, 8.375, 5.285, 9.453;
+    Eigen::MatrixXd Pk(4, 4);
+    Pk << 4.675, 0.000, 0.000, 0.000,
+          0.000, 6.295, 0.000, 0.000,
+          0.000, 0.000, 8.294, 0.000,
+          0.000, 0.000, 0.000, 4.385;
+    Eigen::VectorXd Wi(9);
+    Wi << 0.05, 0.10, 0.10, 0.20, 0.15, 0.20, 0.10, 0.10, 0.00;
+    Eigen::MatrixXd yi(4, 9);
+    yi << 0.21, 0.84, 0.19, 0.20, 0.92, 0.82, 0.02, 0.12, 0.36,
+          0.67, 0.15, 0.13, 0.13, 0.11, 0.92, 0.28, 0.10, 0.23,
+          0.25, 0.28, 0.93, 0.84, 0.15, 0.12, 0.15, 0.82, 0.73,
+          0.31, 0.49, 0.19, 0.47, 0.63, 0.46, 0.89, 0.91, 0.16;
+    Eigen::MatrixXd zi(2, 9);
+    zi << 101.738, 101.848, 101.482, 101.942, 101.039, 101.323, 101.583, 101.473, 101.484,
+          104.738, 104.848, 104.482, 104.942, 104.039, 104.323, 104.583, 104.473, 104.484;
+    Eigen::VectorXd zk(2);
+    zk << 101.744, 104.384;
+    Eigen::MatrixXd Rk(2, 2);
+    Rk << 4.029, 0.000,
+          0.000, 6.294;
+    Eigen::VectorXd xkp1(4);
+    Eigen::MatrixXd Pkp1(4, 4);
+
+    // Successfully Performed Filter Update 
+    EXPECT_TRUE(kf.filterUkfUpdate(xk, Pk, yi, Wi, zi, zk, Rk, xkp1, Pkp1));
+    
+    // Define Expected Solutions
+    Eigen::VectorXd xkSol(4);
+    xkSol << 3.450376, 8.374325, 5.286477, 9.452684;
+    Eigen::MatrixXd PkSol(4, 4);
+    PkSol << 4.6736,   -0.0006,    0.0013,   -0.0003,
+            -0.0006,    6.2948,    0.0005,   -0.0001,
+             0.0013,    0.0005,    8.2928,    0.0002,
+            -0.0003,   -0.0001,    0.0002,    4.3849;
+
+    // Correct State
+    EXPECT_TRUE(xkp1.isApprox(xkSol, 1e-6));
+
+    // Correct Covariance
+    EXPECT_TRUE(Pkp1.isApprox(PkSol, 1e-4));
+ 
+}
