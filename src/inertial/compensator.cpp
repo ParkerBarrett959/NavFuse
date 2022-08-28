@@ -67,11 +67,11 @@ bool Compensator::getAccelerometerErrors(Eigen::Vector3d &baEst,
         return false;
     }
 
-    // Set Class Variables
+    // Get Class Variables
     baEst = ba_;
     maEst = ma_;
     sfaEst = sfa_;
-
+    
     // Return for Successful Get Accelerometer Errors
     return true;
 
@@ -89,11 +89,11 @@ bool Compensator::getGyroscopeErrors(Eigen::Vector3d &bgEst,
         return false;
     }
 
-    // Set Class Variables
+    // Get Class Variables
     bgEst = bg_;
     mgEst = mg_;
     sfgEst = sfg_;
-
+    
     // Return for Successful Get Accelerometer Errors
     return true;
 
