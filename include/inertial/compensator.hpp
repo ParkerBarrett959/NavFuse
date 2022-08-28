@@ -45,6 +45,32 @@ class Compensator {
                                 Eigen::VectorXd &mgEst,
                                 Eigen::Vector3d &sfgEst);
 
+        /* @getAccelerometerErrors
+            Inputs:
+            Outputs:
+                baEst: 3x1 vector of accelerometer biases [m/s]
+                maEst: 6x1 vector of accelerometer misalignments (top left to bottom right with ones on diagonal)
+                sfaEst: 3x1 vector of accelerometer scale factor errors
+            Description:
+                Function which gets values of accelerometer errors stored in private class members.
+        */
+        bool getAccelerometerErrors(Eigen::Vector3d &baEst,
+                                    Eigen::VectorXd &maEst,
+                                    Eigen::Vector3d &sfaEst);
+
+        /* @getGyroscopeErrors
+            Inputs:
+            Outputs:
+                bgEst: 3x1 vector of gyroscope biases [rad]
+                mgEst: 6x1 vector of gyroscope misalignments (top left to bottom right with ones on diagonal)
+                sfgEst: 3x1 vector of gyroscope scale factor errors
+            Description:
+                Function which gets values of gyroscope errors stored in private class members.
+        */
+        bool getGyroscopeErrors(Eigen::Vector3d &bgEst,
+                                Eigen::VectorXd &mgEst,
+                                Eigen::Vector3d &sfgEst);
+
         /* @compensateAccelerometer
             Inputs:
                 ba: 3x1 vector of accelerometer biases [m/s]

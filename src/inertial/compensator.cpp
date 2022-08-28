@@ -55,6 +55,50 @@ bool Compensator::setGyroscopeErrors(Eigen::Vector3d &bgEst,
 
 }
 
+// Get Accelerometer Errors
+bool Compensator::getAccelerometerErrors(Eigen::Vector3d &baEst,
+                                         Eigen::VectorXd &maEst,
+                                         Eigen::Vector3d &sfaEst) {
+
+    // Check for Correct Input Sizes
+    if (maEst.size() != 6) {
+        std::cout << "[Compensator::getAccelerometerErrors] misalignment has incorrect dimensions: Expected " << 
+                "6x1, Got " << maEst.size() << "x1" << std::endl;
+        return false;
+    }
+
+    // Set Class Variables
+    baEst = ba_;
+    maEst = ma_;
+    sfaEst = sfa_;
+
+    // Return for Successful Get Accelerometer Errors
+    return true;
+
+}
+
+// Get Gyroscope Errors
+bool Compensator::getGyroscopeErrors(Eigen::Vector3d &bgEst,
+                                     Eigen::VectorXd &mgEst,
+                                     Eigen::Vector3d &sfgEst) {
+
+    // Check for Correct Input Sizes
+    if (mgEst.size() != 6) {
+        std::cout << "[Compensator::getGyroscopeErrors] misalignment has incorrect dimensions: Expected " << 
+                "6x1, Got " << mgEst.size() << "x1" << std::endl;
+        return false;
+    }
+
+    // Set Class Variables
+    bgEst = bg_;
+    mgEst = mg_;
+    sfgEst = sfg_;
+
+    // Return for Successful Get Accelerometer Errors
+    return true;
+
+}
+
 // Accelerometer Compensation
 bool Compensator::compensateAccelerometer(Eigen::Vector3d &dV) {
 
