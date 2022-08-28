@@ -46,11 +46,25 @@ TEST(SetErrors, GyroErrors)
 
 }
 
+// Get Accelerometer Errors: Incorrect Misalignment Dimensions
+TEST(GetErrors, AccelerometerErrors)
+{
 
+    // Create Compensator Object
+    Compensator comp;
 
-/*
-// Set Accelerometer Errors: Set Errors Values
-TEST(FilterPredict, ComputeFilterPrediction)
+    // Initialize Variables
+    Eigen::Vector3d baEst(3);
+    Eigen::Vector3d sfaEst(3);
+    Eigen::VectorXd maEst(3);
+
+    // Misalignment Vector has Incorrect Number of Columns
+    ASSERT_FALSE(comp.getAccelerometerErrors(baEst, maEst, sfaEst));
+
+}
+
+// Get Accelerometer Errors: Get Errors Values
+TEST(GetErrors, AccelerometerErrorValues)
 {
 
     // Create Compensator Object
@@ -63,15 +77,71 @@ TEST(FilterPredict, ComputeFilterPrediction)
     sfaEst << 0.273, 2.18, 7.284;
     Eigen::VectorXd maEst(6);
     maEst << 1.473, 8.183, 1.103, 7.183, 9.182, 3.183;
+    Eigen::Vector3d ba(3);
+    Eigen::Vector3d sfa(3);
+    Eigen::VectorXd ma(6);
 
     // Successfully Set Accelerometer Errors 
-    EXPECT_TRUE(comp.setAccelerometerErrors(baEst, maEst, sfaEst));
+    if (!comp.setAccelerometerErrors(baEst, maEst, sfaEst)) {
+        return;
+    }
 
-    // Set Results
-    Eigen::Vector3d biasResult = comp.ba_;
+    // Successfully Performed Accelerometer Error Getter 
+    EXPECT_TRUE(comp.getAccelerometerErrors(ba, ma, sfa));
 
-    // Correct Values
-    EXPECT_EQ(biasResult, baEst);
+    // Check Results
+    EXPECT_EQ(baEst, ba);
+    EXPECT_EQ(sfaEst, sfa);
+    EXPECT_EQ(maEst, ma);
 
 }
-*/
+
+// Get Gyroscope Errors: Incorrect Misalignment Dimensions
+TEST(GetErrors, GyroscopeErrors)
+{
+
+    // Create Compensator Object
+    Compensator comp;
+
+    // Initialize Variables
+    Eigen::Vector3d bgEst(3);
+    Eigen::Vector3d sfgEst(3);
+    Eigen::VectorXd mgEst(3);
+
+    // Misalignment Vector has Incorrect Number of Columns
+    ASSERT_FALSE(comp.getGyroscopeErrors(bgEst, mgEst, sfgEst));
+
+}
+
+// Get Gyroscope Errors: Get Errors Values
+TEST(GetErrors, GyroscopeErrorValues)
+{
+
+    // Create Compensator Object
+    Compensator comp;
+
+    // Initialize Variables
+    Eigen::Vector3d bgEst(3);
+    bgEst << 7.273, 8.272, 2.294;
+    Eigen::Vector3d sfgEst(3);
+    sfgEst << 0.273, 2.18, 7.284;
+    Eigen::VectorXd mgEst(6);
+    mgEst << 1.473, 8.183, 1.103, 7.183, 9.182, 3.183;
+    Eigen::Vector3d bg(3);
+    Eigen::Vector3d sfg(3);
+    Eigen::VectorXd mg(6);
+
+    // Successfully Set Gyroscope Errors 
+    if (!comp.setGyroscopeErrors(bgEst, mgEst, sfgEst)) {
+        return;
+    }
+
+    // Successfully Performed Gyroscope Error Getter 
+    EXPECT_TRUE(comp.getGyroscopeErrors(bg, mg, sfg));
+
+    // Check Results
+    EXPECT_EQ(bgEst, bg);
+    EXPECT_EQ(sfgEst, sfg);
+    EXPECT_EQ(mgEst, mg);
+
+}
