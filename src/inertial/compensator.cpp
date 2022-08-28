@@ -144,9 +144,6 @@ bool Compensator::compensateMeasurement(Eigen::Vector3d &meas, std::string &meas
         b = bg_;
         m = mg_;
         sf = sfg_;
-    } else {
-        std::cout << "[Compensator::compensateMeasurement] Invalid measurement type" << std::endl;
-        return false;
     }
 
     // Define Scale Factor Error Matrix
@@ -154,13 +151,13 @@ bool Compensator::compensateMeasurement(Eigen::Vector3d &meas, std::string &meas
     SF << sf[0],  0.0,    0.0,
           0.0,    sf[1],  0.0,
           0.0,    0.0,    sf[2];
-
+    
     // Define Misalignment Matrix
     Eigen::Matrix3d MIS;
     MIS << 1.0,   m[0],  m[1],
            m[2],  1.0,   m[3],
            m[4],  m[5],  1.0;
-
+    
     // Perform Measurment Compensation
     meas = SF * MIS * (meas - b);
 
