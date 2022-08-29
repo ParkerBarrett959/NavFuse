@@ -37,23 +37,23 @@ class Gravity {
 
         /* @simpleGravity
             Inputs:
-                rA:3x1 dimensional position vector in arbitrary reference frame A
+                rA:3x1 dimensional position vector in arbitrary reference frame A [m]
             Outputs:
-                gA: 3x1 dimensional gravitational acceleration vector in reference frame A
+                gA: 3x1 dimensional gravitational acceleration vector in reference frame A [m/s^2]
             Description:
                 Function which takes in a position vector in an arbitrary reference frame and computes
                 a simple approximation of the gravity vector in this frame. For geodetic applications, 
-                the sipmlified approximation is accurate to approximately 1-2%.
+                the simplified approximation is accurate to approximately 1-2%.
         */
         bool simpleGravity(Eigen::Vector3d &rA,
                            Eigen::Vector3d &gA);
 
         /* @gravityNed
             Inputs:
-                lat: scalar double representing latitude of the body
-                h: scalar double representing the body's height above the earth reference ellipsoid 
+                lat: scalar double representing latitude of the body [rad]
+                h: scalar double representing the body's height above the earth reference ellipsoid [m]
             Outputs:
-                gN: 3x1 dimensional gravitational acceleration vector in the NED Frame
+                gN: 3x1 dimensional gravitational acceleration vector in the NED Frame [m/s^2]
             Description:
                 Function which takes in a geodetic latitude and altitude, and computes the gravity 
                 vector in the NED reference frame. The normal gravity is computed on the ellipsoid 
