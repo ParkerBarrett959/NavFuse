@@ -53,7 +53,8 @@ add_executable( test_navigation_library ${PROJECT_SOURCE_DIR}/test/testMain.cpp
 	                                ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp 
 					${PROJECT_SOURCE_DIR}/test/KalmanFilterTest.cpp 
 					${PROJECT_SOURCE_DIR}/test/CompensatorTest.cpp
-				        ${PROJECT_SOURCE_DIR}/test/GravityTest.cpp ${HEADER_LIST})
+				        ${PROJECT_SOURCE_DIR}/test/GravityTest.cpp
+				        ${PROJECT_SOURCE_DIR}/test/NavUtilsTest.cpp ${HEADER_LIST})
 target_link_libraries(
   test_navigation_library
   GTest::gtest_main
