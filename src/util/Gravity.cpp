@@ -46,13 +46,13 @@ bool Gravity::gravityNed(double &lat,
     double gEarthEll = num / den;
 
     // Define Gravity at Altitude
-    double gAlt = gEarthEll * (1 - ((2/a)*(1+f+m-(2*f*std::pow(slat, 2)))*h) + (3*std::pow(h, 2)/(std::pow(a, 2))));
+    double gDown = gEarthEll * (1 - ((2/a)*(1+f+m-(2*f*std::pow(slat, 2)))*h) + (3*std::pow(h, 2)/(std::pow(a, 2))));
 
     // Define North Gravity Magnitude
     double gNorth = -8.08 * 1e-6 * (h / 1000) * std::sin(2 * lat);
 
     // Define NED Frame Gravity Vector
-    gN << gNorth, 0.0, -gAlt;
+    gN << gNorth, 0.0, gDown;
 
     // Return Statement for Successful Initialization
     return true;
