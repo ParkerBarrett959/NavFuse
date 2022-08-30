@@ -35,3 +35,27 @@ TEST(SimpleGravity, ComputeSimpleGravity)
     EXPECT_TRUE(gA.isApprox(gASol, 1e-6));
 
 }
+
+// Compute Gravity NED
+TEST(GravityNed, ComputeGravityNed)
+{
+
+    // Create Gravity Object
+    Gravity grav;
+
+    // Initialize Variables
+    double lat = 0.7505;
+    double h = 345.293;
+    Eigen::Vector3d gN(3);
+
+    // Successfully Compute Gravity 
+    EXPECT_TRUE(grav.gravityNed(lat, h, gN));
+
+    // Define Expected Solutions
+    Eigen::Vector3d gNSol(3);
+    gNSol << -0.000003, 0.000000, 9.80332;
+
+    // Check Results
+    EXPECT_TRUE(gN.isApprox(gNSol, 1e-6));
+
+}
