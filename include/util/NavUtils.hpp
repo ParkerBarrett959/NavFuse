@@ -23,7 +23,7 @@ class NavUtils {
 
         /* @computeDcmFromQuaternion
             Inputs:
-                qA2B: 4x1 dimensional quaternion relating reference frame A to frame B
+                qA2B: 4x1 dimensional quaternion relating reference frame A to frame B. The first element is the scalar element.
             Outputs:
                 RA2B: 3x3 dimensional direction cosines matrix relating reference frame A to frame B
             Description:
@@ -36,7 +36,7 @@ class NavUtils {
             Inputs:
                 phi: 3x1 dimensional rotation vector
             Outputs:
-                qA2B: 4x1 dimensional quaternion relating reference frame A to frame B
+                qA2B: 4x1 dimensional quaternion relating reference frame A to frame B. The first element is the scalar element.
             Description:
                 Function which takes in a rotation vector and computes the quaternion.
         */
@@ -45,7 +45,7 @@ class NavUtils {
 
         /* @computeQuaternionFromRotationVec
             Inputs:
-                qA2B: 4x1 dimensional quaternion relating reference frame A to frame B
+                qA2B: 4x1 dimensional quaternion relating reference frame A to frame B. The first element is the scalar element.
             Outputs:
                 QA2B: 4x4 dimensional quaternion equivalent matrix relating reference frame A to frame B
             Description:
