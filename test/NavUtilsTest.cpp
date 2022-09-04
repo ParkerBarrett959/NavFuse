@@ -104,7 +104,7 @@ TEST(ComputeQuatFromRotVec, incorrectRotationVectorSize)
     Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(4);
     Eigen::VectorXd phi = Eigen::VectorXd::Zero(4);
 
-    // Quaternion has Incorrect Number of Rows
+    // Rotation Vector has Incorrect Number of Rows
     ASSERT_FALSE(util.computeQuaternionFromRotationVec(phi, qA2B));
 
 }
@@ -130,5 +130,70 @@ TEST(ComputeQuatFromRotVec, ComputeResult)
 
     // Check Results
     EXPECT_TRUE(qA2B.isApprox(qA2BSol, 1e-6));
+
+}
+
+// Compute Quaternion Equivalent Matrix: Incorrect Quaternion Size
+TEST(ComputeQuatEquivalent, incorrectQuaternionSize)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd QA2B = Eigen::MatrixXd::Zero(4, 4);
+
+    // Quaternion has Incorrect Number of Rows
+    ASSERT_FALSE(util.buildQuaternionEquivalent(qA2B, QA2B));
+
+}
+
+// Compute Quaternion Equivalent Matrix: Incorrect Quaternion Equivalent Matrix Size
+TEST(ComputeQuatEquivalent, incorrectQuaternionMatrixSize)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd QA2B = Eigen::MatrixXd::Zero(4, 3);
+
+    // Quaternion Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(util.buildQuaternionEquivalent(qA2B, QA2B));
+
+    // Reset Quaternion Equivalent Matrix
+    QA2B = Eigen::MatrixXd::Zero(3, 4);
+
+    // Quaternion has Incorrect Number of Rows
+    ASSERT_FALSE(util.buildQuaternionEquivalent(qA2B, QA2B));
+
+}
+
+// Compute Quaternion Equivalent Matrix
+TEST(ComputeQuatEquivalent, ComputeResult)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B(4);
+    qA2B << 0.275, 0.372, 0.583, 0.856;
+    Eigen::MatrixXd QA2B(4, 4);
+
+    // Successfully Compute Quaternion Equivalent
+    EXPECT_TRUE(util.buildQuaternionEquivalent(qA2B, QA2B));
+
+    // Define Expected Solutions
+    Eigen::MatrixXd QA2BSol(4, 4);
+    QA2BSol << 0.275,  -0.372,  -0.583,  -0.856,
+               0.372,   0.275,  -0.856,   0.583,
+               0.583,   0.856,   0.275,  -0.372,
+               0.856,  -0.583,   0.372,   0.275;
+
+    // Check Results
+    EXPECT_TRUE(QA2B.isApprox(QA2BSol, 1e-6));
 
 }
