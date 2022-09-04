@@ -108,3 +108,27 @@ TEST(ComputeQuatFromRotVec, incorrectRotationVectorSize)
     ASSERT_FALSE(util.computeQuaternionFromRotationVec(phi, qA2B));
 
 }
+
+// Compute Quaternion from Rotation Vector
+TEST(ComputeQuatFromRotVec, ComputeResult)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B(4);
+    Eigen::VectorXd phi(3);
+    phi << 0.384, 1.384, 4.291;
+
+    // Successfully Compute Quaternion
+    EXPECT_TRUE(util.computeQuaternionFromRotationVec(phi, qA2B));
+
+    // Define Expected Solutions
+    Eigen::VectorXd qA2BSol(4);
+    qA2BSol << -0.637848847370359, 0.0653574088345108, 0.235558994341049, 0.730335003408557;
+
+    // Check Results
+    EXPECT_TRUE(qA2B.isApprox(qA2BSol, 1e-6));
+
+}
