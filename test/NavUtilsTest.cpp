@@ -76,3 +76,35 @@ TEST(ComputeDcmFromQuat, ComputeResult)
     EXPECT_TRUE(RA2B.isApprox(RA2BSol, 1e-6));
 
 }
+
+// Compute Quaternion from Rotation Vector: Incorrect Quaternion Size
+TEST(ComputeQuatFromRotVec, incorrectQuaternionSize)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(3);
+    Eigen::VectorXd phi = Eigen::VectorXd::Zero(3);
+
+    // Quaternion has Incorrect Number of Rows
+    ASSERT_FALSE(util.computeQuaternionFromRotationVec(phi, qA2B));
+
+}
+
+// Compute Quaternion from Rotation Vector: Incorrect Rotation Vector Size
+TEST(ComputeQuatFromRotVec, incorrectRotationVectorSize)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(4);
+    Eigen::VectorXd phi = Eigen::VectorXd::Zero(4);
+
+    // Quaternion has Incorrect Number of Rows
+    ASSERT_FALSE(util.computeQuaternionFromRotationVec(phi, qA2B));
+
+}
