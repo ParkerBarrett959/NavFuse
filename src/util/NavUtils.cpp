@@ -31,22 +31,25 @@ bool NavUtils::computeDcmFromQuaternion(Eigen::VectorXd &qA2B,
     double q2 = qA2B[2];
     double q3 = qA2B[3];
 
+    // Compute Denominator
+    double den = (q0 * q0) + (q1 * q1) + (q2 * q2) + (q3 * q3); 
+
     // Define Elements of RA2B
-    double R11 = (2 * ((q0 * q0) + (q1 * q1))) - 1;
-    double R12 = 2 * ((q1 * q2) - (q0 * q3));
-    double R13 = 2 * ((q1 * q3) + (q0 * q2));
-    double R21 = 2 * ((q1 * q2) + (q0 * q3));
-    double R22 = (2 * ((q0 * q0) + (q2 * q2))) - 1;  
-    double R23 = 2 * ((q2 * q3) - (q0 * q1));
-    double R31 = 2 * ((q1 * q3) - (q0 * q2));
-    double R32 = 2 * ((q2 * q3) + (q0 * q1));
-    double R33 = (2 * ((q0 * q0) + (q3 * q3))) - 1;   
+    double R11 = ((q0 * q0) + (q1 * q1) - (q2 * q2) - (q3 * q3)) / den;
+    double R12 = (2 * ((q1 * q2) + (q0 * q3))) / den;
+    double R13 = (2 * ((q1 * q3) - (q0 * q2))) / den;
+    double R21 = (2 * ((q1 * q2) - (q0 * q3))) / den;
+    double R22 = ((q0 * q0) - (q1 * q1) + (q2 * q2) - (q3 * q3)) / den;  
+    double R23 = (2 * ((q2 * q3) + (q0 * q1))) / den;
+    double R31 = (2 * ((q1 * q3) + (q0 * q2))) / den;
+    double R32 = (2 * ((q2 * q3) - (q0 * q1))) / den;
+    double R33 = ((q0 * q0) - (q1 * q1) - (q2 * q2) + (q3 * q3)) / den;   
 
     // Set Rotation Matrix
     RA2B << R11, R12, R13,
             R21, R22, R23,
             R31, R32, R33;
-
+    
     // Return Statement for Successful Initialization
     return true;
 
