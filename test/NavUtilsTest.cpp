@@ -73,6 +73,6 @@ TEST(ComputeDcmFromQuat, ComputeResult)
 ;
 
     // Check Results
-    EXPECT_TRUE(RA2B.isApprox(RA2BSol, 1e-5));
+    EXPECT_TRUE(RA2B.isApprox(RA2BSol, 1e-6));
 
 }
