@@ -223,3 +223,30 @@ TEST(ComputeSkewSymmetric, ComputeResult)
     EXPECT_TRUE(vecX.isApprox(vecXSol, 1e-6));
 
 }
+
+// Compute DCM from RPH
+TEST(ComputeRph2Dcm, ComputeResult)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::Vector3d rph(3);
+    rph << 0.349, 0.125, 2.094;
+    Eigen::Matrix3d RB2N(3, 3);
+
+    // Successfully Compute Skew Symmetric
+    EXPECT_TRUE(util.rph2Dcm(rph, RB2N));
+
+    // Define Expected Solutions
+    Eigen::MatrixXd RB2NSol(3, 3);
+    RB2NSol <<  -0.49575929590605,  0.85946432815914, -0.124674733385228,
+                -0.83530495080520, -0.43260583128062,  0.339290191285157,
+                 0.23767279962808,  0.27234768837635,  0.932383170672339;
+;
+
+    // Check Results
+    EXPECT_TRUE(RB2N.isApprox(RB2NSol, 1e-6));
+
+}
