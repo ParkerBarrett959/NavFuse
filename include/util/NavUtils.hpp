@@ -72,8 +72,8 @@ class NavUtils {
             Outputs:
                 RB2N: 3x3 dimensional DCM relating the body frame to the NED frame
             Description:
-                Function which takes in a vector and computes the skew symmetric (cross-product equivalent)
-                matrix.
+                Function which takes in roll pitch and heading of the body frame relative to the NED frame and
+                computes the DCM RB2N.
         */
         bool rph2Dcm(Eigen::Vector3d &rph,
                      Eigen::Matrix3d &RB2N);

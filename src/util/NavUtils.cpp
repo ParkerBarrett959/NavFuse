@@ -150,26 +150,26 @@ bool NavUtils::rph2Dcm(Eigen::Vector3d &rph,
     double p = rph[1];
     double h = rph[2];
     
-    // Define R3 (About negative Heading)
+    // Define R3 (About Heading)
     Eigen::Matrix3d R3;
-    R3 <<  std::cos(-h),  std::sin(-h),  0.0,
-          -std::sin(-h),  std::cos(-h),  0.0,
-           0.0,           0.0,           1.0;
+    R3 <<  std::cos(h),  std::sin(h),  0.0,
+          -std::sin(h),  std::cos(h),  0.0,
+           0.0,          0.0,          1.0;
 
-    // Define R2 (About negative Pitch)
+    // Define R2 (About Pitch)
     Eigen::Matrix3d R2;
-    R2 <<  std::cos(-p),  0.0,  -std::sin(-p),
-           0.0,           1.0,   0.0,
-           std::sin(-p),  0.0,   std::cos(-p);
+    R2 <<  std::cos(p),  0.0,  -std::sin(p),
+           0.0,          1.0,   0.0,
+           std::sin(p),  0.0,   std::cos(p);
 
-    // Define R1 (About negative Roll)
+    // Define R1 (About Roll)
     Eigen::Matrix3d R1;
     R1 <<  1.0,   0.0,            0.0,
-           0.0,   std::cos(-r),   std::sin(-r),
-           0.0,  -std::sin(-r),   std::cos(-r);
+           0.0,   std::cos(r),   std::sin(r),
+           0.0,  -std::sin(r),   std::cos(r);
 
     // Compute Final Rotation
-    RB2N = R3 * R2 * R1;
+    RB2N = R1 * R2 * R3;
     
     // Return Statement
     return true;
