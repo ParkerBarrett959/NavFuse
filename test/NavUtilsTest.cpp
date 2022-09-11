@@ -197,3 +197,29 @@ TEST(ComputeQuatEquivalent, ComputeResult)
     EXPECT_TRUE(QA2B.isApprox(QA2BSol, 1e-6));
 
 }
+
+// Compute Skew Matrix
+TEST(ComputeSkewSymmetric, ComputeResult)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::Vector3d vec(3);
+    vec << 1.0, 2.0, 3.0;
+    Eigen::Matrix3d vecX(3, 3);
+
+    // Successfully Compute Skew Symmetric
+    EXPECT_TRUE(util.skewSymmetric(vec, vecX));
+
+    // Define Expected Solutions
+    Eigen::MatrixXd vecXSol(3, 3);
+    vecXSol <<  0.0, -3.0,  2.0,
+                3.0,  0.0, -1.0,
+               -2.0,  1.0,  0.0;
+
+    // Check Results
+    EXPECT_TRUE(vecX.isApprox(vecXSol, 1e-6));
+
+}
