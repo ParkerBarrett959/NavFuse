@@ -235,9 +235,9 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
     }
 
     // Define K1
-    Eigen::VectorXd y;
-    Eigen::VectorXd f1;
-    Eigen::VectorXd K1;
+    Eigen::VectorXd y(6);
+    Eigen::VectorXd f1(6);
+    Eigen::VectorXd K1(6);
     y = ykm1;
     if (!strapdownDynamics(y, f1, dVN, gN, dt)) {
         std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
@@ -246,8 +246,8 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
     K1 = dt * f1;
 
     // Define K2
-    Eigen::VectorXd f2;
-    Eigen::VectorXd K2;
+    Eigen::VectorXd f2(6);
+    Eigen::VectorXd K2(6);
     y = ykm1 + (K1 / 2.0);
     if (!strapdownDynamics(y, f2, dVN, gN, dt)) {
         std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
@@ -256,8 +256,8 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
     K2 = dt * f2;
 
     // Define K3
-    Eigen::VectorXd f3;
-    Eigen::VectorXd K3;
+    Eigen::VectorXd f3(6);
+    Eigen::VectorXd K3(6);
     y = ykm1 + (K2 / 2.0);
     if (!strapdownDynamics(y, f2, dVN, gN, dt)) {
         std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
@@ -266,8 +266,8 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
     K3 = dt * f3;
 
     // Define K4
-    Eigen::VectorXd f4;
-    Eigen::VectorXd K4;
+    Eigen::VectorXd f4(6);
+    Eigen::VectorXd K4(6);
     y = ykm1 + K3;
     if (!strapdownDynamics(y, f4, dVN, gN, dt)) {
         std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
@@ -289,17 +289,6 @@ bool NavUtils::strapdownDynamics(Eigen::VectorXd &y,
                                  Eigen::Vector3d &dVN,
                                  Eigen::Vector3d &gN,
                                  double &dt) {
-
-    // Verify Correct Dimensions
-    if (y.size() != 6) {
-        std::cout << "[NavUtils::strapdownDynamics] y has incorrect dimensions: Expected " << 
-                "6x1, Got " << y.size() << "x1" << std::endl;
-        return false;
-    } else if (f.size() != 6) {
-        std::cout << "[NavUtils::strapdownDynamics] f has incorrect dimensions: Expected " << 
-                "6x1, Got " << f.size() << "x1" << std::endl;
-        return false;
-    }
 
     // Unpack Previous States
     double lat = y[0];
