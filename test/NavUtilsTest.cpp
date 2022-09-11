@@ -236,7 +236,7 @@ TEST(ComputeRph2Dcm, ComputeResult)
     rph << 0.349, 0.125, 2.094;
     Eigen::Matrix3d RB2N(3, 3);
 
-    // Successfully Compute Skew Symmetric
+    // Successfully Compute DCM
     EXPECT_TRUE(util.rph2Dcm(rph, RB2N));
 
     // Define Expected Solutions
@@ -244,9 +244,88 @@ TEST(ComputeRph2Dcm, ComputeResult)
     RB2NSol <<  -0.49575929590605,  0.85946432815914, -0.124674733385228,
                 -0.83530495080520, -0.43260583128062,  0.339290191285157,
                  0.23767279962808,  0.27234768837635,  0.932383170672339;
-;
 
     // Check Results
     EXPECT_TRUE(RB2N.isApprox(RB2NSol, 1e-6));
+
+}
+
+// Compute RPH2DCM: Singularity
+TEST(ComputeDcm2Rph, Singularity)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::Matrix3d RB2N(3, 3);
+    RB2N <<   0.00000000000000,  0.85946432815914, -0.124674733385228,
+             -0.83530495080520, -0.43260583128062,  0.339290191285157,
+              0.23767279962808,  0.27234768837635,  0.932383170672339;
+    Eigen::Vector3d rph;
+
+    // Singularity in R11
+    EXPECT_FALSE(util.dcm2Rph(RB2N, rph));
+    
+    // Redefine Matrix
+    RB2N <<  -0.49575929590605,  0.85946432815914, -0.124674733385228,
+             -0.83530495080520, -0.43260583128062,  0.339290191285157,
+              0.23767279962808,  0.27234768837635,  0.000000000000000;
+
+    // Singularity in R33
+    EXPECT_FALSE(util.dcm2Rph(RB2N, rph));
+
+}
+
+// Compute RPH2DCM: Arcsin Limits
+TEST(ComputeDcm2Rph, ArcsinDomain)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::Matrix3d RB2N(3, 3);
+    RB2N <<  -0.49575929590605,  0.85946432815914,  1.124674733385228,
+             -0.83530495080520, -0.43260583128062,  0.339290191285157,
+              0.23767279962808,  0.27234768837635,  0.932383170672339;
+    Eigen::Vector3d rph;
+
+    // R13 > 1
+    EXPECT_FALSE(util.dcm2Rph(RB2N, rph));
+    
+    // Redefine Matrix
+    RB2N <<  -0.49575929590605,  0.85946432815914, -1.124674733385228,
+             -0.83530495080520, -0.43260583128062,  0.339290191285157,
+              0.23767279962808,  0.27234768837635,  0.932383170672339;
+
+    // R13 < -1
+    EXPECT_FALSE(util.dcm2Rph(RB2N, rph));
+
+}
+
+// Compute RPH2DCM
+TEST(ComputeDcm2Rph, ComputeResult)
+{
+
+    // Create Nav Util Object
+    NavUtils util;
+
+    // Initialize Variables
+    Eigen::Matrix3d RB2N(3, 3);
+    RB2N <<  -0.49575929590605,  0.85946432815914, -0.124674733385228,
+             -0.83530495080520, -0.43260583128062,  0.339290191285157,
+              0.23767279962808,  0.27234768837635,  0.932383170672339;
+    Eigen::Vector3d rph;
+
+    // Successfully Compute RPH
+    EXPECT_TRUE(util.dcm2Rph(RB2N, rph));
+    
+    // Define Expected Solutions
+    Eigen::Vector3d rphSol(3);
+    rphSol << 0.349, 0.125, 2.094;
+
+    // Check Results
+    EXPECT_TRUE(rph.isApprox(rphSol, 1e-3));
 
 }
