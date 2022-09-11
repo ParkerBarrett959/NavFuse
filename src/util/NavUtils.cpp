@@ -176,6 +176,46 @@ bool NavUtils::rph2Dcm(Eigen::Vector3d &rph,
 
 }
 
+// Compute RPH from DCM
+bool NavUtils::dcm2Rph(Eigen::Matrix3d &RB2N,
+                       Eigen::Vector3d &rph) {
+    
+    // Extract Elements of DCM
+    double R11 = RB2N(0, 0);
+    double R12 = RB2N(0, 1);
+    double R13 = RB2N(0, 2);
+    double R23 = RB2N(1, 2);
+    double R33 = RB2N(2, 2);
+    
+    // Check for Singularities
+    if ((std::abs(R11) < 1e-9) || (std::abs(R33) < 1e-9)) {
+        std::cout << "[NavUtils::dcm2Rph] Singularity in Direction Cosines Matrix" << std::endl;
+        return false;
+    }
+    
+    // Check for Outside Range of Arcsin
+    if ((R13 > 1) || (R13 < -1)) {
+        std::cout << "[NavUtils::dcm2Rph] Element R13 falls outside domain of Arcsin [-1, 1]" << std::endl;
+        return false;
+    }
+    
+    // Compute Roll
+    rph(0) = std::atan(R23 / R33);
+
+    // Compute Pitch
+    rph(1) = -std::asin(R13);
+
+    // Compute Heading
+    rph(2)= std::atan(R12 / R11);
+    if (rph(2) < 0) {
+        rph(2) += M_PI;
+    } 
+    
+    // Return Statement
+    return true;
+
+}
+
 // Strapdown 4th Order Runge Kutta Position/Velocity Integration
 bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
                             double &dt,

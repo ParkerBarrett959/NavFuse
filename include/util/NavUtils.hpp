@@ -78,6 +78,18 @@ class NavUtils {
         bool rph2Dcm(Eigen::Vector3d &rph,
                      Eigen::Matrix3d &RB2N);
 
+        /* @Dcm2Rph
+            Inputs:
+                RB2N: 3x3 dimensional DCM relating the body frame to the NED frame
+            Outputs:
+                rph: 3x1 dimensional vector containing roll pitch and heading [rad]
+            Description:
+                Function which takes in the DCM relating the body frame to the NED frame and computes the roll,
+                pitch and heading.
+        */
+        bool dcm2Rph(Eigen::Matrix3d &RB2N,
+                     Eigen::Vector3d &rph);
+
         /* @strapdownRk4
             Inputs:
                 ykm1: 6x1 dimensional vector containing previous state (pos/vel) to be integrated
