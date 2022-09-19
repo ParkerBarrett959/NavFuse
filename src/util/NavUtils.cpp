@@ -233,7 +233,7 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
                 "6x1, Got " << yk.size() << "x1" << std::endl;
         return false;
     }
-
+    
     // Define K1
     Eigen::VectorXd y(6);
     Eigen::VectorXd f1(6);
@@ -244,7 +244,7 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
         return false;
     }
     K1 = dt * f1;
-
+    
     // Define K2
     Eigen::VectorXd f2(6);
     Eigen::VectorXd K2(6);
@@ -254,17 +254,17 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
         return false;
     }
     K2 = dt * f2;
-
+    
     // Define K3
     Eigen::VectorXd f3(6);
     Eigen::VectorXd K3(6);
     y = ykm1 + (K2 / 2.0);
-    if (!strapdownDynamics(y, f2, dVN, gN, dt)) {
+    if (!strapdownDynamics(y, f3, dVN, gN, dt)) {
         std::cout << "[NavUtils::strapdownRk4] Unable to evaluate strapdown dynamics" << std::endl;
         return false;
     }
     K3 = dt * f3;
-
+    
     // Define K4
     Eigen::VectorXd f4(6);
     Eigen::VectorXd K4(6);
@@ -274,7 +274,7 @@ bool NavUtils::strapdownRk4(Eigen::VectorXd &ykm1,
         return false;
     }
     K4 = dt * f4;
-
+    
     // Compute Integration
     yk = ykm1 + ((1.0/6.0) * K1) + ((1.0/3.0) * K2) + ((1.0/3.0) * K3)  + ((1.0/6.0) * K4);
 
@@ -315,9 +315,9 @@ bool NavUtils::strapdownDynamics(Eigen::VectorXd &y,
     double hDot = -vD;
 
     // Compute Dynamics
-    f << y[0],
-         y[1],
-         y[3],
+    f << latDot,
+         lonDot,
+         hDot,
          aN[0] + gN[0] - (2 * wE * slat * vE) + (latDot * vD) - (lonDot * slat * vE),
          aN[1] + gN[1] + (2 * wE * slat * vN) + (2 * wE * clat * vD) + (lonDot * slat * vN) + (lonDot * clat * vD),
          aN[2] + gN[2] - (2 * wE * clat * vE) - (lonDot * clat * vE) - (latDot * vN);
