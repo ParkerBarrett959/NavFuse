@@ -50,7 +50,6 @@ bool Initialization::fineAlignmentPredict(double &lat,
                                           double &r,
                                           Eigen::VectorXd &xk,
                                           Eigen::MatrixXd &Pk,
-                                          KalmanFilter &KF,
                                           Eigen::VectorXd &xkp1,
                                           Eigen::MatrixXd &Pkp1) {
      
@@ -92,7 +91,7 @@ bool Initialization::fineAlignmentPredict(double &lat,
      Eigen::MatrixXd Qk = Eigen::MatrixXd::Zero(numStates, numStates);
 
      // Filter Prediction
-     if (!KF.filterPredict(xk, Pk, Phik, Qk, xkp1, Pkp1)) {
+     if (!KF_.filterPredict(xk, Pk, Phik, Qk, xkp1, Pkp1)) {
           std::cout << "[Initialization::fineAlignmentPredict] Unable to perform filter prediction" << std::endl;
           return false;
      }
@@ -114,7 +113,6 @@ bool Initialization::fineAlignmentUpdate(bool &velValid,
                                          double &sigAz,
                                          Eigen::VectorXd &xk,
                                          Eigen::MatrixXd &Pk,
-                                         KalmanFilter &KF,
                                          Eigen::VectorXd &xkp1,
                                          Eigen::MatrixXd &Pkp1) {
 
@@ -177,7 +175,7 @@ bool Initialization::fineAlignmentUpdate(bool &velValid,
     }
 
     // Perform Measurement Update
-    if (!KF.filterUpdate(xk, Pk, z, H, R, xkp1, Pkp1)) {
+    if (!KF_.filterUpdate(xk, Pk, z, H, R, xkp1, Pkp1)) {
         std::cout << "[Initialization::fineAlignmentUpdate] Unable to perform filter update" << std::endl;
         return false;
     }

@@ -51,7 +51,6 @@ class Initialization {
                 r: scalar double representing Earth geodetic radius plus the height above the ellipsoid [m]
                 xk: 8x1 vector of alignment states (Attitude, gyro biases, and level velocity errors)
                 Pk: 8x8 covarance matrix of alignment states
-                KF: Kalman Filter Object
             Outputs:
                 xkp1: 8x1 vector of predicted alignment states (Attitude, gyro biases, and level velocity errors)
                 Pkp1: 8x8 covarance matrix of predicted alignment states
@@ -66,7 +65,6 @@ class Initialization {
                                   double &r,
                                   Eigen::VectorXd &xk,
                                   Eigen::MatrixXd &Pk,
-                                  KalmanFilter &KF,
                                   Eigen::VectorXd &xkp1,
                                   Eigen::MatrixXd &Pkp1);
 
@@ -81,7 +79,6 @@ class Initialization {
                 azEst: scalar double representing the current system azimuth estimate [rad]
                 xk: 8x1 vector of alignment states (Attitude, gyro biases, and level velocity errors)
                 Pk: 8x8 covarance matrix of alignment states
-                KF: Kalman Filter Object
             Outputs:
                 xkp1: 8x1 vector of updated alignment states (Attitude, gyro biases, and level velocity errors)
                 Pkp1: 8x8 covarance matrix of updated alignment states
@@ -101,13 +98,14 @@ class Initialization {
                                  double &sigAz,
                                  Eigen::VectorXd &xk,
                                  Eigen::MatrixXd &Pk,
-                                 KalmanFilter &KF,
                                  Eigen::VectorXd &xkp1,
                                  Eigen::MatrixXd &Pkp1);
 
     // Private Class Members/Function
     private:
 
+        // Kalman Filter Object
+        ::KalmanFilter KF_;
         
 
 };
