@@ -120,3 +120,50 @@ TEST(FineAlignmentPredict, IncorrectPkp1Dimensions)
     EXPECT_FALSE(init.fineAlignmentPredict(lat, wE, g, r, xk, Pk, xkp1, Pkp1));
 
 }
+
+// Compute Fine Alignment Prediction
+TEST(FineAlignmentPredict, ComputeResult)
+{
+
+    // Create Initialization Object
+    Initialization init;
+
+    // Initialize Variables
+    double wE = 7.292115 * 1e-5;
+    double lat = 0.7361;
+    double g = -9.798;
+    double r = 6378256;
+    Eigen::VectorXd xk(8);
+    xk << 3.452, 8.375, 5.285, 9.453, 3.582, 0.374, 6.283, 0.378;
+    Eigen::MatrixXd Pk(8, 8);
+    Pk << 4.675,     0,     0,     0,     0,     0,     0,     0,
+              0, 6.295,     0,     0,     0,     0,     0,     0,
+              0,     0, 8.294,     0,     0,     0,     0,     0,
+              0,     0,     0, 4.385,     0,     0,     0,     0,
+              0,     0,     0,     0, 7.284,     0,     0,     0,
+              0,     0,     0,     0,     0, 9.733,     0,     0,
+              0,     0,     0,     0,     0,     0, 0.372,     0,
+              0,     0,     0,     0,     0,     0,     0, 4.283;
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 8);
+
+    // Successfully Compute Coarse Initialization
+    EXPECT_TRUE(init.fineAlignmentPredict(lat, wE, g, r, xk, Pk, xkp1, Pkp1));
+   
+    // Define Expected Solutions
+    Eigen::VectorXd xkp1Sol(8);
+    xkp1Sol << -9.4534099, -3.5815463, -0.3744525, 0, 0, 0, -82.0582870, 33.8233112;
+    Eigen::MatrixXd Pkp1Sol(8, 8);
+    Pkp1Sol << 4.385000,         0,1.6656e-08,     0,     0,     0,  0.003019,         0,
+                      0,  7.284000,         0,     0,     0,     0,         0,  0.002242,
+             1.6656e-08,         0,  9.733000,     0,     0,     0,  0.003333,         0,
+                      0,         0,         0,     0,     0,     0,         0,         0,
+                      0,         0,         0,     0,     0,     0,         0,         0,
+                      0,         0,         0,     0,     0,     0,         0,         0,
+               0.003019,         0,  0.003333,     0,     0,     0,604.325061,         0,
+                      0,  0.002242,         0,     0,     0,     0,         0,448.803758;
+    
+    // Check Results
+    EXPECT_TRUE(xkp1.isApprox(xkp1Sol, 1e-6));
+    EXPECT_TRUE(Pkp1.isApprox(Pkp1Sol, 1e-6));
+}
