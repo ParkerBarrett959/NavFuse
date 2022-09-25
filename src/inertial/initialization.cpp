@@ -77,7 +77,7 @@ bool Initialization::fineAlignmentPredict(double &lat,
     double tlat = std::tan(lat);
      
     // Build State Transition Matrix
-    Eigen::MatrixXd Phik;
+    Eigen::MatrixXd Phik(8, 8);
     Phik << 0.0,     -wE*slat,  0.0,    -1.0,  0.0,  0.0,  0.0,          1.0/r,
             wE*slat,  0.0,      wE*clat, 0.0, -1.0,  0.0, -1.0/r,        0.0,
             0.0,     -wE*clat,  0.0,     0.0,  0.0, -1.0,  0.0,          tlat/r,
