@@ -169,100 +169,80 @@ TEST(FineAlignmentPredict, ComputeResult)
 
 }
 
-// Fine Alignment Update: Incorrect Pk Dimensions 
-TEST(FineAlignmentUpdate, IncorrectPkDimensions)
+// Fine Alignment Azimuth Update: Incorrect Pk Dimensions 
+TEST(FineAlignmentAzimuthUpdate, IncorrectPkDimensions)
 {
 
     // Create Initialization Object
     Initialization init;
 
     // Initialize Variables
-    bool velValid = true;
-    bool azValid = true;
-    Eigen::Vector2d velMeas = Eigen::Vector2d::Zero(2);
     double azMeas = 0.0;
-    double dtVel = 0.1;
     double dtAz = 0.1;
     double azEst = 0.0;
-    double sigVel = 1.0;
     double sigAz = 0.01;
     Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 7);
     Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 8);
 
-    // Failed Fine Alignment Update: Incorrect Pk columns
-    EXPECT_FALSE(init.fineAlignmentUpdate(velValid, azValid, velMeas, azMeas, 
-                        dtVel, dtAz, azEst, sigVel, sigAz, xk, Pk, xkp1, Pkp1));
+    // Failed Fine Alignment Azimuth Update: Incorrect Pk columns
+    EXPECT_FALSE(init.fineAlignmentAzimuthUpdate(azMeas, dtAz, azEst, sigAz, xk, Pk, xkp1, Pkp1));
 
     // Redefine Pk
     Pk = Eigen::MatrixXd::Zero(7, 8);
 
-    // Failed Fine Alignment Update: Incorrect Pk rows
-    EXPECT_FALSE(init.fineAlignmentUpdate(velValid, azValid, velMeas, azMeas, 
-                        dtVel, dtAz, azEst, sigVel, sigAz, xk, Pk, xkp1, Pkp1));
+    // Failed Fine Alignment Azimuth Update: Incorrect Pk rows
+    EXPECT_FALSE(init.fineAlignmentAzimuthUpdate(azMeas, dtAz, azEst, sigAz, xk, Pk, xkp1, Pkp1));
 
 }
 
-// Fine Alignment Predict: Incorrect xkp1 Dimensions 
-TEST(FineAlignmentUpdate, Incorrectxkp1Dimensions)
+// Fine Alignment Azimuth Update: Incorrect xkp1 Dimensions 
+TEST(FineAlignmentAzimuthUpdate, Incorrectxkp1Dimensions)
 {
 
     // Create Initialization Object
     Initialization init;
 
     // Initialize Variables
-    bool velValid = true;
-    bool azValid = true;
-    Eigen::Vector2d velMeas = Eigen::Vector2d::Zero(2);
     double azMeas = 0.0;
-    double dtVel = 0.1;
     double dtAz = 0.1;
     double azEst = 0.0;
-    double sigVel = 1.0;
     double sigAz = 0.01;
     Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 8);
     Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(7);
     Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 8);
 
-    // Failed Fine Alignment Update: Incorrect xkp1 columns
-    EXPECT_FALSE(init.fineAlignmentUpdate(velValid, azValid, velMeas, azMeas, 
-                        dtVel, dtAz, azEst, sigVel, sigAz, xk, Pk, xkp1, Pkp1));
+    // Failed Fine Alignment Azimuth Update: Incorrect xkp1 rows
+    EXPECT_FALSE(init.fineAlignmentAzimuthUpdate(azMeas, dtAz, azEst, sigAz, xk, Pk, xkp1, Pkp1));
 
 }
 
-// Fine Alignment Predict: Incorrect Pkp1 Dimensions 
-TEST(FineAlignmentUpdate, IncorrectPkp1Dimensions)
+// Fine Alignment Azimuth Update: Incorrect Pkp1 Dimensions 
+TEST(FineAlignmentAzimuthUpdate, IncorrectPkp1Dimensions)
 {
 
     // Create Initialization Object
     Initialization init;
 
     // Initialize Variables
-    bool velValid = true;
-    bool azValid = true;
-    Eigen::Vector2d velMeas = Eigen::Vector2d::Zero(2);
     double azMeas = 0.0;
-    double dtVel = 0.1;
     double dtAz = 0.1;
     double azEst = 0.0;
-    double sigVel = 1.0;
     double sigAz = 0.01;
     Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 8);
     Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 7);
 
-    // Failed Fine Alignment Update: Incorrect Pkp1 columns
-    EXPECT_FALSE(init.fineAlignmentUpdate(velValid, azValid, velMeas, azMeas, 
-                        dtVel, dtAz, azEst, sigVel, sigAz, xk, Pk, xkp1, Pkp1));
+    // Failed Fine Alignment Azimuth Update: Incorrect Pkp1 columns
+    EXPECT_FALSE(init.fineAlignmentAzimuthUpdate(azMeas, dtAz, azEst, sigAz, xk, Pk, xkp1, Pkp1));
 
     // Redefine Pkp1
     Pkp1 = Eigen::MatrixXd::Zero(7, 8);
 
-    // Failed Fine Alignment Update: Incorrect Pkp1 rows
-    EXPECT_FALSE(init.fineAlignmentUpdate(velValid, azValid, velMeas, azMeas, 
-                        dtVel, dtAz, azEst, sigVel, sigAz, xk, Pk, xkp1, Pkp1));
+    // Failed Fine Alignment Azimuth Update: Incorrect Pkp1 rows
+    EXPECT_FALSE(init.fineAlignmentAzimuthUpdate(azMeas, dtAz, azEst, sigAz, xk, Pk, xkp1, Pkp1));
 
 }
