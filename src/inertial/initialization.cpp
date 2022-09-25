@@ -101,86 +101,106 @@ bool Initialization::fineAlignmentPredict(double &lat,
 
 }
 
-// Fine Alignment Measurement Update
-bool Initialization::fineAlignmentUpdate(bool &velValid,
-                                         bool &azValid,
-                                         Eigen::Vector2d velMeas,
-                                         double &azMeas,
-                                         double &dtVel,
-                                         double &dtAz,
-                                         double &azEst,
-                                         double &sigVel,
-                                         double &sigAz,
-                                         Eigen::VectorXd &xk,
-                                         Eigen::MatrixXd &Pk,
-                                         Eigen::VectorXd &xkp1,
-                                         Eigen::MatrixXd &Pkp1) {
+// Fine Alignment Azimuth Measurement Update
+bool Initialization::fineAlignmentAzimuthUpdate(double &azMeas,
+                                                double &dtAz,
+                                                double &azEst,
+                                                double &sigAz,
+                                                Eigen::VectorXd &xk,
+                                                Eigen::MatrixXd &Pk,
+                                                Eigen::VectorXd &xkp1,
+                                                Eigen::MatrixXd &Pkp1) {
 
      // Get Dimension of State Vector
     int numStates = xk.size();
 
     // Verify Vectors/Matrices have Correct Dimensions
     if ((Pk.rows() != numStates) || (Pk.cols() != numStates)) {
-        std::cout << "[Initialization::fineAlignmentUpdate] Pk has incorrect dimensions: Expected " << 
+        std::cout << "[Initialization::fineAlignmentAzimuthUpdate] Pk has incorrect dimensions: Expected " << 
                 numStates << "x" << numStates << ", Got " << Pk.rows() << "x" << Pk.cols() << std::endl;
         return false;
     } else if (xkp1.size() != numStates) {
-        std::cout << "[Initialization::fineAlignmentUpdate] xkp1 has incorrect dimensions: Expected " << 
+        std::cout << "[Initialization::fineAlignmentAzimuthUpdate] xkp1 has incorrect dimensions: Expected " << 
                 numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
         return false;
     } else if ((Pkp1.rows() != numStates) || (Pkp1.cols() != numStates)) {
-        std::cout << "[Initialization::fineAlignmentUpdate] Pkp1 has incorrect dimensions: Expected " << 
+        std::cout << "[Initialization::fineAlignmentAzimuthUpdate] Pkp1 has incorrect dimensions: Expected " << 
                 numStates << "x" << numStates << ", Got " << Pkp1.rows() << "x" << Pkp1.cols() << std::endl;
         return false;
     }
 
-    // Compute Azimuth Measurement Residual - Velocity Estimated as Stationary
+    // Compute Azimuth Measurement Residual
     double azRes = azEst - azMeas;
 
-    // Compute Sigma Squared Values
-    double sVSq = sigVel * sigVel;
+    // Compute Azimuth Variance
     double sASq = sigAz * sigAz;
 
     // Assemble Measurement Jacobian and Vector
-    Eigen::VectorXd z;
-    Eigen::MatrixXd H;
-    Eigen::MatrixXd R;
-    if (velValid && azValid) {
-        z << velMeas[0], velMeas[1], azRes;
-        H << 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  0.0,
-             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,
-             0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0;
-        R << sVSq*dtVel,     0.0,         0.0,
-                0.0,      sVSq*dtVel,     0.0,
-                0.0,         0.0,      sASq*dtAz;   
-    } else if (velValid) {
-        z << velMeas[0], velMeas[1];
-        H << 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  0.0,
-             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,
-             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0;
-        R << sVSq*dtVel,     0.0,         0.0,
-                0.0,      sVSq*dtVel,     0.0,
-                0.0,         0.0,         0.0;
-    } else if (azValid) {
-        z << azRes;
-        H << 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
-             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,
-             0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0;
-        R << 0.0,     0.0,      0.0,
-             0.0,     0.0,      0.0,
-             0.0,     0.0,    sASq*dtAz;
-    } else {
-        std::cout << "[Initialization::fineAlignmentUpdate] Unable to assemble measurement and Jacobian" << std::endl;
-        return false;
-    }
+    Eigen::VectorXd z(1);
+    z << azRes;
+    Eigen::MatrixXd H(1, 8);
+    H << 0.0,  0.0,  1.0,  0.0,  0.0,  0.0,  0.0,  0.0;
+    Eigen::MatrixXd R(1, 1);
+    R << sASq*dtAz;
 
     // Perform Measurement Update
     if (!KF_.filterUpdate(xk, Pk, z, H, R, xkp1, Pkp1)) {
-        std::cout << "[Initialization::fineAlignmentUpdate] Unable to perform filter update" << std::endl;
+        std::cout << "[Initialization::fineAlignmentAzimuthUpdate] Unable to perform filter update" << std::endl;
         return false;
     }
 
-    // Return Statement for Successful Fine Alignment Update
+    // Return Statement for Successful Fine Alignment Azimuth Update
+    return true;
+               
+}
+
+// Fine Alignment Velocity Measurement Update
+bool Initialization::fineAlignmentVelocityUpdate(Eigen::Vector2d velMeas,
+                                                 double &dtVel,
+                                                 double &sigVel,
+                                                 Eigen::VectorXd &xk,
+                                                 Eigen::MatrixXd &Pk,
+                                                 Eigen::VectorXd &xkp1,
+                                                 Eigen::MatrixXd &Pkp1) {
+
+     // Get Dimension of State Vector
+    int numStates = xk.size();
+
+    // Verify Vectors/Matrices have Correct Dimensions
+    if ((Pk.rows() != numStates) || (Pk.cols() != numStates)) {
+        std::cout << "[Initialization::fineAlignmentVelocityUpdate] Pk has incorrect dimensions: Expected " << 
+                numStates << "x" << numStates << ", Got " << Pk.rows() << "x" << Pk.cols() << std::endl;
+        return false;
+    } else if (xkp1.size() != numStates) {
+        std::cout << "[Initialization::fineAlignmentVelocityUpdate] xkp1 has incorrect dimensions: Expected " << 
+                numStates << "x" << "1" << ", Got " << xkp1.size() << "x" << "1" << std::endl;
+        return false;
+    } else if ((Pkp1.rows() != numStates) || (Pkp1.cols() != numStates)) {
+        std::cout << "[Initialization::fineAlignmentVelocityUpdate] Pkp1 has incorrect dimensions: Expected " << 
+                numStates << "x" << numStates << ", Got " << Pkp1.rows() << "x" << Pkp1.cols() << std::endl;
+        return false;
+    }
+
+    // Compute Velocity Measurement Variance
+    double sVSq = sigVel * sigVel;
+
+    // Assemble Measurement Jacobian and Vector
+    Eigen::VectorXd z(2);
+    z << velMeas[0], velMeas[1];
+    Eigen::MatrixXd H(2, 8);
+    H << 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  0.0,
+         0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0;
+    Eigen::MatrixXd R(2, 2);
+    R << sVSq*dtVel,           0.0,         
+                0.0,    sVSq*dtVel;
+
+    // Perform Measurement Update
+    if (!KF_.filterUpdate(xk, Pk, z, H, R, xkp1, Pkp1)) {
+        std::cout << "[Initialization::fineAlignmentVelocityUpdate] Unable to perform filter update" << std::endl;
+        return false;
+    }
+
+    // Return Statement for Successful Fine Alignment Velocity Update
     return true;
                
 }
