@@ -177,10 +177,10 @@ TEST(FineAlignmentAzimuthUpdate, IncorrectPkDimensions)
     Initialization init;
 
     // Initialize Variables
-    double azMeas = 0.0;
+    double azMeas = 0.368;
     double dtAz = 0.1;
-    double azEst = 0.0;
-    double sigAz = 0.01;
+    double azEst = 0.365;
+    double sigAz = 0.001;
     Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 7);
     Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
@@ -205,10 +205,10 @@ TEST(FineAlignmentAzimuthUpdate, Incorrectxkp1Dimensions)
     Initialization init;
 
     // Initialize Variables
-    double azMeas = 0.0;
+    double azMeas = 0.368;
     double dtAz = 0.1;
-    double azEst = 0.0;
-    double sigAz = 0.01;
+    double azEst = 0.365;
+    double sigAz = 0.001;
     Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 8);
     Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(7);
@@ -227,10 +227,10 @@ TEST(FineAlignmentAzimuthUpdate, IncorrectPkp1Dimensions)
     Initialization init;
 
     // Initialize Variables
-    double azMeas = 0.0;
+    double azMeas = 0.368;
     double dtAz = 0.1;
-    double azEst = 0.0;
-    double sigAz = 0.01;
+    double azEst = 0.365;
+    double sigAz = 0.001;
     Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
     Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 8);
     Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
@@ -288,6 +288,132 @@ TEST(FineAlignmentAzimuthUpdate, ComputeResult)
                    0,     0,     0,     0,     0, 9.733,     0,     0,
                    0,     0,     0,     0,     0,     0, 0.372,     0,
                    0,     0,     0,     0,     0,     0,     0, 4.283;
+    
+    // Check Results
+    EXPECT_TRUE(xkp1.isApprox(xkp1Sol, 1e-6));
+    EXPECT_TRUE(Pkp1.isApprox(Pkp1Sol, 1e-6));
+
+}
+
+// Fine Alignment Velocity Update: Incorrect Pk Dimensions 
+TEST(FineAlignmentVelocityUpdate, IncorrectPkDimensions)
+{
+
+    // Create Initialization Object
+    Initialization init;
+
+    // Initialize Variables
+    Eigen::Vector2d velMeas(2);
+    velMeas << 0.0, 0.0;
+    double dtVel = 0.1;
+    double sigVel = 0.01;
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 7);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 8);
+
+    // Failed Fine Alignment Velocity Update: Incorrect Pk columns
+    EXPECT_FALSE(init.fineAlignmentVelocityUpdate(velMeas, dtVel, sigVel, xk, Pk, xkp1, Pkp1));
+
+    // Redefine Pk
+    Pk = Eigen::MatrixXd::Zero(7, 8);
+
+    // Failed Fine Alignment Velocity Update: Incorrect Pk rows
+    EXPECT_FALSE(init.fineAlignmentVelocityUpdate(velMeas, dtVel, sigVel, xk, Pk, xkp1, Pkp1));
+
+}
+
+// Fine Alignment Velocity Update: Incorrect xkp1 Dimensions 
+TEST(FineAlignmentVelocityUpdate, Incorrectxkp1Dimensions)
+{
+
+    // Create Initialization Object
+    Initialization init;
+
+    // Initialize Variables
+    Eigen::Vector2d velMeas(2);
+    velMeas << 0.0, 0.0;
+    double dtVel = 0.1;
+    double sigVel = 0.01;
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 8);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(7);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 8);
+
+    // Failed Fine Alignment Velocity Update: Incorrect xkp1 rows
+    EXPECT_FALSE(init.fineAlignmentVelocityUpdate(velMeas, dtVel, sigVel, xk, Pk, xkp1, Pkp1));
+
+}
+
+// Fine Alignment Velocity Update: Incorrect Pkp1 Dimensions 
+TEST(FineAlignmentVelocityUpdate, IncorrectPkp1Dimensions)
+{
+
+    // Create Initialization Object
+    Initialization init;
+
+    // Initialize Variables
+    Eigen::Vector2d velMeas(2);
+    velMeas << 0.0, 0.0;
+    double dtVel = 0.1;
+    double sigVel = 0.01;
+    Eigen::VectorXd xk = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd Pk = Eigen::MatrixXd::Zero(8, 8);
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 7);
+
+    // Failed Fine Alignment Velocity Update: Incorrect Pkp1 columns
+    EXPECT_FALSE(init.fineAlignmentVelocityUpdate(velMeas, dtVel, sigVel, xk, Pk, xkp1, Pkp1));
+
+    // Redefine Pkp1
+    Pkp1 = Eigen::MatrixXd::Zero(7, 8);
+
+    // Failed Fine Alignment Velocity Update: Incorrect Pkp1 rows
+    EXPECT_FALSE(init.fineAlignmentVelocityUpdate(velMeas, dtVel, sigVel, xk, Pk, xkp1, Pkp1));
+
+}
+
+// Fine Alignment Velocity Update: Compute Result 
+TEST(FineAlignmentVelocityUpdate, ComputeResult)
+{
+
+    // Create Initialization Object
+    Initialization init;
+
+    // Initialize Variables
+    Eigen::Vector2d velMeas(2);
+    velMeas << 0.0, 0.0;
+    double dtVel = 0.1;
+    double sigVel = 0.01;
+    Eigen::VectorXd xk(8);
+    xk << 3.452, 8.375, 5.285, 9.453, 3.582, 0.374, 6.283, 0.378;
+    Eigen::MatrixXd Pk(8, 8);
+    Pk << 4.675,     0,     0,     0,     0,     0,     0,     0,
+              0, 6.295,     0,     0,     0,     0,     0,     0,
+              0,     0, 8.294,     0,     0,     0,     0,     0,
+              0,     0,     0, 4.385,     0,     0,     0,     0,
+              0,     0,     0,     0, 7.284,     0,     0,     0,
+              0,     0,     0,     0,     0, 9.733,     0,     0,
+              0,     0,     0,     0,     0,     0, 0.372,     0,
+              0,     0,     0,     0,     0,     0,     0, 4.283;
+    Eigen::VectorXd xkp1 = Eigen::VectorXd::Zero(8);
+    Eigen::MatrixXd Pkp1 = Eigen::MatrixXd::Zero(8, 8);
+
+    // Successful Fine Alignment Velocity Update
+    EXPECT_TRUE(init.fineAlignmentVelocityUpdate(velMeas, dtVel, sigVel, xk, Pk, xkp1, Pkp1));
+    
+    // Define Expected Solutions
+    Eigen::VectorXd xkp1Sol(8);
+    xkp1Sol << 3.452, 8.375, 5.285, 9.453, 3.582, 0.374, 0.0001688, 0.0000000;
+    Eigen::MatrixXd Pkp1Sol(8, 8);
+    Pkp1Sol << 4.675,     0,     0,     0,     0,     0,     0,     0,
+                   0, 6.295,     0,     0,     0,     0,     0,     0,
+                   0,     0, 8.294,     0,     0,     0,     0,     0,
+                   0,     0,     0, 4.385,     0,     0,     0,     0,
+                   0,     0,     0,     0, 7.284,     0,     0,     0,
+                   0,     0,     0,     0,     0, 9.733,     0,     0,
+                   0,     0,     0,     0,     0,     0,9.99e-06,     0,
+                   0,     0,     0,     0,     0,     0,     0, 9.99e-06;
     
     // Check Results
     EXPECT_TRUE(xkp1.isApprox(xkp1Sol, 1e-6));
