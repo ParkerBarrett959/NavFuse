@@ -130,7 +130,7 @@ bool Initialization::fineAlignmentAzimuthUpdate(double &azMeas,
     }
 
     // Compute Azimuth Measurement Residual
-    double azRes = azEst - azMeas;
+    double azRes = azMeas - azEst;
 
     // Compute Azimuth Variance
     double sASq = sigAz * sigAz;
