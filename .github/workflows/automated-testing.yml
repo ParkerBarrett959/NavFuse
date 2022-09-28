@@ -21,13 +21,9 @@ jobs:
       run: sudo apt install libeigen3-dev
     - name: Install CMake
       run: sudo apt-get install cmake
-    - name: Create Build Directory
-      run: mkdir build
-    - name: Move to Build Directory
-      run: cd build
-    - name: Generate MakeFile
-      run: cmake ..
-    - name: Build
-      run: make
+    - name: Create Build Directory and Run CMake
+      run: cmake -S . -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+    - name: Build Project
+      run: cmake --build build --target all --config Release -- -j4
     - name: Run Unit Tests
       run: ./test-navigation-library
