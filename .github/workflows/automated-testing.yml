@@ -25,7 +25,5 @@ jobs:
       run: cmake -S . -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
     - name: Build Project
       run: cmake --build build --target all --config Release -- -j4
-    - name: Move to Build Folder
-      run: cd build
     - name: Run Unit Tests
-      run: ./test-navigation-library
+      run: cd build && ./test-navigation-library
