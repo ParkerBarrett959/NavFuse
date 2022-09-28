@@ -1,0 +1,25 @@
+name: Automated Navigation Library Testing
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create Build Directory
+      run: mkdir build
+    - name: Move to Build Directory
+      run: cd build
+    - name: Generate MakeFile
+      run: cmake ..
+    - name: Build
+      run: make
+    - name: Run Unit Tests
+      run: ./test-navigation-library
