@@ -1,4 +1,6 @@
-# Navigation and Sensor Fusion C++ Library
+![image](https://user-images.githubusercontent.com/89047457/192758897-683c1385-aa26-4ac6-8651-56016523001a.png)
+
+# A Robust Navigation and Sensor Fusion C++ Library
 General navigation software library for sensor fusion. 
 
 # Dependencies
