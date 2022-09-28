@@ -1,7 +1,7 @@
 ![image](https://user-images.githubusercontent.com/89047457/192758897-683c1385-aa26-4ac6-8651-56016523001a.png)
 
 # A Robust Navigation and Sensor Fusion C++ Library
-General navigation software library for sensor fusion. 
+NavFuse is a robust, unit tested C++ library for navigation and sensor fusion applications. The library contains fully tested Kalman Filtering and other state estimation/sensor fusion algorithm classes. It also features a variety of strapdown inertial navigation functionality and commonly used navigation utility functions including gravity models, attitude representations and rotations.
 
 # Dependencies
 * C++ 11 (or greater) <br />
