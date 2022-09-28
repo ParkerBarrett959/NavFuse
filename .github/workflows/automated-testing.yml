@@ -13,6 +13,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - name: Install Updates
+      run: sudo apt-get update
+    - name: Install Build Tools
+      run: sudo apt install build-essential libtool autoconf unzip wget
+    - name: Install Eigen
+      run: sudo apt install libeigen3-dev
+    - name: Install CMake
+      run: sudo apt-get install cmake
     - name: Create Build Directory
       run: mkdir build
     - name: Move to Build Directory
