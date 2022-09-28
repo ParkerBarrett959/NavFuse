@@ -26,4 +26,7 @@ jobs:
     - name: Build Project
       run: cmake --build build --target all --config Release -- -j4
     - name: Run Unit Tests
+    - name: Move to Build Folder
+      run: cd build
+    - name: Run Unit Tests
       run: ./test-navigation-library
