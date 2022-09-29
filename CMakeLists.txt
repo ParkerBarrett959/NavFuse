@@ -25,7 +25,7 @@ FetchContent_MakeAvailable(googletest)
 set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
                 ${PROJECT_SOURCE_DIR}/include/filter/KalmanFilter.hpp
                 ${PROJECT_SOURCE_DIR}/include/inertial/compensator.hpp
-                ${PROJECT_SOURCE_DIR}/include/inertial/errorDynamics.hpp
+		${PROJECT_SOURCE_DIR}/include/inertial/pvaErrorDynamics.hpp
                 ${PROJECT_SOURCE_DIR}/include/inertial/initialization.hpp
                 ${PROJECT_SOURCE_DIR}/include/inertial/strapdown.hpp
                 ${PROJECT_SOURCE_DIR}/include/util/Gravity.hpp
@@ -35,7 +35,7 @@ set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
 add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares.cpp
                               ${PROJECT_SOURCE_DIR}/src/filter/KalmanFilter.cpp
                               ${PROJECT_SOURCE_DIR}/src/inertial/compensator.cpp
-                              ${PROJECT_SOURCE_DIR}/src/inertial/errorDynamics.cpp
+			      ${PROJECT_SOURCE_DIR}/src/inertial/pvaErrorDynamics.cpp
                               ${PROJECT_SOURCE_DIR}/src/inertial/initialization.cpp
                               ${PROJECT_SOURCE_DIR}/src/inertial/strapdown.cpp
                               ${PROJECT_SOURCE_DIR}/src/util/Gravity.cpp

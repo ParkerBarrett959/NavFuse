@@ -1,9 +1,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                  Inertial Navigation Error Dynamics                              //
+//                                Inertial Navigation PVA Error Dynamics                            //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                  // 
 // Author:      Parker Barrett                                                                      //
-// Overview:    Header file for inertial navigation filter error dynamics class.                    //           
+// Overview:    Header file for inertial navigation filter position, velocity, attitude error       //
+//              dynamics class.                                                                     //           
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -14,8 +15,8 @@
 #include "NavUtils.hpp"
 #include "Gravity.hpp"
 
-// Inertial Navigation Measurement Compensator Class
-class InertialErrorDynamics {
+// Inertial Navigation PVA Error Dynamics Class
+class PvaErrorDynamics {
 
     // Public Class Members/Functions
     public:

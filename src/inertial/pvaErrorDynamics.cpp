@@ -1,21 +1,22 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                  Inertial Navigation Error Dynamics                              //
+//                                Inertial Navigation PVA Error Dynamics                            //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                  // 
 // Author:      Parker Barrett                                                                      //
-// Overview:    Class implementation which defines the inertial navigation error dynamics.          //   
+// Overview:    Class implementation which defines the inertial navigation position, velocity       //
+//              attitude error dynamics.                                                            //   
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Include Headers
-#include "errorDynamics.hpp"
+#include "pvaErrorDynamics.hpp"
 
-// Inertial Frame Error Dynamics
-bool InertialErrorDynamics::inertialErrorDynamics(Eigen::Vector3d &aI,
-                                                  Eigen::Matrix3d &GI,
-                                                  Eigen::Matrix3d &RS2I,
-                                                  Eigen::MatrixXd &F,
-                                                  Eigen::MatrixXd &G) {
+// Inertial Frame PVA Error Dynamics
+bool PvaErrorDynamics::inertialErrorDynamics(Eigen::Vector3d &aI,
+                                             Eigen::Matrix3d &GI,
+                                             Eigen::Matrix3d &RS2I,
+                                             Eigen::MatrixXd &F,
+                                             Eigen::MatrixXd &G) {
 
     // Check for Correct Input Sizes
     if ((F.rows() != 9) || (F.cols() != 9)) {
@@ -61,13 +62,13 @@ bool InertialErrorDynamics::inertialErrorDynamics(Eigen::Vector3d &aI,
 
 }
 
-// ECEF Frame Error Dynamics
-bool InertialErrorDynamics::ecefErrorDynamics(Eigen::Vector3d &aE,
-                                              Eigen::Matrix3d &GE,
-                                              Eigen::Matrix3d &RS2E,
-                                              Eigen::Matrix3d &OEI_E,
-                                              Eigen::MatrixXd &F,
-                                              Eigen::MatrixXd &G) {
+// ECEF Frame PVA Error Dynamics
+bool PvaErrorDynamics::ecefErrorDynamics(Eigen::Vector3d &aE,
+                                         Eigen::Matrix3d &GE,
+                                         Eigen::Matrix3d &RS2E,
+                                         Eigen::Matrix3d &OEI_E,
+                                         Eigen::MatrixXd &F,
+                                         Eigen::MatrixXd &G) {
 
     // Check for Correct Input Sizes
     if ((F.rows() != 9) || (F.cols() != 9)) {
@@ -119,15 +120,15 @@ bool InertialErrorDynamics::ecefErrorDynamics(Eigen::Vector3d &aE,
 
 }
 
-// NED Frame Error Dynamics
-bool InertialErrorDynamics::nedErrorDynamics(Eigen::Vector3d &aN,
-                                             Eigen::Matrix3d &GN,
-                                             Eigen::Matrix3d &RS2N,
-                                             Eigen::Vector3d &lla,
-                                             Eigen::Vector3d &llaDot,
-                                             Eigen::Vector3d &llaDDot,
-                                             Eigen::MatrixXd &F,
-                                             Eigen::MatrixXd &G) {
+// NED Frame PVA Error Dynamics
+bool PvaErrorDynamics::nedErrorDynamics(Eigen::Vector3d &aN,
+                                        Eigen::Matrix3d &GN,
+                                        Eigen::Matrix3d &RS2N,
+                                        Eigen::Vector3d &lla,
+                                        Eigen::Vector3d &llaDot,
+                                        Eigen::Vector3d &llaDDot,
+                                        Eigen::MatrixXd &F,
+                                        Eigen::MatrixXd &G) {
 
     // Check for Correct Input Sizes
     if ((F.rows() != 9) || (F.cols() != 9)) {
