@@ -73,6 +73,5 @@ TEST(Strapdown, Integrate)
     EXPECT_TRUE(sd.lla_.isApprox(llaSol, 1e-6));
     EXPECT_TRUE(sd.vNed_.isApprox(vNedSol, 1e-6));
     EXPECT_TRUE(sd.RB2N_.isApprox(RB2NSol, 1e-6));
-    std::cout << sd.RB2N_ << std::endl;
 
 }
