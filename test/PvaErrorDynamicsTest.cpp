@@ -63,6 +63,55 @@ TEST(InertialErrorDynamics, IncorrectGDimensions)
 }
 
 // Inertial Error Dynamics: Compute Matrices
+TEST(InertialErrorDynamics, ComputeMatrices)
+{
+
+    // Create PVA Error Dynamics Object
+    PvaErrorDynamics pva;
+
+    // Initialize Variables
+    Eigen::Vector3d aI(3);
+    aI << 0.362, 0.474, 0.367;
+    Eigen::Matrix3d GI(3, 3);
+    GI << 0.284, 0.001, 0.012,
+          0.028, 0.274, 0.008,
+          0.001, 0.003, 0.736;
+    Eigen::Matrix3d RS2I = Eigen::Matrix3d::Identity(3, 3);
+    Eigen::MatrixXd F(9, 9);
+    Eigen::MatrixXd G(9, 9);
+
+    // Compute Dynamics
+    EXPECT_TRUE(pva.inertialErrorDynamics(aI, GI, RS2I, F, G));
+
+    // Define Expected Solutions
+    Eigen::MatrixXd FSol(9, 9);
+    FSol <<    0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0, -0.367,  0.474,     0,      0,      0,  0.284,  0.001,  0.012,
+           0.367,      0, -0.362,     0,      0,      0,  0.028,  0.274,  0.008,
+          -0.474,  0.362,      0,     0,      0,      0,  0.001,  0.003,  0.736,
+               0,      0,      0,     1,      0,      0,      0,      0,      0,
+               0,      0,      0,     0,      1,      0,      0,      0,      0,
+               0,      0,      0,     0,      0,      1,      0,      0,      0;
+    Eigen::MatrixXd GSol(9, 9);
+    GSol <<   -1,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,     -1,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,     -1,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     1,      0,      0,      1,      0,     0,
+               0,      0,      0,     0,      1,      0,      0,      1,     0,
+               0,      0,      0,     0,      0,      1,      0,      0,     1,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     1;
+
+    // Correct F Matrix
+    EXPECT_TRUE(F.isApprox(FSol, 1e-6));
+
+    // Correct G Matrix
+    EXPECT_TRUE(G.isApprox(GSol, 1e-6));
+
+}
 
 // ECEF Error Dynamics: Incorrect Input Dimensions F
 TEST(EcefErrorDynamics, IncorrectFDimensions)
