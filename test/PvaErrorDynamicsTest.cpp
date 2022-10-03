@@ -103,7 +103,7 @@ TEST(InertialErrorDynamics, ComputeMatrices)
                0,      0,      0,     0,      0,      1,      0,      0,     1,
                0,      0,      0,     0,      0,      0,      0,      0,     0,
                0,      0,      0,     0,      0,      0,      0,      0,     0,
-               0,      0,      0,     0,      0,      0,      0,      0,     1;
+               0,      0,      0,     0,      0,      0,      0,      0,     0;
 
     // Correct F Matrix
     EXPECT_TRUE(F.isApprox(FSol, 1e-6));
