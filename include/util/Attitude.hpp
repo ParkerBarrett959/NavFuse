@@ -54,29 +54,29 @@ class Attitude {
         bool buildQuaternionEquivalent(Eigen::VectorXd &qA2B,
                                        Eigen::MatrixXd &QA2B);
 
-        /* @rph2Dcm
+        /* @euler2Dcm
             Inputs:
-                rph: 3x1 dimensional vector containing roll pitch and heading [rad]
+                euler: 3x1 dimensional vector containing euler angles [rad]
             Outputs:
                 RB2N: 3x3 dimensional DCM relating the body frame to the NED frame
             Description:
-                Function which takes in roll pitch and heading of the body frame relative to the NED frame and
+                Function which takes in the euler angles of the body frame relative to the NED frame and
                 computes the DCM RB2N.
         */
-        bool rph2Dcm(Eigen::Vector3d &rph,
-                     Eigen::Matrix3d &RB2N);
+        bool euler2Dcm(Eigen::Vector3d &euler,
+                       Eigen::Matrix3d &RB2N);
 
-        /* @Dcm2Rph
+        /* @dcm2Euler
             Inputs:
                 RB2N: 3x3 dimensional DCM relating the body frame to the NED frame
             Outputs:
-                rph: 3x1 dimensional vector containing roll pitch and heading [rad]
+                euler: 3x1 dimensional vector containing reuler angles [rad]
             Description:
-                Function which takes in the DCM relating the body frame to the NED frame and computes the roll,
-                pitch and heading.
+                Function which takes in the DCM relating the body frame to the NED frame and computes
+                the euler angles.
         */
-        bool dcm2Rph(Eigen::Matrix3d &RB2N,
-                     Eigen::Vector3d &rph);
+        bool dcm2Euler(Eigen::Matrix3d &RB2N,
+                       Eigen::Vector3d &euler);
 
     // Private Class Members/Function
     private:

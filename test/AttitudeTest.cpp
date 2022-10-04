@@ -198,20 +198,20 @@ TEST(ComputeQuatEquivalent, ComputeResult)
 
 }
 
-// Compute DCM from RPH
-TEST(ComputeRph2Dcm, ComputeResult)
+// Compute DCM from Euler
+TEST(ComputeEuler2Dcm, ComputeResult)
 {
 
     // Create Attitude Object
     Attitude att;
 
     // Initialize Variables
-    Eigen::Vector3d rph(3);
-    rph << 0.349, 0.125, 2.094;
+    Eigen::Vector3d euler(3);
+    euler << 0.349, 0.125, 2.094;
     Eigen::Matrix3d RB2N(3, 3);
 
     // Successfully Compute DCM
-    EXPECT_TRUE(att.rph2Dcm(rph, RB2N));
+    EXPECT_TRUE(att.euler2Dcm(euler, RB2N));
 
     // Define Expected Solutions
     Eigen::MatrixXd RB2NSol(3, 3);
@@ -224,8 +224,8 @@ TEST(ComputeRph2Dcm, ComputeResult)
 
 }
 
-// Compute RPH2DCM: Singularity
-TEST(ComputeDcm2Rph, Singularity)
+// Compute Euler2DCM: Singularity
+TEST(ComputeDcm2Euler, Singularity)
 {
 
     // Create Attitude Object
@@ -236,10 +236,10 @@ TEST(ComputeDcm2Rph, Singularity)
     RB2N <<   0.00000000000000,  0.85946432815914, -0.124674733385228,
              -0.83530495080520, -0.43260583128062,  0.339290191285157,
               0.23767279962808,  0.27234768837635,  0.932383170672339;
-    Eigen::Vector3d rph;
+    Eigen::Vector3d euler;
 
     // Singularity in R11
-    EXPECT_FALSE(att.dcm2Rph(RB2N, rph));
+    EXPECT_FALSE(att.dcm2Euler(RB2N, euler));
     
     // Redefine Matrix
     RB2N <<  -0.49575929590605,  0.85946432815914, -0.124674733385228,
@@ -247,12 +247,12 @@ TEST(ComputeDcm2Rph, Singularity)
               0.23767279962808,  0.27234768837635,  0.000000000000000;
 
     // Singularity in R33
-    EXPECT_FALSE(att.dcm2Rph(RB2N, rph));
+    EXPECT_FALSE(att.dcm2Euler(RB2N, euler));
 
 }
 
-// Compute RPH2DCM: Arcsin Limits
-TEST(ComputeDcm2Rph, ArcsinDomain)
+// Compute Euler2DCM: Arcsin Limits
+TEST(ComputeDcm2Euler, ArcsinDomain)
 {
 
     // Create Attitude Object
@@ -263,10 +263,10 @@ TEST(ComputeDcm2Rph, ArcsinDomain)
     RB2N <<  -0.49575929590605,  0.85946432815914,  1.124674733385228,
              -0.83530495080520, -0.43260583128062,  0.339290191285157,
               0.23767279962808,  0.27234768837635,  0.932383170672339;
-    Eigen::Vector3d rph;
+    Eigen::Vector3d euler;
 
     // R13 > 1
-    EXPECT_FALSE(att.dcm2Rph(RB2N, rph));
+    EXPECT_FALSE(att.dcm2Euler(RB2N, euler));
     
     // Redefine Matrix
     RB2N <<  -0.49575929590605,  0.85946432815914, -1.124674733385228,
@@ -274,12 +274,12 @@ TEST(ComputeDcm2Rph, ArcsinDomain)
               0.23767279962808,  0.27234768837635,  0.932383170672339;
 
     // R13 < -1
-    EXPECT_FALSE(att.dcm2Rph(RB2N, rph));
+    EXPECT_FALSE(att.dcm2Euler(RB2N, euler));
 
 }
 
-// Compute RPH2DCM
-TEST(ComputeDcm2Rph, ComputeResult)
+// Compute Euler2DCM
+TEST(ComputeDcm2Euler, ComputeResult)
 {
 
     // Create Attitude Object
@@ -290,16 +290,16 @@ TEST(ComputeDcm2Rph, ComputeResult)
     RB2N <<  -0.49575929590605,  0.85946432815914, -0.124674733385228,
              -0.83530495080520, -0.43260583128062,  0.339290191285157,
               0.23767279962808,  0.27234768837635,  0.932383170672339;
-    Eigen::Vector3d rph;
+    Eigen::Vector3d euler;
 
-    // Successfully Compute RPH
-    EXPECT_TRUE(att.dcm2Rph(RB2N, rph));
+    // Successfully Compute Euler Angles
+    EXPECT_TRUE(att.dcm2Euler(RB2N, euler));
     
     // Define Expected Solutions
-    Eigen::Vector3d rphSol(3);
-    rphSol << 0.349, 0.125, 2.094;
+    Eigen::Vector3d eulerSol(3);
+    eulerSol << 0.349, 0.125, 2.094;
 
     // Check Results
-    EXPECT_TRUE(rph.isApprox(rphSol, 1e-3));
+    EXPECT_TRUE(euler.isApprox(eulerSol, 1e-3));
 
 }

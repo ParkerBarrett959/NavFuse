@@ -122,32 +122,32 @@ bool Attitude::buildQuaternionEquivalent(Eigen::VectorXd &qA2B,
 
 }
 
-// Compute DCM from RPH
-bool Attitude::rph2Dcm(Eigen::Vector3d &rph,
-                       Eigen::Matrix3d &RB2N) {
+// Compute DCM from Euler Angles
+bool Attitude::euler2Dcm(Eigen::Vector3d &euler,
+                         Eigen::Matrix3d &RB2N) {
 
-    // Extract Roll, Pitch and Heading
-    double r = rph[0];
-    double p = rph[1];
-    double h = rph[2];
+    // Extract Euler Angles
+    double e1 = euler[0];
+    double e2 = euler[1];
+    double e3 = euler[2];
     
-    // Define R3 (About Heading)
+    // Define R3
     Eigen::Matrix3d R3;
-    R3 <<  std::cos(h),  std::sin(h),  0.0,
-          -std::sin(h),  std::cos(h),  0.0,
+    R3 <<  std::cos(e3),  std::sin(e3),  0.0,
+          -std::sin(e3),  std::cos(e3),  0.0,
            0.0,          0.0,          1.0;
 
-    // Define R2 (About Pitch)
+    // Define R2
     Eigen::Matrix3d R2;
-    R2 <<  std::cos(p),  0.0,  -std::sin(p),
+    R2 <<  std::cos(e2),  0.0,  -std::sin(e2),
            0.0,          1.0,   0.0,
-           std::sin(p),  0.0,   std::cos(p);
+           std::sin(e2),  0.0,   std::cos(e2);
 
-    // Define R1 (About Roll)
+    // Define R1
     Eigen::Matrix3d R1;
     R1 <<  1.0,   0.0,            0.0,
-           0.0,   std::cos(r),   std::sin(r),
-           0.0,  -std::sin(r),   std::cos(r);
+           0.0,   std::cos(e1),   std::sin(e1),
+           0.0,  -std::sin(e1),   std::cos(e1);
 
     // Compute Final Rotation
     RB2N = R1 * R2 * R3;
@@ -157,9 +157,9 @@ bool Attitude::rph2Dcm(Eigen::Vector3d &rph,
 
 }
 
-// Compute RPH from DCM
-bool Attitude::dcm2Rph(Eigen::Matrix3d &RB2N,
-                       Eigen::Vector3d &rph) {
+// Compute Euler Angles from DCM
+bool Attitude::dcm2Euler(Eigen::Matrix3d &RB2N,
+                         Eigen::Vector3d &euler) {
     
     // Extract Elements of DCM
     double R11 = RB2N(0, 0);
@@ -180,16 +180,16 @@ bool Attitude::dcm2Rph(Eigen::Matrix3d &RB2N,
         return false;
     }
     
-    // Compute Roll
-    rph(0) = std::atan(R23 / R33);
+    // Compute Euler Angle 1
+    euler(0) = std::atan(R23 / R33);
 
-    // Compute Pitch
-    rph(1) = -std::asin(R13);
+    // Compute Euler Angle 2
+    euler(1) = -std::asin(R13);
 
-    // Compute Heading
-    rph(2)= std::atan(R12 / R11);
-    if (rph(2) < 0) {
-        rph(2) += M_PI;
+    // Compute Euler Angle 3
+    euler(2)= std::atan(R12 / R11);
+    if (euler(2) < 0) {
+        euler(2) += M_PI;
     } 
     
     // Return Statement
