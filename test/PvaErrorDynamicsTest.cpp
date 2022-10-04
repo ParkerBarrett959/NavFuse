@@ -166,6 +166,59 @@ TEST(EcefErrorDynamics, IncorrectGDimensions)
 }
 
 // ECEF Error Dynamics: Compute Matrices
+TEST(EcefErrorDynamics, ComputeMatrices)
+{
+
+    // Create PVA Error Dynamics Object
+    PvaErrorDynamics pva;
+
+    // Initialize Variables
+    Eigen::Vector3d aE(3);
+    aE << 0.362, 0.474, 0.367;
+    Eigen::Matrix3d GE(3, 3);
+    GE << 0.284, 0.001, 0.012,
+          0.028, 0.274, 0.008,
+          0.001, 0.003, 0.736;
+    Eigen::Matrix3d RS2E = Eigen::Matrix3d::Identity(3, 3);
+    Eigen::Matrix3d OEI_I(3, 3);
+    OEI_I <<      0, -0.273,  0.163,
+              0.273,      0, -0.573,
+             -0.163,  0.573,      0;
+    Eigen::MatrixXd F(9, 9);
+    Eigen::MatrixXd G(9, 9);
+
+    // Compute Dynamics
+    EXPECT_TRUE(pva.ecefErrorDynamics(aE, GE, RS2E, OEI_I, F, G));
+
+    // Define Expected Solutions
+    Eigen::MatrixXd FSol(9, 9);
+    FSol <<    0,  0.273, -0.163,     0,      0,      0,         0,         0,         0,
+          -0.273,      0,  0.573,     0,      0,      0,         0,         0,         0,
+           0.163, -0.573,      0,     0,      0,      0,         0,         0,         0,
+               0, -0.367,  0.474,     0,  0.546, -0.326,  0.385098, -0.092399, -0.144429,
+           0.367,      0, -0.362,-0.546,      0,  1.146, -0.065399,  0.676858, -0.036499,
+          -0.474,  0.362,      0, 0.326, -1.146,      0, -0.155429, -0.041499,  1.090898,
+               0,      0,      0,     1,      0,      0,         0,         0,         0,
+               0,      0,      0,     0,      1,      0,         0,         0,         0,
+               0,      0,      0,     0,      0,      1,         0,         0,         0;
+    Eigen::MatrixXd GSol(9, 9);
+    GSol <<   -1,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,     -1,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,     -1,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     1,      0,      0,      1,      0,     0,
+               0,      0,      0,     0,      1,      0,      0,      1,     0,
+               0,      0,      0,     0,      0,      1,      0,      0,     1,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     0;
+
+    // Correct F Matrix
+    EXPECT_TRUE(F.isApprox(FSol, 1e-6));
+
+    // Correct G Matrix
+    EXPECT_TRUE(G.isApprox(GSol, 1e-6));
+
+}
 
 // NED Error Dynamics: Incorrect Input Dimensions F
 TEST(NedErrorDynamics, IncorrectFDimensions)
@@ -224,3 +277,58 @@ TEST(NedErrorDynamics, IncorrectGDimensions)
 }
 
 // NED Error Dynamics: Compute Matrices
+TEST(NedErrorDynamics, ComputeMatrices)
+{
+
+    // Create PVA Error Dynamics Object
+    PvaErrorDynamics pva;
+
+    // Initialize Variables
+    Eigen::Vector3d aN(3);
+    aN << 0.362, 0.474, 0.367;
+    Eigen::Matrix3d GN(3, 3);
+    GN << 0.284, 0.001, 0.012,
+          0.028, 0.274, 0.008,
+          0.001, 0.003, 0.736;
+    Eigen::Matrix3d RS2N = Eigen::Matrix3d::Identity(3, 3);
+    Eigen::Vector3d lla(3);
+    lla << 0.731, -1.240, 4.364;
+    Eigen::Vector3d llaDot(3);
+    llaDot << 0.002, 0.017, 0.001;
+    Eigen::Vector3d llaDDot(3);
+    llaDDot << 0.012, 0.004, 0.005;
+    Eigen::MatrixXd F(9, 9);
+    Eigen::MatrixXd G(9, 9);
+
+    // Compute Dynamics
+    EXPECT_TRUE(pva.nedErrorDynamics(aN, GN, RS2N, lla, llaDot, llaDDot, F, G));
+
+    // Define Expected Solutions
+    Eigen::MatrixXd FSol(9, 9);
+    FSol <<       0, -0.011398,     0.002,             0,      0.744507,         0,       -0.011398,             0,         0,
+           0.011398,         0,  0.012711,            -1,             0,         0,               0,             0,         0,
+             -0.002, -0.012711,         0,             0,     -0.667614,         0,       -0.012711,             0,         0,
+                  0, -5.77e-08,  7.43e-08,     -1.37e-06,     -0.016972, -6.27e-10,    -3.16494e-05,             0, -1.89e-09,
+           7.75e-08,         0, -7.63e-08,      0.030619,      0.003587, -5.36e-09,        0.003655,             0, -6.18e-10,
+              0.474,    -0.362,         0,  25503.121498, 120672.674050,         0,    -1847.420312,             0,  0.736166,
+                  0,         0,         0,             1,             0,         0,               0,             0,         0,
+                  0,         0,         0,             0,             1,         0,               0,             0,         0,
+                  0,         0,         0,             0,             0,         1,               0,             0,         0;
+    Eigen::MatrixXd GSol(9, 9);
+    GSol <<   -1,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,     -1,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,     -1,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,  1.57e-07,  0,      0,   1.57e-07,  0,     0,
+               0,      0,      0,     0,   2.10e-07,  0,      0,   2.10e-07, 0,
+               0,      0,      0,     0,      0,     -1,      0,      0,    -1,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     0,
+               0,      0,      0,     0,      0,      0,      0,      0,     0;
+    
+    // Correct F Matrix
+    EXPECT_TRUE(F.isApprox(FSol, 1e-6));
+
+    // Correct G Matrix
+    EXPECT_TRUE(G.isApprox(GSol, 1e-6));
+
+}

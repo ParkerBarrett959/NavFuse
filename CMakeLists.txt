@@ -53,26 +53,26 @@ target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filte
 
 # Unit Testing Build
 enable_testing()
-add_executable( test_navigation_library ${PROJECT_SOURCE_DIR}/test/testMain.cpp 
-	                                ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp 
-					${PROJECT_SOURCE_DIR}/test/KalmanFilterTest.cpp 
-					${PROJECT_SOURCE_DIR}/test/CompensatorTest.cpp
-					${PROJECT_SOURCE_DIR}/test/InitializationTest.cpp
-					${PROJECT_SOURCE_DIR}/test/StrapdownTest.cpp
-					${PROJECT_SOURCE_DIR}/test/PvaErrorDynamicsTest.cpp
-				        ${PROJECT_SOURCE_DIR}/test/GravityTest.cpp
-				        ${PROJECT_SOURCE_DIR}/test/NavUtilsTest.cpp ${HEADER_LIST})
+add_executable( test_nav_fuse ${PROJECT_SOURCE_DIR}/test/testMain.cpp 
+	                      ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp 
+			      ${PROJECT_SOURCE_DIR}/test/KalmanFilterTest.cpp 
+			      ${PROJECT_SOURCE_DIR}/test/CompensatorTest.cpp
+			      ${PROJECT_SOURCE_DIR}/test/InitializationTest.cpp
+			      ${PROJECT_SOURCE_DIR}/test/StrapdownTest.cpp
+			      ${PROJECT_SOURCE_DIR}/test/PvaErrorDynamicsTest.cpp
+			      ${PROJECT_SOURCE_DIR}/test/GravityTest.cpp
+			      ${PROJECT_SOURCE_DIR}/test/NavUtilsTest.cpp ${HEADER_LIST})
 target_link_libraries(
-  test_navigation_library
+  test_nav_fuse
   GTest::gtest_main
   navigation
 )
 
 # Target Include Directories
-target_include_directories(test_navigation_library PUBLIC ${PROJECT_SOURCE_DIR}/include/filter
-                                                   PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
-                                                   PUBLIC ${PROJECT_SOURCE_DIR}/include/util
-                                                   PUBLIC ${EIGEN_INSTALL_PATH})
+target_include_directories(test_nav_fuse PUBLIC ${PROJECT_SOURCE_DIR}/include/filter
+                                         PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
+                                         PUBLIC ${PROJECT_SOURCE_DIR}/include/util
+                                         PUBLIC ${EIGEN_INSTALL_PATH})
 
 include(GoogleTest)
-gtest_discover_tests(test_navigation_library)
+gtest_discover_tests(test_nav_fuse)

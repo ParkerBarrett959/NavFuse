@@ -169,14 +169,14 @@ bool PvaErrorDynamics::nedErrorDynamics(Eigen::Vector3d &aN,
     double c2lat = std::cos(2.0 * lat);
     double N = a / (std::sqrt(1 - (eSq * std::pow(slat, 2))));
     double M = (a * (1 - eSq)) / std::pow(1 - (eSq * std::pow(slat, 2)), 1.5);
-    double RPhi = M * std::pow(1 + (0.007 * std::pow(clat, 2)), 0.5);
+    double RPhi = std::pow(N * M, 0.5);
     double r = RPhi + h;
     double l1Dot = lonDot + wE;
     double l2Dot = lonDot + (2 * wE);  
 
     // Define Elements of F
     double F12 = -l1Dot*slat;
-    double F13 = -latDot;
+    double F13 = latDot;
     double F15 = clat;
     double F17 = -l1Dot*slat;
     double F21 = l1Dot*slat;
@@ -204,7 +204,7 @@ bool PvaErrorDynamics::nedErrorDynamics(Eigen::Vector3d &aN,
     double F64 = 2*r*latDot;
     double F65 = 2*r*l1Dot*std::pow(clat, 2);
     double F67 = -r*lonDot*l2Dot*s2lat;
-    double F69 = (latDot*latDot) + (lonDot*l2Dot*std::pow(clat, 2));
+    double F69 = (latDot*latDot) + (lonDot*l2Dot*std::pow(clat, 2)) + G33;
 
     // Set Free Inertial Dynamics Matrix
     F << 0.0,  F12,  F13,  0.0,  F15,  0.0,  F17,  0.0,  0.0,
