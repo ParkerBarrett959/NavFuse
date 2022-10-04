@@ -13,6 +13,7 @@
 #include <Eigen/Dense>
 #include <cmath>
 #include "NavUtils.hpp"
+#include "Attitude.hpp"
 #include "Gravity.hpp"
 
 // Inertial Navigation Strapdown Class
@@ -71,6 +72,7 @@ class Strapdown {
 
         // Utility Object Instantiations
         NavUtils NavUtil_;
+        Attitude Attitude_;
         Gravity Gravity_;
 
         /* @updateAttitude

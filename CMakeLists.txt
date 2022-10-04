@@ -61,7 +61,8 @@ add_executable( test_nav_fuse ${PROJECT_SOURCE_DIR}/test/testMain.cpp
 			      ${PROJECT_SOURCE_DIR}/test/StrapdownTest.cpp
 			      ${PROJECT_SOURCE_DIR}/test/PvaErrorDynamicsTest.cpp
 			      ${PROJECT_SOURCE_DIR}/test/GravityTest.cpp
-			      ${PROJECT_SOURCE_DIR}/test/NavUtilsTest.cpp ${HEADER_LIST})
+			      ${PROJECT_SOURCE_DIR}/test/NavUtilsTest.cpp
+			      ${PROJECT_SOURCE_DIR}/test/AttitudeTest.cpp ${HEADER_LIST})
 target_link_libraries(
   test_nav_fuse
   GTest::gtest_main

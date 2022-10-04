@@ -21,7 +21,7 @@ bool Strapdown::initialize(Eigen::Vector3d &lla,
     lla_ = lla;
     vNed_ = vNed;
     tov_ = tov;
-    if (!NavUtil_.rph2Dcm(rph, RB2N_)) {
+    if (!Attitude_.rph2Dcm(rph, RB2N_)) {
         std::cout << "[Strapdown::initialize] Unable to compute RB2N from rph" << std::endl;
         return false; 
     }
