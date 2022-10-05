@@ -56,6 +56,63 @@ bool Attitude::computeDcmFromQuaternion(Eigen::VectorXd &qA2B,
 
 }
 
+// Compute Quaternion from DCM
+bool Attitude::computeQuaternionFromDcm(Eigen::MatrixXd &RA2B,
+                                        Eigen::VectorXd &qA2B) {
+
+    // Verify Correct Dimensions
+    if (qA2B.size() != 4) {
+        std::cout << "[Attitude::computeQuaternionFromDcm] qA2B has incorrect dimensions: Expected " << 
+                "4x1, Got " << qA2B.size() << "x1" << std::endl;
+        return false;
+    } else if ((RA2B.rows() != 3) || (RA2B.cols() != 3)) {
+        std::cout << "[Attitude::computeQuaternionFromDcm] RA2B has incorrect dimensions: Expected " << 
+                "3x3, Got " << RA2B.rows() << "x" << RA2B.cols() << std::endl;
+        return false;
+    }
+
+    // Extract Elements
+    double R11 = RA2B(0, 0);
+    double R12 = RA2B(0, 1);
+    double R13 = RA2B(0, 2);
+    double R21 = RA2B(1, 0);
+    double R22 = RA2B(1, 1);
+    double R23 = RA2B(1, 2);
+    double R31 = RA2B(2, 0);
+    double R32 = RA2B(2, 1);
+    double R33 = RA2B(2, 2);
+
+    // Compute Squares of Quaternion Elements
+    std::vector<double> qSqVec(4);
+    qSqVec[0] = 0.25 * (1 + R11 + R22 + R33);
+    qSqVec[1] = 0.25 * (1 + R11 - R22 - R33);
+    qSqVec[2] = 0.25 * (1 - R11 + R22 - R33);
+    qSqVec[3] = 0.25 * (1 - R11 - R22 + R33);
+
+    // Get Index of Maximum Value
+    int iter = *max_element(qSqVec.begin(), qSqVec.end());
+
+    // Compute Quaternion
+    double scalar;
+    if (iter == 0) {
+        double q0 = std::sqrt(qSqVec[iter]);
+        qA2B << 4.0 * std::pow(q0, 2), (R23 - R32), (R31 - R13), (R12 - R21); 
+    } else if (iter == 1) {
+        double q1 = std::sqrt(qSqVec[iter]);
+        qA2B << (R23 - R32), 4.0 * std::pow(q1, 2), (R12 + R21), (R31 + R13);
+    } else if (iter == 2) {
+        double q2 = std::sqrt(qSqVec[iter]);
+        qA2B << (R31 - R13), (R12 + R21), 4.0 * std::pow(q2, 2), (R23 + R32);
+    } else {
+        double q3 = std::sqrt(qSqVec[iter]);
+        qA2B << (R12 - R21), (R31 + R13), (R23 + R32), 4.0 * std::pow(q3, 2);
+    }
+    qA2B *= (1.0 / (4.0 * std::sqrt(qSqVec[iter])));
+    
+    // Return Statement for Successful Computation
+    return true;
+
+}
 
 // Compute Quaternion from Rotation Vector
 bool Attitude::computeQuaternionFromRotationVec(Eigen::VectorXd &phi,

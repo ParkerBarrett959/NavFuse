@@ -21,7 +21,7 @@ TEST(ComputeDcmFromQuat, incorrectQuaternionSize)
 
     // Initialize Variables
     Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(3);
-    Eigen::MatrixXd RA2B = Eigen::MatrixXd::Zero(3, 4);
+    Eigen::MatrixXd RA2B = Eigen::MatrixXd::Zero(4, 4);
 
     // Quaternion has Incorrect Number of Rows
     ASSERT_FALSE(att.computeDcmFromQuaternion(qA2B, RA2B));
@@ -70,12 +70,75 @@ TEST(ComputeDcmFromQuat, ComputeResult)
     RA2BSol << -0.667335077419064,      0.703037538258743,       0.245768415882061,
                -0.028794513435833,     -0.354106917740399,       0.934761556122409,
                 0.744200759501148,      0.616722393470093,       0.256551591206202;
-;
 
     // Check Results
     EXPECT_TRUE(RA2B.isApprox(RA2BSol, 1e-6));
 
 }
+
+// Compute Quaternion from DCM: Incorrect Quaternion Size
+TEST(ComputeQuatFromDcm, incorrectQuaternionSize)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(3);
+    Eigen::MatrixXd RA2B = Eigen::MatrixXd::Zero(4, 4);
+
+    // Quaternion has Incorrect Number of Rows
+    ASSERT_FALSE(att.computeQuaternionFromDcm(RA2B, qA2B));
+
+}
+
+// Compute Quaternion from DCM: Incorrect DCM Size
+TEST(ComputeQuatFromDcm, incorrectDcmSize)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd RA2B = Eigen::MatrixXd::Zero(3, 4);
+
+    // DCM has Incorrect Number of Columns
+    ASSERT_FALSE(att.computeQuaternionFromDcm(RA2B, qA2B));
+
+    // Redefine RA2B
+    RA2B = Eigen::MatrixXd::Zero(4, 3);
+
+    // DCM has Incorrect Number of Rows
+    ASSERT_FALSE(att.computeQuaternionFromDcm(RA2B, qA2B));
+
+}
+
+/*/ Compute Quaternion from DCM
+TEST(ComputeDcmFromQuat, ComputeResult)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B(4);
+    qA2B << 0.275, 0.372, 0.583, 0.856;
+    Eigen::MatrixXd RA2B(3, 3);
+
+    // Successfully Compute DCM
+    EXPECT_TRUE(att.computeDcmFromQuaternion(qA2B, RA2B));
+
+    // Define Expected Solutions
+    Eigen::MatrixXd RA2BSol(3, 3);
+    RA2BSol << -0.667335077419064,      0.703037538258743,       0.245768415882061,
+               -0.028794513435833,     -0.354106917740399,       0.934761556122409,
+                0.744200759501148,      0.616722393470093,       0.256551591206202;
+
+    // Check Results
+    EXPECT_TRUE(RA2B.isApprox(RA2BSol, 1e-6));
+
+}*/
 
 // Compute Quaternion from Rotation Vector: Incorrect Quaternion Size
 TEST(ComputeQuatFromRotVec, incorrectQuaternionSize)

@@ -11,6 +11,7 @@
 #pragma once
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <Eigen/Dense>
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -31,6 +32,17 @@ class Attitude {
         */
         bool computeDcmFromQuaternion(Eigen::VectorXd &qA2B,
                                       Eigen::MatrixXd &RA2B);
+
+        /* @computeQuaternionFromDcm
+            Inputs:
+                RA2B: 3x3 dimensional direction cosines matrix relating reference frame A to frame B
+            Outputs:
+                qA2B: 4x1 dimensional quaternion relating reference frame A to frame B. The first element is the scalar element.
+            Description:
+                Function which takes in a direction cosines matrix and compute the equivalent quaternion.
+        */
+        bool computeQuaternionFromDcm(Eigen::MatrixXd &RA2B,
+                                      Eigen::VectorXd &qA2B);
 
         /* @computeQuaternionFromRotationVec
             Inputs:
