@@ -36,3 +36,5 @@ jobs:
         files: /home/runner/work/NavFuse/NavFuse/*.gcov
         token: ${{secrets.CODECOV_TOKEN}}
         version: "v0.1.15"
+    - name: List repo
+      run: ls -l
