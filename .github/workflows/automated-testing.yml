@@ -30,11 +30,9 @@ jobs:
     - name: Run Unit Tests
       run: cd build && ./test_nav_fuse
       
-    - name: Code Coverage 
-      run: curl -Os https://uploader.codecov.io/latest/linux/codecov && chmod +x codecov && ./codecov
-    - name: Upload coverage results to Codecov.io
+    - name: Code Coverage Tests
       uses: codecov/codecov-action@v2
       with:
-        files: /home/runner/work/NavFuse/NavFuse/coverage.xml
+        files: /home/runner/work/NavFuse/NavFuse/*.gcov
         token: ${{secrets.CODECOV_TOKEN}}
         version: "v0.1.15"
