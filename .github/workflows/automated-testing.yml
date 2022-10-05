@@ -28,4 +28,11 @@ jobs:
     - name: List Files
       run: ls build/
     - name: Run Unit Tests
-      run: cd build && ./test_navigation_library
+      run: cd build && ./test_nav_fuse
+      
+    - name: Code Coverage Tests
+      uses: codecov/codecov-action@v2
+      with:
+        files: /home/runner/work/NavFuse/NavFuse/coverage.xml
+        token: ${{secrets.CODECOV_TOKEN}}
+        version: "v0.1.15"

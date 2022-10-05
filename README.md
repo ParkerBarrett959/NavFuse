@@ -19,5 +19,5 @@ make
 ```
 # Run Unit Tests
 ```
-./test_navigation_library
+./test_nav_fuse
 ```
