@@ -83,31 +83,29 @@ bool Attitude::computeQuaternionFromDcm(Eigen::MatrixXd &RA2B,
     double R33 = RA2B(2, 2);
 
     // Compute Squares of Quaternion Elements
-    std::vector<double> qSqVec(4);
-    qSqVec[0] = 0.25 * (1 + R11 + R22 + R33);
-    qSqVec[1] = 0.25 * (1 + R11 - R22 - R33);
-    qSqVec[2] = 0.25 * (1 - R11 + R22 - R33);
-    qSqVec[3] = 0.25 * (1 - R11 - R22 + R33);
-
-    // Get Index of Maximum Value
-    int iter = *max_element(qSqVec.begin(), qSqVec.end());
+    double qSq0 = 0.25 * (1 + R11 + R22 + R33);
+    double qSq1 = 0.25 * (1 + R11 - R22 - R33);
+    double qSq2 = 0.25 * (1 - R11 + R22 - R33);
+    double qSq3 = 0.25 * (1 - R11 - R22 + R33);
 
     // Compute Quaternion
-    double scalar;
-    if (iter == 0) {
-        double q0 = std::sqrt(qSqVec[iter]);
+    if ((qSq0 > qSq1) && (qSq0 > qSq2) && (qSq0 > qSq3)) {
+        double q0 = std::sqrt(qSq0);
         qA2B << 4.0 * std::pow(q0, 2), (R23 - R32), (R31 - R13), (R12 - R21); 
-    } else if (iter == 1) {
-        double q1 = std::sqrt(qSqVec[iter]);
+        qA2B *= (1.0 / (4.0 * q0));
+    } else if ((qSq1 > qSq0) && (qSq1 > qSq2) && (qSq1 > qSq3)) {
+        double q1 = std::sqrt(qSq1);
         qA2B << (R23 - R32), 4.0 * std::pow(q1, 2), (R12 + R21), (R31 + R13);
-    } else if (iter == 2) {
-        double q2 = std::sqrt(qSqVec[iter]);
+        qA2B *= (1.0 / (4.0 * q1));
+    } else if ((qSq2 > qSq0) && (qSq2 > qSq1) && (qSq2 > qSq3)) {
+        double q2 = std::sqrt(qSq2);
         qA2B << (R31 - R13), (R12 + R21), 4.0 * std::pow(q2, 2), (R23 + R32);
+        qA2B *= (1.0 / (4.0 * q2));
     } else {
-        double q3 = std::sqrt(qSqVec[iter]);
+        double q3 = std::sqrt(qSq3);
         qA2B << (R12 - R21), (R31 + R13), (R23 + R32), 4.0 * std::pow(q3, 2);
+        qA2B *= (1.0 / (4.0 * q3));
     }
-    qA2B *= (1.0 / (4.0 * std::sqrt(qSqVec[iter])));
     
     // Return Statement for Successful Computation
     return true;

@@ -114,8 +114,8 @@ TEST(ComputeQuatFromDcm, incorrectDcmSize)
 
 }
 
-/*/ Compute Quaternion from DCM
-TEST(ComputeDcmFromQuat, ComputeResult)
+// Compute Quaternion from DCM
+TEST(ComputeQuatFromDcm, ComputeResult)
 {
 
     // Create Attitude Object
@@ -123,22 +123,22 @@ TEST(ComputeDcmFromQuat, ComputeResult)
 
     // Initialize Variables
     Eigen::VectorXd qA2B(4);
-    qA2B << 0.275, 0.372, 0.583, 0.856;
     Eigen::MatrixXd RA2B(3, 3);
+    RA2B << -0.667,  0.703,  0.245,
+            -0.028, -0.354,  0.934,
+             0.744,  0.616,  0.256;
 
     // Successfully Compute DCM
-    EXPECT_TRUE(att.computeDcmFromQuaternion(qA2B, RA2B));
+    EXPECT_TRUE(att.computeQuaternionFromDcm(RA2B, qA2B));
 
     // Define Expected Solutions
-    Eigen::MatrixXd RA2BSol(3, 3);
-    RA2BSol << -0.667335077419064,      0.703037538258743,       0.245768415882061,
-               -0.028794513435833,     -0.354106917740399,       0.934761556122409,
-                0.744200759501148,      0.616722393470093,       0.256551591206202;
-
+    Eigen::VectorXd qA2BSol(4);
+    qA2BSol << 0.2422177, 0.3277063, 0.5135942, 0.7544866;
+    
     // Check Results
-    EXPECT_TRUE(RA2B.isApprox(RA2BSol, 1e-6));
+    EXPECT_TRUE(qA2B.isApprox(qA2BSol, 1e-6));
 
-}*/
+}
 
 // Compute Quaternion from Rotation Vector: Incorrect Quaternion Size
 TEST(ComputeQuatFromRotVec, incorrectQuaternionSize)
