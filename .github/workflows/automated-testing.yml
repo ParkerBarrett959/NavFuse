@@ -29,3 +29,6 @@ jobs:
       run: ls build/
     - name: Run Unit Tests
       run: cd build && ./test_nav_fuse
+      
+    - name: Code Coverage 
+      run: curl -Os https://uploader.codecov.io/latest/linux/codecov && chmod +x codecov && ./codecov
