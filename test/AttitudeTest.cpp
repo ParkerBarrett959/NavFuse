@@ -114,8 +114,83 @@ TEST(ComputeQuatFromDcm, incorrectDcmSize)
 
 }
 
-// Compute Quaternion from DCM
-TEST(ComputeQuatFromDcm, ComputeResult)
+// Compute Quaternion from DCM: Case 0
+TEST(ComputeQuatFromDcm, ComputeResultCase0)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B(4);
+    Eigen::MatrixXd RA2B = Eigen::Matrix3d::Identity(3, 3);
+
+    // Successfully Compute DCM
+    EXPECT_TRUE(att.computeQuaternionFromDcm(RA2B, qA2B));
+
+    // Define Expected Solutions
+    Eigen::VectorXd qA2BSol(4);
+    qA2BSol << 1, 0, 0, 0;
+    
+    // Check Results
+    EXPECT_TRUE(qA2B.isApprox(qA2BSol, 1e-6));
+
+}
+
+// Compute Quaternion from DCM: Case 1
+TEST(ComputeQuatFromDcm, ComputeResultCase1)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B(4);
+    Eigen::MatrixXd RA2B(3, 3);
+    RA2B <<  0.667,  0.703,  0.245,
+            -0.028, -0.354,  0.934,
+             0.744,  0.616, -0.256;
+
+    // Successfully Compute DCM
+    EXPECT_TRUE(att.computeQuaternionFromDcm(RA2B, qA2B));
+
+    // Define Expected Solutions
+    Eigen::VectorXd qA2BSol(4);
+    qA2BSol << 0.1053697, 0.7544866, 0.2236620, 0.3277063;
+    
+    // Check Results
+    EXPECT_TRUE(qA2B.isApprox(qA2BSol, 1e-6));
+
+}
+
+// Compute Quaternion from DCM: Case 2
+TEST(ComputeQuatFromDcm, ComputeResultCase2)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B(4);
+    Eigen::MatrixXd RA2B(3, 3);
+    RA2B << -0.667,  0.703,  0.245,
+            -0.028,  0.354,  0.934,
+             0.744,  0.616, -0.256;
+
+    // Successfully Compute DCM
+    EXPECT_TRUE(att.computeQuaternionFromDcm(RA2B, qA2B));
+
+    // Define Expected Solutions
+    Eigen::VectorXd qA2BSol(4);
+    qA2BSol << 0.1653442, 0.2236620, 0.7544865, 0.5135943;
+    
+    // Check Results
+    EXPECT_TRUE(qA2B.isApprox(qA2BSol, 1e-6));
+
+}
+
+// Compute Quaternion from DCM: Case 3
+TEST(ComputeQuatFromDcm, ComputeResultCase3)
 {
 
     // Create Attitude Object
