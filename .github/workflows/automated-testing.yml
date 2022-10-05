@@ -32,3 +32,8 @@ jobs:
       
     - name: Code Coverage 
       run: curl -Os https://uploader.codecov.io/latest/linux/codecov && chmod +x codecov && ./codecov
+    - name: Upload coverage results to Codecov.io
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+        version: "v0.1.15"
