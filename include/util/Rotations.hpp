@@ -12,8 +12,7 @@
 #include <iostream>
 #include <cmath>
 #include <Eigen/Dense>
-using Eigen::MatrixXd;
-using Eigen::VectorXd;
+#include "Gravity.hpp"
 
 // Rotations Class
 class Rotations {
@@ -51,7 +50,27 @@ class Rotations {
                               double &lon,
                               Eigen::Matrix3d &RN2E);
 
+        /* @ecef2Lla
+            Inputs:
+                rE: 3x1 dimensional ECEF position vector [m]
+            Outputs:
+                lat: scalar geodetic latitude  [rad]
+                lon: scalar geodetic longitude [rad]
+                alt: scalar altitude above earth [m]
+            Description:
+                Function which takes in a position vector expressed in the earth-centered earth-fixed
+                reference frame and computes the latitude, longitude and altitude of the position. The
+                WGS-84 earth model is assumed.
+        */
+        bool ecef2Lla(Eigen::Vector3d &rE,
+                      double &lat,
+                      double &lon,
+                      double &alt);
+
     // Private Class Members/Function
     private:
+
+        // Utility Class Instantiations
+        Gravity Gravity_;
 
 };

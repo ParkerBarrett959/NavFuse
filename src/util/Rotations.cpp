@@ -73,3 +73,46 @@ bool Rotations::computeRNed2Ecef(double &lat,
     return true;
 
 }
+
+// Compute Lat/Lon/Alt from ECEF Position
+bool Rotations::ecef2Lla(Eigen::Vector3d &rE,
+                         double &lat,
+                         double &lon,
+                         double &alt) {
+    
+    // Unpack Inputs
+    double x = rE[0];
+    double y = rE[1];
+    double z = rE[2];
+    
+    // Compute Helpful Quantities
+    double a = Gravity_.gravityParams.a;
+    double b = Gravity_.gravityParams.b;
+    double f = Gravity_.gravityParams.f;
+    double e = std::sqrt(1 - std::pow(1-f, 2));
+    double ep = std::sqrt((std::pow(a, 2) - std::pow(b, 2)) / std::pow(b, 2));
+    double p = std::sqrt(std::pow(x, 2) + std::pow(y, 2));
+    double th = std::atan2(a * z, b * p);
+
+    // Compute Longitude
+    lon = std::atan2(y, x);
+
+    // Compute Latitude
+    double latY = z + (std::pow(ep, 2) * b * std::pow(std::sin(th), 3));
+    double latX = p - (std::pow(e, 2) * a * std::pow(std::cos(th), 3));
+    lat = std::atan2(latY, latX);
+
+    // Compute Altitude
+    double N = a / std::sqrt(1 - (std::pow(e, 2) * std::pow(std::sin(lat), 2)));
+    alt = (p / std::cos(lat)) - N;
+
+    // Check Longitude Range [-pi, pi]
+    lon = std::fmod(lon, 2.0 * M_PI);
+    if (lon > M_PI) {
+        lon -= (2.0 * M_PI);
+    }
+    
+    // Successful Return
+    return true;
+
+}

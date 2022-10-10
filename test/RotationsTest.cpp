@@ -131,3 +131,31 @@ TEST(ComputeRN2E, ComputeResult)
     EXPECT_TRUE(RN2E.isApprox(RN2ESol, 1e-6));
 
 }
+
+// Compute ECEF2LLA
+TEST(ComputeEcef2Lla, ComputeResult)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    Eigen::Vector3d rE(3);
+    rE << 1545471.693, -4488375.702, 4245603.836;
+    double lat;
+    double lon;
+    double alt;
+
+    // Compute Result
+    EXPECT_TRUE(rot.ecef2Lla(rE, lat, lon, alt));
+
+    // Define Expected Solutions
+    Eigen::Vector3d lla(3);
+    lla << lat, lon, alt;
+    Eigen::Vector3d llaSol(3);
+    llaSol << 0.733038, -1.239184, -0.000753;
+
+    // Check Results
+    EXPECT_TRUE(lla.isApprox(llaSol, 1e-4));
+
+}
