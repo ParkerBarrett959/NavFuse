@@ -67,6 +67,23 @@ class Rotations {
                       double &lon,
                       double &alt);
 
+        /* @lla2Ecef
+            Inputs:
+                lat: scalar geodetic latitude  [rad]
+                lon: scalar geodetic longitude [rad]
+                alt: scalar altitude above earth [m]
+            Outputs:
+                rE: 3x1 dimensional ECEF position vector [m]
+            Description:
+                Function which takes in a the latitude, longitude and altitude of the position and. 
+                computes the corresponding position vector in the earth-centered earth-fixed reference frame.
+                The WGS-84 earth model is assumed.
+        */
+        bool lla2Ecef(double &lat,
+                      double &lon,
+                      double &alt,
+                      Eigen::Vector3d &rE);
+
     // Private Class Members/Function
     private:
 

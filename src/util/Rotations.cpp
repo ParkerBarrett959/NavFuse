@@ -85,7 +85,7 @@ bool Rotations::ecef2Lla(Eigen::Vector3d &rE,
     double y = rE[1];
     double z = rE[2];
     
-    // Compute Helpful Quantities
+    // Compute WGS-84 Model Quantities
     double a = Gravity_.gravityParams.a;
     double b = Gravity_.gravityParams.b;
     double f = Gravity_.gravityParams.f;
@@ -111,6 +111,41 @@ bool Rotations::ecef2Lla(Eigen::Vector3d &rE,
     if (lon > M_PI) {
         lon -= (2.0 * M_PI);
     }
+    
+    // Successful Return
+    return true;
+
+}
+
+// Compute ECEF Position from Lat/Lon/Alt
+bool Rotations::lla2Ecef(double &lat,
+                         double &lon,
+                         double &alt,
+                         Eigen::Vector3d &rE) {
+    
+    // Check for Lat/Lon Out of Range
+    if (std::abs(lat) > (M_PI / 2.0)) {
+        std::cout << "[Rotations::lla2Ecef] latitude provided is outside acceptable range. " << 
+                "Expected: [-pi/2, pi/2], Got: " << lat << std::endl;
+        return false;
+    } else if (std::abs(lon) > M_PI) {
+        std::cout << "[Rotations::lla2Ecef] longitude provided is outside acceptable range. " << 
+                "Expected: [-pi, pi], Got: " << lon << std::endl;
+        return false;
+    }
+    
+    // Compute WGS-84 Model Quantities
+    double a = Gravity_.gravityParams.a;
+    double f = Gravity_.gravityParams.f;
+    double e = std::sqrt(1 - std::pow(1-f, 2));
+
+    // Compute Prime Vertical Radius of Curvature
+    double N = a / std::sqrt(1 - (std::pow(e, 2) * std::pow(std::sin(lat), 2)));
+
+    // Compute ECEF Position
+    rE[0] = (N + alt) * std::cos(lat) * std::cos(lon);
+    rE[1] = (N + alt) * std::cos(lat) * std::sin(lon);
+    rE[2] = (((1 - std::pow(e, 2)) * N) + alt) * std::sin(lat);
     
     // Successful Return
     return true;

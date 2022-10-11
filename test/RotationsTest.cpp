@@ -72,7 +72,7 @@ TEST(ComputeRE2N, ComputeResult)
 
 }
 
-// Compute RN2E: Latitutde Out of Range
+// Compute RN2E: Latitude Out of Range
 TEST(ComputeRN2E, LatOutOfRange)
 {
 
@@ -157,5 +157,66 @@ TEST(ComputeEcef2Lla, ComputeResult)
 
     // Check Results
     EXPECT_TRUE(lla.isApprox(llaSol, 1e-4));
+
+}
+
+// Compute lla2Ecef: Latitude Out of Range
+TEST(ComputeLla2Ecef, LatOutOfRange)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    double lat = 1.6;
+    double lon = 0.0;
+    double alt = 0.0;
+    Eigen::Vector3d rE(3);
+
+    // Latitude out of Range
+    EXPECT_FALSE(rot.lla2Ecef(lat, lon, alt, rE));
+
+}
+
+// Compute lla2Ecef: Longitude Out of Range
+TEST(ComputeLla2Ecef, LonOutOfRange)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    double lat = 0.0;
+    double lon = 3.5;
+    double alt = 0.0;
+    Eigen::Vector3d rE(3);
+
+    // Longitude out of Range
+    EXPECT_FALSE(rot.lla2Ecef(lat, lon, alt, rE));
+
+}
+
+// Compute lla2Ecef: Compute Result
+TEST(ComputeLla2Ecef, ComputeResult)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    double lat = 0.731;
+    double lon = -1.24;
+    double alt = 0.0;
+    Eigen::Vector3d rE(3);
+
+    // Compute Result
+    EXPECT_TRUE(rot.lla2Ecef(lat, lon, alt, rE));
+
+    // Define Expected Result
+    Eigen::Vector3d rESol(3);
+    rESol << 1544623.562624, -4497835.476247, 4235955.233997;
+
+    // Check Results
+    EXPECT_TRUE(rE.isApprox(rESol, 1e-6));
 
 }
