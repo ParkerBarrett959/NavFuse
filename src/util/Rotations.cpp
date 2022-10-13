@@ -151,3 +151,27 @@ bool Rotations::lla2Ecef(double &lat,
     return true;
 
 }
+
+// Compute Rotation from J2K Inertial to ECEF
+bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
+                                 std::string &eopFile,
+                                 Eigen::Matrix3d &RJ2E) {
+    
+    // Insert Function
+    
+    // Successful Return
+    return true;
+
+}
+
+// Compute Rotation from ECEF to J2K Inertial
+bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
+                                 std::string &eopFile,
+                                 Eigen::Matrix3d &RE2J) {
+    
+    // Insert Function
+    
+    // Successful Return
+    return true;
+
+}

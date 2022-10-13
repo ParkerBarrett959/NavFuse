@@ -11,6 +11,7 @@
 #pragma once
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <Eigen/Dense>
 #include "Gravity.hpp"
 
@@ -83,6 +84,52 @@ class Rotations {
                       double &lon,
                       double &alt,
                       Eigen::Vector3d &rE);
+
+        /* @computeRJ2k2Ecef
+            Inputs:
+                dateVec: 6x1 date vector of format [YYYY, MM, DD, HH, MM, SS]
+                eopFile: String Filepath+Filename of Earth Orientation Parameter .txt file
+            Outputs:
+                RJ2E: 3x3 direction cosines matrix relating J2K frame to the ECEF frame.
+            Description:
+                Function which takes in the date and a path to the earth orientation parameters .txt 
+                file and computes the direction cosines matrix relating the J2K inertial frame to the 
+                Earth-Centered Earth-Fixed reference frame.
+            External Data:
+                Earth orientation parameter files can be downloaded from here: https://celestrak.org/SpaceData/
+                Downloading the latest csv file is recommended. Parsing of the csv is handled internally by 
+                private class functions.
+            Reference:
+                Meysam Mahooti (2022). ECI2ECEF & ECEF2ECI Transformations
+                (https://www.mathworks.com/matlabcentral/fileexchange/61957-eci2ecef-ecef2eci-transformations),
+                MATLAB Central File Exchange. Retrieved October 13, 2022. 
+        */
+        bool computeRJ2k2Ecef(std::vector<int> &dateVec,
+                              std::string &eopFile,
+                              Eigen::Matrix3d &RJ2E);
+
+        /* @computeREcef2J2k
+            Inputs:
+                dateVec: 6x1 date vector of format [YYYY, MM, DD, HH, MM, SS]
+                eopFile: String Filepath+Filename of Earth Orientation Parameter .txt file
+            Outputs:
+                RE2J: 3x3 direction cosines matrix relating J2K frame to the ECEF frame.
+            Description:
+                Function which takes in the date and a path to the earth orientation parameters .txt 
+                file and computes the direction cosines matrix relating the Earth-Centered Earth-Fixed 
+                reference frame to the J2K Inertial reference frame.
+            External Data:
+                Earth orientation parameter files can be downloaded from here: https://celestrak.org/SpaceData/
+                Downloading the latest csv file is recommended. Parsing of the csv is handled internally by 
+                private class functions.
+            Reference:
+                Meysam Mahooti (2022). ECI2ECEF & ECEF2ECI Transformations
+                (https://www.mathworks.com/matlabcentral/fileexchange/61957-eci2ecef-ecef2eci-transformations),
+                MATLAB Central File Exchange. Retrieved October 13, 2022. 
+        */
+        bool computeREcef2J2k(std::vector<int> &dateVec,
+                              std::string &eopFile,
+                              Eigen::Matrix3d &RE2J);
 
     // Private Class Members/Function
     private:
