@@ -1,0 +1,17 @@
+#############################################################
+#                    External Data Directory                #
+#############################################################
+
+This file is a temporary placeholder location for storing
+external data sources. The current external data required
+to use NavFuse are:
+
+1) Earth Orientation Parameters CSV File
+    * File Name: EOP-Last5Years.csv
+    * File Type: CSV
+    * File Download Link: https://celestrak.org/SpaceData/
+    * Instructions: Navigate to download link, select the 
+                    most recent csv file in the "Earth 
+                    Orientation Parameter (EOP) Data"
+                    section of the page, and move the file
+                    into the /NavFuse/data/ directory.
