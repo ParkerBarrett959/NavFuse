@@ -21,3 +21,11 @@ make
 ```
 ./test_nav_fuse
 ```
+# External Data
+NavFuse requires external data, primary time-varying earth orientation parameters to effectively compute rotations. The earth orientation parameters can be downloaded and used as follows:
+
+* Step 1: Navigate to the CelesTrak Space Data Page: https://celestrak.org/SpaceData/
+* Step 2: In the "Earth Orientation Parameter (EOP) Data" Box, download the latest csv file
+* Step 3: Move the downloaded csv file to the /NavFuse/data/ directory
+
+Note: NavFuse looks for the EOP file specified at runtime - you do not need to rebuild if you change files or did not follow these instructions during the initial build
