@@ -157,7 +157,21 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
                                  std::string &eopFile,
                                  Eigen::Matrix3d &RJ2E) {
     
-    // Insert Function
+    // Convert Date Vector to UTC Modified Julian Date
+
+    // Extract IERS Earth Orientation Parameters
+
+    // Compute Time Differences
+
+    // Compute Precession Matrix
+
+    // Compute Nutation Matrix
+
+    // Compute Earth Rotation Matrix
+
+    // Compute Polar Motion
+
+    // Compute Rotation from ECEF to J2K
     
     // Successful Return
     return true;
@@ -169,8 +183,62 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
                                  std::string &eopFile,
                                  Eigen::Matrix3d &RE2J) {
     
-    // Insert Function
+    // Convert Date Vector to UTC Modified Julian Date
+
+    // Extract IERS Earth Orientation Parameters
+
+    // Compute Time Differences
+
+    // Compute Precession Matrix
+
+    // Compute Nutation Matrix
+
+    // Compute Earth Rotation Matrix
+
+    // Compute Polar Motion
+
+    // Compute Rotation from ECEF to J2K
     
+    // Successful Return
+    return true;
+
+}
+
+// Convert Date Vector to Modified Julian Date
+bool Rotations::convertDatevec2Mjd(std::vector<int> &dateVec,
+                                   double &mjd) {
+
+    // Unpacks Inputs
+    double year = dateVec[0];
+    double month = dateVec[1];
+    double day = dateVec[2];
+    double hour = dateVec[3];
+    double min = dateVec[4];
+    double sec = dateVec[5];
+
+    // Month Wrap-Around
+    if (month <= 2.0) {
+        month += 12.0;
+        year -= 1.0;
+    }
+
+    // Compute b
+    double b;
+    if (((10000.0 * year) + (100.0 * month) + day) <= 15821004.0) {
+        b = (double) (-2 + std::floor((year + 4716.0) / 4.0) - 1179);
+    } else {
+        b = (double) (std::floor(year / 400.0) - std::floor(year / 100.0) + std::floor(year / 4.0));
+    }
+
+    // Compute Whole Day Modified Julian Date
+    double MjdMidnight = (365.0 * year) - 679004.0 + b + (double) std::floor(30.6001 * (double)(month + 1)) + day;
+
+    // Compute Fractional Day
+    double fracDay = hour + ((double) min / 60.0) + ((double) sec / 3600.0) / 24.0;
+
+    // Compute Modified Julian Date
+    mjd = MjdMidnight + fracDay;
+
     // Successful Return
     return true;
 

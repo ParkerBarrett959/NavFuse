@@ -134,6 +134,17 @@ class Rotations {
     // Private Class Members/Function
     private:
 
+        /* @convertDatevec2Mjd
+            Inputs:
+                dateVec: 6x1 date vector of format [YYYY, MM, DD, HH, MM, SS]
+            Outputs:
+                mjd: Scalar Modified Julian Date
+            Description:
+                Function which takes in a 6x1 date vector and computes the Modified Julian Date.
+        */
+        bool convertDatevec2Mjd(std::vector<int> &dateVec,
+                                double &mjd);
+
         // Utility Class Instantiations
         Gravity Gravity_;
 
