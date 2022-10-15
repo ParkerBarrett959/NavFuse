@@ -157,6 +157,14 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
                                  std::string &eopFile,
                                  Eigen::Matrix3d &RJ2E) {
     
+    // Verify Date Vector is in Correct Format
+    if (dateVec.size() != 6) {
+        std::cout << "[Rotations::ccomputeRJ2k2Ecef] Incorrect Date Vector Size" << std::endl;
+        return false;
+    }
+
+    // Verify EOP File Exists
+    
     // Convert Date Vector to UTC Modified Julian Date
     double mjdUtc;
     if (!convertDatevec2Mjd(dateVec, mjdUtc)) {
@@ -187,6 +195,14 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
 bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
                                  std::string &eopFile,
                                  Eigen::Matrix3d &RE2J) {
+    
+    // Verify Date Vector is in Correct Format
+    if (dateVec.size() != 6) {
+        std::cout << "[Rotations::computeREcef2J2k] Incorrect Date Vector Size" << std::endl;
+        return false;
+    }
+
+    // Verify EOP File Exists
     
     // Convert Date Vector to UTC Modified Julian Date
     double mjdUtc;

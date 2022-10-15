@@ -221,6 +221,25 @@ TEST(ComputeLla2Ecef, ComputeResult)
 
 }
 
+// Compute RJ2E: Invalid Date Vector Size
+TEST(ComputeRJ2E, InvalidDateVectorSize)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 0, 0, 0, 0, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Incorrect Date Vector Size
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
+// Compute RJ2E: EOP File Does Not Exist
+
 // Compute RJ2E: Invalid Month
 TEST(ComputeRJ2E, InvalidMonth)
 {
@@ -335,6 +354,25 @@ TEST(ComputeRJ2E, InvalidSecond)
     EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
 
 }
+
+// Compute RE2J: Invalid Date Vector Size
+TEST(ComputeRE2J, InvalidDateVectorSize)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 0, 0, 0, 0, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Incorrect Date Vector Size
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
+
+// Compute RE2J: EOP File Does Not Exist
 
 // Compute RE2J: Invalid Month
 TEST(ComputeRE2J, InvalidMonth)
