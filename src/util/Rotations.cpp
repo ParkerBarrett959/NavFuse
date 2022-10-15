@@ -158,6 +158,11 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
                                  Eigen::Matrix3d &RJ2E) {
     
     // Convert Date Vector to UTC Modified Julian Date
+    double mjdUtc;
+    if (!convertDatevec2Mjd(dateVec, mjdUtc)) {
+        std::cout << "[Rotations::computeRJ2k2Ecef] Failed to compute Modified Julian Date" << std::endl;
+        return false;
+    }
 
     // Extract IERS Earth Orientation Parameters
 
@@ -184,6 +189,11 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
                                  Eigen::Matrix3d &RE2J) {
     
     // Convert Date Vector to UTC Modified Julian Date
+    double mjdUtc;
+    if (!convertDatevec2Mjd(dateVec, mjdUtc)) {
+        std::cout << "[Rotations::computeREcef2J2k] Failed to compute Modified Julian Date" << std::endl;
+        return false;
+    }
 
     // Extract IERS Earth Orientation Parameters
 
@@ -215,6 +225,24 @@ bool Rotations::convertDatevec2Mjd(std::vector<int> &dateVec,
     double hour = dateVec[3];
     double min = dateVec[4];
     double sec = dateVec[5];
+
+    // Check for Invalid Inputs
+    if ((month > 12) || (month < 0)) {
+        std::cout << "[Rotations::convertDatevec2Mjd] Invalid Month" << std::endl;
+        return false;
+    } else if ((day > 31) || (day < 0)) {
+        std::cout << "[Rotations::convertDatevec2Mjd] Invalid Day" << std::endl;
+        return false;
+    } else if ((hour > 23) || (hour < 0)) {
+        std::cout << "[Rotations::convertDatevec2Mjd] Invalid Hour" << std::endl;
+        return false;
+    } else if ((min > 59) || (min < 0)) {
+        std::cout << "[Rotations::convertDatevec2Mjd] Invalid Minute" << std::endl;
+        return false;
+    } else if ((sec > 59) || (sec < 0)) {
+        std::cout << "[Rotations::convertDatevec2Mjd] Invalid Second" << std::endl;
+        return false;
+    }
 
     // Month Wrap-Around
     if (month <= 2.0) {

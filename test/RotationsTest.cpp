@@ -220,3 +220,233 @@ TEST(ComputeLla2Ecef, ComputeResult)
     EXPECT_TRUE(rE.isApprox(rESol, 1e-6));
 
 }
+
+// Compute RJ2E: Invalid Month
+TEST(ComputeRJ2E, InvalidMonth)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 13, 0, 0, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Month Value to High
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+    // Redefine Date
+    dateVec = {2022, -1, 0, 0, 0, 0};
+
+    // Month Value to Low
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
+// Compute RJ2E: Invalid Day
+TEST(ComputeRJ2E, InvalidDay)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 32, 0, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Day Value to High
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+    // Redefine Date
+    dateVec = {2022, 12, -1, 0, 0, 0};
+
+    // Day Value to Low
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
+// Compute RJ2E: Invalid Hour
+TEST(ComputeRJ2E, InvalidHour)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 30, 24, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Hour Value to High
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+    // Redefine Date
+    dateVec = {2022, 12, 30, -1, 0, 0};
+
+    // Hour Value to Low
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
+// Compute RJ2E: Invalid Minute
+TEST(ComputeRJ2E, InvalidMinute)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 30, 23, 60, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Minute Value to High
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+    // Redefine Date
+    dateVec = {2022, 12, 30, 23, -1, 0};
+
+    // Minute Value to Low
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
+// Compute RJ2E: Invalid Second
+TEST(ComputeRJ2E, InvalidSecond)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 30, 23, 59, 60};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Second Value to High
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+    // Redefine Date
+    dateVec = {2022, 12, 30, 23, 59, -1};
+
+    // Second Value to Low
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
+// Compute RE2J: Invalid Month
+TEST(ComputeRE2J, InvalidMonth)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 13, 0, 0, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Month Value to High
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+    // Redefine Date
+    dateVec = {2022, -1, 0, 0, 0, 0};
+
+    // Month Value to Low
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
+
+// Compute RE2J: Invalid Day
+TEST(ComputeRE2J, InvalidDay)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 32, 0, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Day Value to High
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+    // Redefine Date
+    dateVec = {2022, 12, -1, 0, 0, 0};
+
+    // Day Value to Low
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
+
+// Compute RE2J: Invalid Hour
+TEST(ComputeRE2J, InvalidHour)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 30, 24, 0, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Hour Value to High
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+    // Redefine Date
+    dateVec = {2022, 12, 30, -1, 0, 0};
+
+    // Hour Value to Low
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
+
+// Compute RE2J: Invalid Minute
+TEST(ComputeRE2J, InvalidMinute)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 30, 23, 60, 0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Minute Value to High
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+    // Redefine Date
+    dateVec = {2022, 12, 30, 23, -1, 0};
+
+    // Minute Value to Low
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
+
+// Compute RE2J: Invalid Second
+TEST(ComputeRE2J, InvalidSecond)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<int> dateVec{2022, 12, 30, 23, 59, 60};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Second Value to High
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+    // Redefine Date
+    dateVec = {2022, 12, 30, 23, 59, -1};
+
+    // Second Value to Low
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
