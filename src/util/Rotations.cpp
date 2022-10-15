@@ -162,8 +162,6 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
         std::cout << "[Rotations::ccomputeRJ2k2Ecef] Incorrect Date Vector Size" << std::endl;
         return false;
     }
-
-    // Verify EOP File Exists
     
     // Convert Date Vector to UTC Modified Julian Date
     double mjdUtc;
@@ -173,8 +171,21 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
     }
 
     // Extract IERS Earth Orientation Parameters
+    double xPole, yPole, Ut1_Utc, lod, Tai_Utc;
+    if (!getEops(mjdUtc, eopFile, xPole, yPole, Ut1_Utc, lod, Tai_Utc)) {
+        std::cout << "[Rotations::computeRJ2k2Ecef] Failed to get EOPs" << std::endl;
+        return false;
+    }
 
     // Compute Time Differences
+    double Tt_Tai = 32.184;
+    double Gps_Tai = -19.0;
+    double Ut1_Tai = Ut1_Utc - Tai_Utc;
+    double Utc_Tai = -Tai_Utc;
+    double Utc_Gps = Utc_Tai - Gps_Tai;
+    double Ut1_Gps = Ut1_Tai - Gps_Tai;
+    double Tt_Utc = Tt_Tai - Utc_Tai;
+    double Gps_Utc = Gps_Tai - Utc_Tai;
 
     // Compute Precession Matrix
 
@@ -201,8 +212,6 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
         std::cout << "[Rotations::computeREcef2J2k] Incorrect Date Vector Size" << std::endl;
         return false;
     }
-
-    // Verify EOP File Exists
     
     // Convert Date Vector to UTC Modified Julian Date
     double mjdUtc;
@@ -212,8 +221,21 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
     }
 
     // Extract IERS Earth Orientation Parameters
+    double xPole, yPole, Ut1_Utc, lod, Tai_Utc;
+    if (!getEops(mjdUtc, eopFile, xPole, yPole, Ut1_Utc, lod, Tai_Utc)) {
+        std::cout << "[Rotations::computeREcef2J2k] Failed to get EOPs" << std::endl;
+        return false;
+    }
 
     // Compute Time Differences
+    double Tt_Tai = 32.184;
+    double Gps_Tai = -19.0;
+    double Ut1_Tai = Ut1_Utc - Tai_Utc;
+    double Utc_Tai = -Tai_Utc;
+    double Utc_Gps = Utc_Tai - Gps_Tai;
+    double Ut1_Gps = Ut1_Tai - Gps_Tai;
+    double Tt_Utc = Tt_Tai - Utc_Tai;
+    double Gps_Utc = Gps_Tai - Utc_Tai;
 
     // Compute Precession Matrix
 
@@ -282,6 +304,23 @@ bool Rotations::convertDatevec2Mjd(std::vector<int> &dateVec,
 
     // Compute Modified Julian Date
     mjd = MjdMidnight + fracDay;
+
+    // Successful Return
+    return true;
+
+}
+
+// Get Earth Orientation Parameters
+bool Rotations::getEops(double &mjd,
+                        std::string &eop,
+                        double &xPole,
+                        double &yPole,
+                        double &Ut1_Utc,
+                        double &lod,
+                        double &Tai_Utc) {
+
+    // Insert Function
+
 
     // Successful Return
     return true;

@@ -138,12 +138,34 @@ class Rotations {
             Inputs:
                 dateVec: 6x1 date vector of format [YYYY, MM, DD, HH, MM, SS]
             Outputs:
-                mjd: Scalar Modified Julian Date
+                mjd: Scalar Modified Julian Date [days]
             Description:
                 Function which takes in a 6x1 date vector and computes the Modified Julian Date.
         */
         bool convertDatevec2Mjd(std::vector<int> &dateVec,
                                 double &mjd);
+
+        /* @getEops
+            Inputs:
+                mjdUtc: scalar Modified Julian Date UTC [days]
+                eop: String path and name of Earth Orientation Paramater file
+            Outputs:
+                xPole: Scalar X Component of Polar Coordinates [rad]
+                yPole: Scalar Y Component of Polar Coordinates [rad]
+                Ut1_Utc: Scalar Offset between Universal Time 1 and Coordinated Universal Time [s]
+                lod: Scalar length of Day [s]
+                Tai_Utc: Scalar Offset between International Atomic Time and Coordinated Universal Time [s]
+            Description:
+                Function which takes in the Modified Julian Date and the Eearth Orientation Parameter files 
+                and extracts the required EOPs.
+        */
+        bool getEops(double &mjd,
+                     std::string &eop,
+                     double &xPole,
+                     double &yPole,
+                     double &Ut1_Utc,
+                     double &lod,
+                     double &Tai_Utc);
 
         // Utility Class Instantiations
         Gravity Gravity_;
