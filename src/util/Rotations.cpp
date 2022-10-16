@@ -198,7 +198,12 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
         return false;
     }
 
-    // Compute Earth Rotation Matrix
+    // Compute Greenwich Hour Angle Matrix
+    Eigen::Matrix3d RGha(3, 3);
+    if (!computeGreenwichHourAngle(Mjd_Ut1, Mjd_Tt, RGha)) {
+        std::cout << "[Rotations::computeRJ2k2Ecef] Failed to compute Greenwich Hour Angle Matrix" << std::endl;
+        return false;
+    }
 
     // Compute Polar Motion
 
@@ -255,7 +260,12 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
         return false;
     }
 
-    // Compute Earth Rotation Matrix
+    // Compute Greenwich Hour Angle Matrix
+    Eigen::Matrix3d RGha(3, 3);
+    if (!computeGreenwichHourAngle(Mjd_Ut1, Mjd_Tt, RGha)) {
+        std::cout << "[Rotations::computeREcef2J2k] Failed to compute Greenwich Hour Angle Matrix" << std::endl;
+        return false;
+    }
 
     // Compute Polar Motion
 
@@ -385,8 +395,79 @@ bool Rotations::computeNutation(double &Mjd_Tt,
     double T = (Mjd_Tt - astroConst.mjdJ2000) / 36525.0;
     double ep = astroConst.rad * (23.43929111 - (46.8150 + (0.00059 - 0.001813 * T) * T)
         * T / 3600.0);
+    
+    // Get Nutation Angles
+    double dpsi, deps;
+    if (!nutationAngles(Mjd_Tt, dpsi, deps)) {
+        std::cout << "[Rotations::computeNutation] Unable to compute nutation angles" << std::endl;
+        return false;
+    }
+
+    // Compute Nutation Rotations
+    Eigen::Matrix3d Rx1(3, 3), Rx2(3, 3), Rz(3, 3);
+    Rx1 << 1.0,           0.0,          0.0,
+           0.0,  std::cos(ep), std::sin(ep),
+           0.0, -std::sin(ep), std::cos(ep); 
+    Rx2 << 1.0,                 0.0,                0.0,
+           0.0,  std::cos(-ep-deps), std::sin(-ep-deps),
+           0.0, -std::sin(-ep-deps), std::cos(-ep-deps); 
+    Rz << std::cos(-dpsi),  std::sin(-dpsi),  0.0,
+         -std::sin(-dpsi),  std::cos(-dpsi),  0.0,
+                      0.0,              0.0,  1.0;
+
+    // Compute Precession Matrix
+    RNutation = Rx2 * Rz * Rx1;
+
+    // Successful Return
+    return true;
+
+}
+
+// Compute Greenwich Hour Angle Matrix
+bool Rotations::computeGreenwichHourAngle(double &Mjd_Ut1,
+                                          double &Mjd_Tt,
+                                          Eigen::Matrix3d &RGha) {
+    
+    // Compute Greenwich Mean Sidereal Time
+    double secs = 86400.0;
+    double mjd0 = std::floor(Mjd_Ut1);
+    double Ut1 = secs * (Mjd_Ut1 - mjd0);
+    double t0 = (mjd0 - astroConst.mjdJ2000) / 36525.0;
+    double t = (Mjd_Ut1 - astroConst.mjdJ2000) / 36525.0;
+    double gmst = 24110.54841 + 8640184.812866 * t0 + 1.002737909350795 * Ut1 + (0.093104 - 6.2e-6 * t) * t * t;
+    double gmsTime = 2.0 * M_PI * ((gmst / secs) - std::floor(gmst / secs));
+
+    // Compute Equations of Equinox
+    double dpsi, deps;
+    if (!nutationAngles(Mjd_Tt, dpsi, deps)) {
+        std::cout << "[Rotations::computeGreenwichHourAngle] Unable to compute nutation angles" << std::endl;
+        return false;
+    }
+    double T = (Mjd_Tt - astroConst.mjdJ2000) / 36525.0;
+    double meanObliquity = astroConst.rad * (23.43929111 - (46.8150 + (0.00059 - 0.001813 * T) * T) * T / 3600.0);
+    double EqE = dpsi * std::cos(meanObliquity);
+
+    
+    // Compute Greenwich Apparent Sidereal Time
+    double gsTime = std::fmod(gmsTime + EqE, 2.0 * M_PI);
+
+    // Compute Greenwich Hour Angle Matrix
+    RGha << std::cos(gsTime),  std::sin(gsTime),  0.0,
+           -std::sin(gsTime),  std::cos(gsTime),  0.0,
+                         0.0,               0.0,  1.0;
+
+    // Successful Return
+    return true;
+                                          
+}
+
+// Compute Nutation Angles
+bool Rotations::nutationAngles(double &Mjd_Tt,
+                               double &dpsi,
+                               double &deps) {
 
     // Compute Nutation in Longitude and Obliquity
+    double T = (Mjd_Tt - astroConst.mjdJ2000) / 36525.0;
     double T2 = T*T;
     double T3 = T2*T;
     double rev = 360.0 * 3600.0;
@@ -504,8 +585,10 @@ bool Rotations::computeNutation(double &Mjd_Tt,
     double F  = std::fmod (335778.877 + (1342.0 * rev +  295263.137) * T - 13.257 * T2 + 0.011 * T3, rev);
     double D  = std::fmod (1072261.307 + (1236.0 * rev + 1105601.328) * T -  6.891 * T2 + 0.019 * T3, rev);
     double Om = std::fmod (450160.280 - (5.0 * rev +  482890.539) * T + 7.455 * T2 + 0.008 * T3, rev);
-    double dpsi = 0.0;
-    double deps = 0.0;
+
+    // Compute Nutation Angles
+    dpsi = 0.0;
+    deps = 0.0;
     double arg = 0.0;
     for (int i=0; i < N_coeff; i++) {
         arg  =  (C[i][0] * l + C[i][1] * lp + C[i][2] * F + C[i][3] * D + C[i][4] * Om ) / astroConst.Arcs;
@@ -514,22 +597,7 @@ bool Rotations::computeNutation(double &Mjd_Tt,
     }   
     dpsi = 1e-5 * dpsi / astroConst.Arcs;
     deps = 1e-5 * deps / astroConst.Arcs;
-
-    // Compute Nutation Rotations
-    Eigen::Matrix3d Rx1(3, 3), Rx2(3, 3), Rz(3, 3);
-    Rx1 << 1.0,           0.0,          0.0,
-           0.0,  std::cos(ep), std::sin(ep),
-           0.0, -std::sin(ep), std::cos(ep); 
-    Rx2 << 1.0,                 0.0,                0.0,
-           0.0,  std::cos(-ep-deps), std::sin(-ep-deps),
-           0.0, -std::sin(-ep-deps), std::cos(-ep-deps); 
-    Rz << std::cos(-dpsi),  std::sin(-dpsi),  0.0,
-         -std::sin(-dpsi),  std::cos(-dpsi),  0.0,
-                      0.0,              0.0,  1.0;
-
-    // Compute Precession Matrix
-    RNutation = Rx2 * Rz * Rx1;
-
+    
     // Successful Return
     return true;
 

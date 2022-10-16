@@ -193,6 +193,33 @@ class Rotations {
         bool computeNutation(double &Mjd_Tt,
                              Eigen::Matrix3d &RNutation);
 
+        /* @computeGreenwichHourAngle
+            Inputs:
+                Mjd_Ut1: scalar Modified Julian Date UT1 [days]
+                Mjd_Tt: scalar Modified Julian Date TT [days]
+            Outputs:
+                RGha: 3x3 Greenwich Hour Angle Transformation Matrix
+            Description:
+                Function which takes in the Modified Julian Dates of UT1 and TT and computes the Greenwich Hour
+                Angle direction cosines matrix.
+        */
+        bool computeGreenwichHourAngle(double &Mjd_Ut1,
+                                       double &Mjd_Tt,
+                                       Eigen::Matrix3d &RGha);
+
+        /* @nutationAngles
+            Inputs:
+                Mjd_Tt: scalar Modified Julian Date TT [days]
+            Outputs:
+                dpsi: scalar Nutation Angle
+                deps: scalar Nutation Angle
+            Description:
+                Function which takes in the Modified Julian Dates of TT and computes the nutation angles.
+        */
+        bool nutationAngles(double &Mjd_Tt,
+                            double &dpsi,
+                            double &deps);
+
         // Astronomical Constants
         struct {
             double mjdJ2000 = 51544.5;                  // Modified Julian Date of J2000
