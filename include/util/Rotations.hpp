@@ -181,13 +181,26 @@ class Rotations {
                                double &mjd2,
                                Eigen::Matrix3d &RPrecesion);
 
+        /* @computeNutation
+            Inputs:
+                Mjd_Tt: scalar Modified Julian Date of Terrestrial Time [days]
+            Outputs:
+                RNutation: 3x3 Nutation Transformation Matrix
+            Description:
+                Function which takes in the Modified Julian Dates of Terrestrial Time and computes the nutation
+                direction cosines matrix.
+        */
+        bool computeNutation(double &Mjd_Tt,
+                             Eigen::Matrix3d &RNutation);
+
         // Astronomical Constants
         struct {
             double mjdJ2000 = 51544.5;                  // Modified Julian Date of J2000
             double T_B1950 = -0.500002108;              // Epoch B1950
             double cLight = 299792457.999999984;        // Speed of Light [m/s]
             double AU = 149597870699.999988;            // Astronomical Unit [m]
-            double Arcs = 3600.0 * 180 / M_PI;          // Arcseconds per Radian      
+            double Arcs = 3600.0 * 180 / M_PI;          // Arcseconds per Radian 
+            double rad = M_PI / 180.0;                  // Radians     
         } astroConst;
 
         // Utility Class Instantiations
