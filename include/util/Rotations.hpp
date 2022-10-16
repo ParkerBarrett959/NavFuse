@@ -104,7 +104,7 @@ class Rotations {
                 (https://www.mathworks.com/matlabcentral/fileexchange/61957-eci2ecef-ecef2eci-transformations),
                 MATLAB Central File Exchange. Retrieved October 13, 2022. 
         */
-        bool computeRJ2k2Ecef(std::vector<int> &dateVec,
+        bool computeRJ2k2Ecef(std::vector<double> &dateVec,
                               std::string &eopFile,
                               Eigen::Matrix3d &RJ2E);
 
@@ -127,7 +127,7 @@ class Rotations {
                 (https://www.mathworks.com/matlabcentral/fileexchange/61957-eci2ecef-ecef2eci-transformations),
                 MATLAB Central File Exchange. Retrieved October 13, 2022. 
         */
-        bool computeREcef2J2k(std::vector<int> &dateVec,
+        bool computeREcef2J2k(std::vector<double> &dateVec,
                               std::string &eopFile,
                               Eigen::Matrix3d &RE2J);
 
@@ -142,7 +142,7 @@ class Rotations {
             Description:
                 Function which takes in a 6x1 date vector and computes the Modified Julian Date.
         */
-        bool convertDatevec2Mjd(std::vector<int> &dateVec,
+        bool convertDatevec2Mjd(std::vector<double> &dateVec,
                                 double &mjd);
 
         /* @getEops

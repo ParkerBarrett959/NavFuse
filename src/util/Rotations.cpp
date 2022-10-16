@@ -153,7 +153,7 @@ bool Rotations::lla2Ecef(double &lat,
 }
 
 // Compute Rotation from J2K Inertial to ECEF
-bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
+bool Rotations::computeRJ2k2Ecef(std::vector<double> &dateVec,
                                  std::string &eopFile,
                                  Eigen::Matrix3d &RJ2E) {
     
@@ -169,7 +169,7 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
         std::cout << "[Rotations::computeRJ2k2Ecef] Failed to compute Modified Julian Date" << std::endl;
         return false;
     }
-
+    
     // Extract IERS Earth Orientation Parameters
     double xPole, yPole, Ut1_Utc, lod, Tai_Utc;
     if (!getEops(mjdUtc, eopFile, xPole, yPole, Ut1_Utc, lod, Tai_Utc)) {
@@ -213,6 +213,8 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
     }
 
     // Compute Rotation from J2K to ECEF
+    //std::cout << RGha << std::endl;
+    //std::cout << RNutation << std::endl
     RJ2E = RPole * RGha * RNutation * RPrecession;
     
     // Successful Return
@@ -221,7 +223,7 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
 }
 
 // Compute Rotation from ECEF to J2K Inertial
-bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
+bool Rotations::computeREcef2J2k(std::vector<double> &dateVec,
                                  std::string &eopFile,
                                  Eigen::Matrix3d &RE2J) {
     
@@ -289,7 +291,7 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
 }
 
 // Convert Date Vector to Modified Julian Date
-bool Rotations::convertDatevec2Mjd(std::vector<int> &dateVec,
+bool Rotations::convertDatevec2Mjd(std::vector<double> &dateVec,
                                    double &mjd) {
 
     // Unpacks Inputs
@@ -327,20 +329,20 @@ bool Rotations::convertDatevec2Mjd(std::vector<int> &dateVec,
     // Compute b
     double b;
     if (((10000.0 * year) + (100.0 * month) + day) <= 15821004.0) {
-        b = (double) (-2 + std::floor((year + 4716.0) / 4.0) - 1179);
+        b = -2.0 + std::floor((year + 4716.0) / 4.0) - 1179.0;
     } else {
-        b = (double) (std::floor(year / 400.0) - std::floor(year / 100.0) + std::floor(year / 4.0));
+        b = std::floor(year / 400.0) - std::floor(year / 100.0) + std::floor(year / 4.0);
     }
-
+    
     // Compute Whole Day Modified Julian Date
-    double MjdMidnight = (365.0 * year) - 679004.0 + b + (double) std::floor(30.6001 * (double)(month + 1)) + day;
-
+    double MjdMidnight = (365.0 * year) - 679004.0 + b + std::floor(30.6001 * (month + 1.0)) + day;
+    
     // Compute Fractional Day
-    double fracDay = hour + ((double) min / 60.0) + ((double) sec / 3600.0) / 24.0;
-
+    double fracDay = (hour + (min / 60.0) + (sec / 3600.0)) / 24.0;
+    
     // Compute Modified Julian Date
     mjd = MjdMidnight + fracDay;
-
+    
     // Successful Return
     return true;
 
@@ -356,7 +358,12 @@ bool Rotations::getEops(double &mjd,
                         double &Tai_Utc) {
 
     // Insert Function
-
+    // Temp for Testing
+    xPole = 9.2766723101295e-07;
+    yPole = 1.56530447659865e-06;
+    Ut1_Utc = -0.173106168291667;
+    lod = -0.000138995999999996;
+    Tai_Utc = 37.0;
 
     // Successful Return
     return true;
@@ -371,28 +378,28 @@ bool Rotations::computePrecession(double &mjd1,
     // Compute Helpful Quantities
     double T = (mjd1 - astroConst.mjdJ2000) / 36525.0;
     double dT = (mjd2 - mjd1) / 36525.0;
-
+    
     // Compute Pecession Angles
     double zeta = ((2306.2181 + (1.39656 - 0.000139 * T) * T)+ ((0.30188 - 0.000344 * T)
         + 0.017998 * dT) * dT) * dT / astroConst.Arcs;
     double z =  zeta + ((0.79280 + 0.000411 * T) + 0.000205 * dT) * dT * dT / astroConst.Arcs;
     double theta = ((2004.3109 - (0.85330 + 0.000217 * T) * T) - ((0.42665 + 0.000217 * T)
         + 0.041833 * dT) * dT) * dT / astroConst.Arcs;
-
+    
     // Compute Precession Rotations
-    Eigen::Matrix3d Rx(3, 3), Ry(3, 3), Rz(3, 3);
-    Rx << 1.0,              0.0,             0.0,
-          0.0,  std::cos(-zeta), std::sin(-zeta),
-          0.0, -std::sin(-zeta), std::cos(-zeta); 
+    Eigen::Matrix3d Rz1(3, 3), Ry(3, 3), Rz2(3, 3);
+    Rz1 << std::cos(-zeta),  std::sin(-zeta),  0.0,
+          -std::sin(-zeta),  std::cos(-zeta),  0.0,
+                       0.0,              0.0,  1.0;
     Ry << std::cos(theta),  0.0, -std::sin(theta),
                       0.0,  1.0,              0.0,
           std::sin(theta),  0.0,  std::cos(theta);
-    Rz << std::cos(-z),  std::sin(-z),  0.0,
-         -std::sin(-z),  std::cos(-z),  0.0,
-                   0.0,           0.0,  1.0;
-
+    Rz2 << std::cos(-z),  std::sin(-z),  0.0,
+          -std::sin(-z),  std::cos(-z),  0.0,
+                    0.0,           0.0,  1.0;
+    
     // Compute Precession Matrix
-    RPrecession = Rz * Ry * Rx;
+    RPrecession = Rz2 * Ry * Rz1;
 
     // Successful Return
     return true;

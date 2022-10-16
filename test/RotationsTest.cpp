@@ -229,7 +229,7 @@ TEST(ComputeRJ2E, InvalidDateVectorSize)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 0, 0, 0, 0, 0, 0};
+    std::vector<double> dateVec{2022, 0, 0, 0, 0, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RJ2E(3,3);
 
@@ -248,7 +248,7 @@ TEST(ComputeRJ2E, InvalidMonth)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 13, 0, 0, 0, 0};
+    std::vector<double> dateVec{2022, 13, 0, 0, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RJ2E(3,3);
 
@@ -271,7 +271,7 @@ TEST(ComputeRJ2E, InvalidDay)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 32, 0, 0, 0};
+    std::vector<double> dateVec{2022, 12, 32, 0, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RJ2E(3,3);
 
@@ -294,7 +294,7 @@ TEST(ComputeRJ2E, InvalidHour)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 30, 24, 0, 0};
+    std::vector<double> dateVec{2022, 12, 30, 24, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RJ2E(3,3);
 
@@ -317,7 +317,7 @@ TEST(ComputeRJ2E, InvalidMinute)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 30, 23, 60, 0};
+    std::vector<double> dateVec{2022, 12, 30, 23, 60, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RJ2E(3,3);
 
@@ -340,7 +340,7 @@ TEST(ComputeRJ2E, InvalidSecond)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 30, 23, 59, 60};
+    std::vector<double> dateVec{2022, 12, 30, 23, 59, 60};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RJ2E(3,3);
 
@@ -355,6 +355,32 @@ TEST(ComputeRJ2E, InvalidSecond)
 
 }
 
+// Compute RJ2E: Compute Result
+TEST(ComputeRJ2E, ComputeResult)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<double> dateVec{2020.0, 10.0, 2.0, 23.0, 41.0, 24.0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Compute Result
+    EXPECT_TRUE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+    // Define Expected Result
+    Eigen::Matrix3d RJ2ESol(3, 3);
+    RJ2ESol << 0.9920445,   0.1258720,  -0.0019661,
+              -0.1258717,   0.9920465,   0.0002442,
+               0.0019812,   5.244e-06,   0.9999980;
+    
+    // Check Results
+    EXPECT_TRUE(RJ2E.isApprox(RJ2ESol, 1e-6));
+
+}
+
 // Compute RE2J: Invalid Date Vector Size
 TEST(ComputeRE2J, InvalidDateVectorSize)
 {
@@ -363,7 +389,7 @@ TEST(ComputeRE2J, InvalidDateVectorSize)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 0, 0, 0, 0, 0, 0};
+    std::vector<double> dateVec{2022, 0, 0, 0, 0, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RE2J(3,3);
 
@@ -382,7 +408,7 @@ TEST(ComputeRE2J, InvalidMonth)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 13, 0, 0, 0, 0};
+    std::vector<double> dateVec{2022, 13, 0, 0, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RE2J(3,3);
 
@@ -405,7 +431,7 @@ TEST(ComputeRE2J, InvalidDay)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 32, 0, 0, 0};
+    std::vector<double> dateVec{2022, 12, 32, 0, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RE2J(3,3);
 
@@ -428,7 +454,7 @@ TEST(ComputeRE2J, InvalidHour)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 30, 24, 0, 0};
+    std::vector<double> dateVec{2022, 12, 30, 24, 0, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RE2J(3,3);
 
@@ -451,7 +477,7 @@ TEST(ComputeRE2J, InvalidMinute)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 30, 23, 60, 0};
+    std::vector<double> dateVec{2022, 12, 30, 23, 60, 0};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RE2J(3,3);
 
@@ -474,7 +500,7 @@ TEST(ComputeRE2J, InvalidSecond)
     Rotations rot;
 
     // Initialize Variables
-    std::vector<int> dateVec{2022, 12, 30, 23, 59, 60};
+    std::vector<double> dateVec{2022, 12, 30, 23, 59, 60};
     std::string eopFile = "EOP-Last5Years.csv";
     Eigen::Matrix3d RE2J(3,3);
 
