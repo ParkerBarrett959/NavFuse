@@ -212,7 +212,8 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
         return false;
     }
 
-    // Compute Rotation from ECEF to J2K
+    // Compute Rotation from J2K to ECEF
+    RJ2E = RPole * RGha * RNutation * RPrecession;
     
     // Successful Return
     return true;
@@ -280,6 +281,7 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
     }
 
     // Compute Rotation from ECEF to J2K
+    RE2J = (RPole * RGha * RNutation * RPrecession).transpose();
     
     // Successful Return
     return true;
