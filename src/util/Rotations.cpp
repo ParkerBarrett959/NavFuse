@@ -179,15 +179,17 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
 
     // Compute Time Differences
     double Tt_Tai = 32.184;
-    double Gps_Tai = -19.0;
-    double Ut1_Tai = Ut1_Utc - Tai_Utc;
     double Utc_Tai = -Tai_Utc;
-    double Utc_Gps = Utc_Tai - Gps_Tai;
-    double Ut1_Gps = Ut1_Tai - Gps_Tai;
     double Tt_Utc = Tt_Tai - Utc_Tai;
-    double Gps_Utc = Gps_Tai - Utc_Tai;
+    double Mjd_Ut1 = mjdUtc + (Ut1_Utc / 86400.0);
+    double Mjd_Tt = mjdUtc + (Tt_Utc / 86400.0);
 
     // Compute Precession Matrix
+    Eigen::Matrix3d RPrecession(3, 3);
+    if (!computePrecession(astroConst.mjdJ2000, Mjd_Tt, RPrecession)) {
+        std::cout << "[Rotations::computeRJ2k2Ecef] Failed to compute precession" << std::endl;
+        return false;
+    }
 
     // Compute Nutation Matrix
 
@@ -229,15 +231,17 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
 
     // Compute Time Differences
     double Tt_Tai = 32.184;
-    double Gps_Tai = -19.0;
-    double Ut1_Tai = Ut1_Utc - Tai_Utc;
     double Utc_Tai = -Tai_Utc;
-    double Utc_Gps = Utc_Tai - Gps_Tai;
-    double Ut1_Gps = Ut1_Tai - Gps_Tai;
     double Tt_Utc = Tt_Tai - Utc_Tai;
-    double Gps_Utc = Gps_Tai - Utc_Tai;
+    double Mjd_Ut1 = mjdUtc + (Ut1_Utc / 86400.0);
+    double Mjd_Tt = mjdUtc + (Tt_Utc / 86400.0);
 
     // Compute Precession Matrix
+    Eigen::Matrix3d RPrecession(3, 3);
+    if (!computePrecession(astroConst.mjdJ2000, Mjd_Tt, RPrecession)) {
+        std::cout << "[Rotations::computeREcef2J2k] Failed to compute precession" << std::endl;
+        return false;
+    }
 
     // Compute Nutation Matrix
 
@@ -321,6 +325,42 @@ bool Rotations::getEops(double &mjd,
 
     // Insert Function
 
+
+    // Successful Return
+    return true;
+
+}
+
+// Compute Precession Matrix
+bool Rotations::computePrecession(double &mjd1,
+                                  double &mjd2,
+                                  Eigen::Matrix3d &RPrecession) {
+
+    // Compute Helpful Quantities
+    double T = (mjd1 - astroConst.mjdJ2000) / 36525.0;
+    double dT = (mjd2 - mjd1) / 36525.0;
+
+    // Compute Pecession Angles
+    double zeta = ((2306.2181 + (1.39656 - 0.000139 * T) * T)+ ((0.30188 - 0.000344 * T)
+        + 0.017998 * dT) * dT) * dT / astroConst.Arcs;
+    double z =  zeta + ((0.79280 + 0.000411 * T) + 0.000205 * dT) * dT * dT / astroConst.Arcs;
+    double theta = ((2004.3109 - (0.85330 + 0.000217 * T) * T) - ((0.42665 + 0.000217 * T)
+        + 0.041833 * dT) * dT) * dT / astroConst.Arcs;
+
+    // Compute Precession Rotations
+    Eigen::Matrix3d Rx(3, 3), Ry(3, 3), Rz(3, 3);
+    Rx << 1.0,              0.0,             0.0,
+          0.0,  std::cos(-zeta), std::sin(-zeta),
+          0.0, -std::sin(-zeta), std::cos(-zeta); 
+    Ry << std::cos(theta),  0.0, -std::sin(theta),
+                      0.0,  1.0,              0.0,
+          std::sin(theta),  0.0,  std::cos(theta);
+    Rz << std::cos(-z),  std::sin(-z),  0.0,
+         -std::sin(-z),  std::cos(-z),  0.0,
+                   0.0,           0.0,  1.0;
+
+    // Compute Precession Matrix
+    RPrecession = Rz * Ry * Rx;
 
     // Successful Return
     return true;

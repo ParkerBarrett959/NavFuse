@@ -148,7 +148,7 @@ class Rotations {
         /* @getEops
             Inputs:
                 mjdUtc: scalar Modified Julian Date UTC [days]
-                eop: String path and name of Earth Orientation Paramater file
+                eop: String path and name of Earth Orientation Parameter file
             Outputs:
                 xPole: Scalar X Component of Polar Coordinates [rad]
                 yPole: Scalar Y Component of Polar Coordinates [rad]
@@ -156,7 +156,7 @@ class Rotations {
                 lod: Scalar length of Day [s]
                 Tai_Utc: Scalar Offset between International Atomic Time and Coordinated Universal Time [s]
             Description:
-                Function which takes in the Modified Julian Date and the Eearth Orientation Parameter files 
+                Function which takes in the Modified Julian Date and the Earth Orientation Parameter files 
                 and extracts the required EOPs.
         */
         bool getEops(double &mjd,
@@ -166,6 +166,29 @@ class Rotations {
                      double &Ut1_Utc,
                      double &lod,
                      double &Tai_Utc);
+
+        /* @computePrecession
+            Inputs:
+                mjd1: scalar Modified Julian Date UTC of Epoch [days]
+                mjd2: scalar Modified Julian Date UTC of Day to precess to [days]
+            Outputs:
+                RPrecession: 3x3 Precession Transformation Matrix
+            Description:
+                Function which takes in the Modified Julian Dates of the epoch and date to precess to and
+                computes the precession direction cosines matrix.
+        */
+        bool computePrecession(double &mjd1,
+                               double &mjd2,
+                               Eigen::Matrix3d &RPrecesion);
+
+        // Astronomical Constants
+        struct {
+            double mjdJ2000 = 51544.5;                  // Modified Julian Date of J2000
+            double T_B1950 = -0.500002108;              // Epoch B1950
+            double cLight = 299792457.999999984;        // Speed of Light [m/s]
+            double AU = 149597870699.999988;            // Astronomical Unit [m]
+            double Arcs = 3600.0 * 180 / M_PI;          // Arcseconds per Radian      
+        } astroConst;
 
         // Utility Class Instantiations
         Gravity Gravity_;
