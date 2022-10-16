@@ -207,6 +207,20 @@ class Rotations {
                                        double &Mjd_Tt,
                                        Eigen::Matrix3d &RGha);
 
+        /* @polarRotation
+            Inputs:
+                xPole: scalar X Component of Polar Coordinate [rad]
+                yPole: scalar Y Component of Polar Coordinate [rad]
+            Outputs:
+                RPole: 3x3 Earth Polar Motion Transformation Matrix 
+            Description:
+                Function which takes in the X and Y Earth Polar Motion coordinates and computes the polar 
+                transformation matrix.
+        */
+        bool polarRotation(double &xPole,
+                           double &yPole,
+                           Eigen::Matrix3d &RPole);
+
         /* @nutationAngles
             Inputs:
                 Mjd_Tt: scalar Modified Julian Date TT [days]

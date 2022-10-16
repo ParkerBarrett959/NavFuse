@@ -206,6 +206,11 @@ bool Rotations::computeRJ2k2Ecef(std::vector<int> &dateVec,
     }
 
     // Compute Polar Motion
+    Eigen::Matrix3d RPole(3, 3);
+    if (!polarRotation(xPole, yPole, RPole)) {
+        std::cout << "[Rotations::computeRJ2k2Ecef] Failed to compute Polar Rotation Matrix" << std::endl;
+        return false;
+    }
 
     // Compute Rotation from ECEF to J2K
     
@@ -268,6 +273,11 @@ bool Rotations::computeREcef2J2k(std::vector<int> &dateVec,
     }
 
     // Compute Polar Motion
+    Eigen::Matrix3d RPole(3, 3);
+    if (!polarRotation(xPole, yPole, RPole)) {
+        std::cout << "[Rotations::computeREcef2J2k] Failed to compute Polar Rotation Matrix" << std::endl;
+        return false;
+    }
 
     // Compute Rotation from ECEF to J2K
     
@@ -459,6 +469,28 @@ bool Rotations::computeGreenwichHourAngle(double &Mjd_Ut1,
     // Successful Return
     return true;
                                           
+}
+
+// Compute Polar Motion Rotation
+bool Rotations::polarRotation(double &xPole,
+                              double &yPole,
+                              Eigen::Matrix3d &RPole) {
+
+    // Compute Polar Rotations
+    Eigen::Matrix3d Rx(3, 3), Ry(3, 3);
+    Rx << 1.0,               0.0,              0.0,
+          0.0,  std::cos(-yPole), std::sin(-yPole),
+          0.0, -std::sin(-yPole), std::cos(-yPole); 
+    Ry << std::cos(-xPole),  0.0, -std::sin(-xPole),
+                       0.0,  1.0,               0.0,
+          std::sin(-xPole),  0.0,  std::cos(-xPole);
+
+    // Compute Polar Motion Rotation
+    RPole = Ry * Rx;
+    
+    // Successful Return
+    return true;
+
 }
 
 // Compute Nutation Angles
