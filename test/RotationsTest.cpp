@@ -514,3 +514,29 @@ TEST(ComputeRE2J, InvalidSecond)
     EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
 
 }
+
+// Compute RE2J: Compute Result
+TEST(ComputeRE2J, ComputeResult)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<double> dateVec{2020.0, 10.0, 2.0, 23.0, 41.0, 24.0};
+    std::string eopFile = "EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Compute Result
+    EXPECT_TRUE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+    // Define Expected Result
+    Eigen::Matrix3d RE2JSol(3, 3);
+    RE2JSol << 0.9920445,  -0.1258717,   0.0019812,
+               0.1258720,   0.9920465,   5.244e-06,
+              -0.0019661,   0.0002442,   0.9999980;
+    
+    // Check Results
+    EXPECT_TRUE(RE2J.isApprox(RE2JSol, 1e-6));
+
+}
