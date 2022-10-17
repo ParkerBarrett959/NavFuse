@@ -213,8 +213,6 @@ bool Rotations::computeRJ2k2Ecef(std::vector<double> &dateVec,
     }
 
     // Compute Rotation from J2K to ECEF
-    //std::cout << RGha << std::endl;
-    //std::cout << RNutation << std::endl
     RJ2E = RPole * RGha * RNutation * RPrecession;
     
     // Successful Return
@@ -414,14 +412,14 @@ bool Rotations::computeNutation(double &Mjd_Tt,
     double T = (Mjd_Tt - astroConst.mjdJ2000) / 36525.0;
     double ep = astroConst.rad * (23.43929111 - (46.8150 + (0.00059 - 0.001813 * T) * T)
         * T / 3600.0);
-    
+
     // Get Nutation Angles
     double dpsi, deps;
     if (!nutationAngles(Mjd_Tt, dpsi, deps)) {
         std::cout << "[Rotations::computeNutation] Unable to compute nutation angles" << std::endl;
         return false;
     }
-
+    
     // Compute Nutation Rotations
     Eigen::Matrix3d Rx1(3, 3), Rx2(3, 3), Rz(3, 3);
     Rx1 << 1.0,           0.0,          0.0,
@@ -622,10 +620,25 @@ bool Rotations::nutationAngles(double &Mjd_Tt,
         { 0, 1, 0, 1, 0,      10,    0,       0,    0}
     };  
     double l  = std::fmod (485866.733 + (1325.0 * rev +  715922.633) * T + 31.310 * T2 + 0.064 * T3, rev);
+    if (l < 0) {
+        l += rev;
+    } 
     double lp = std::fmod (1287099.804 + (99.0 * rev + 1292581.224) * T - 0.577 * T2 - 0.012 * T3, rev);
+    if (lp < 0) {
+        lp += rev;
+    } 
     double F  = std::fmod (335778.877 + (1342.0 * rev +  295263.137) * T - 13.257 * T2 + 0.011 * T3, rev);
+    if (F < 0) {
+        F += rev;
+    } 
     double D  = std::fmod (1072261.307 + (1236.0 * rev + 1105601.328) * T -  6.891 * T2 + 0.019 * T3, rev);
+    if (D < 0) {
+        D += rev;
+    } 
     double Om = std::fmod (450160.280 - (5.0 * rev +  482890.539) * T + 7.455 * T2 + 0.008 * T3, rev);
+    if (Om < 0) {
+        Om += rev;
+    } 
 
     // Compute Nutation Angles
     dpsi = 0.0;
@@ -633,12 +646,12 @@ bool Rotations::nutationAngles(double &Mjd_Tt,
     double arg = 0.0;
     for (int i=0; i < N_coeff; i++) {
         arg  =  (C[i][0] * l + C[i][1] * lp + C[i][2] * F + C[i][3] * D + C[i][4] * Om ) / astroConst.Arcs;
-        dpsi += dpsi + (C[i][5] + C[i][6] * T) * std::sin(arg);
-        deps += deps + (C[i][7] + C[i][8] * T) * std::cos(arg);
-    }   
+        dpsi += (C[i][5] + C[i][6] * T) * std::sin(arg);
+        deps += (C[i][7] + C[i][8] * T) * std::cos(arg);
+    }  
     dpsi = 1e-5 * dpsi / astroConst.Arcs;
     deps = 1e-5 * deps / astroConst.Arcs;
-    
+
     // Successful Return
     return true;
 
