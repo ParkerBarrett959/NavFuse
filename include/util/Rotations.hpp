@@ -12,6 +12,13 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <deque>
+#include <memory>
+#include <algorithm>
+#include <unistd.h>
+#include <sys/stat.h>
 #include <Eigen/Dense>
 #include "Gravity.hpp"
 
@@ -131,6 +138,16 @@ class Rotations {
                               std::string &eopFile,
                               Eigen::Matrix3d &RE2J);
 
+        /* @getEops
+            Inputs:
+                eop: String path and name of Earth Orientation Parameter file
+            Outputs:
+            Description:
+                Function which takes in the Modified Julian Date and the Earth Orientation Parameter files 
+                and extracts the required EOPs.
+        */
+        bool getEops(const std::string eop);
+
     // Private Class Members/Function
     private:
 
@@ -144,28 +161,6 @@ class Rotations {
         */
         bool convertDatevec2Mjd(std::vector<double> &dateVec,
                                 double &mjd);
-
-        /* @getEops
-            Inputs:
-                mjdUtc: scalar Modified Julian Date UTC [days]
-                eop: String path and name of Earth Orientation Parameter file
-            Outputs:
-                xPole: Scalar X Component of Polar Coordinates [rad]
-                yPole: Scalar Y Component of Polar Coordinates [rad]
-                Ut1_Utc: Scalar Offset between Universal Time 1 and Coordinated Universal Time [s]
-                lod: Scalar length of Day [s]
-                Tai_Utc: Scalar Offset between International Atomic Time and Coordinated Universal Time [s]
-            Description:
-                Function which takes in the Modified Julian Date and the Earth Orientation Parameter files 
-                and extracts the required EOPs.
-        */
-        bool getEops(double &mjd,
-                     std::string &eop,
-                     double &xPole,
-                     double &yPole,
-                     double &Ut1_Utc,
-                     double &lod,
-                     double &Tai_Utc);
 
         /* @computePrecession
             Inputs:
@@ -234,6 +229,25 @@ class Rotations {
                             double &dpsi,
                             double &deps);
 
+        /* @getCurrentEop
+            Inputs:
+                mjd: Current Modified Julian Date[days]
+            Outputs:
+                xPole: Scalar X Component of Polar Coordinates [rad]
+                yPole: Scalar Y Component of Polar Coordinates [rad]
+                Ut1_Utc: Scalar Offset between Universal Time 1 and Coordinated Universal Time [s]
+                lod: Scalar length of Day [s]
+                Tai_Utc: Scalar Offset between International Atomic Time and Coordinated Universal Time [s]
+            Description:
+                Function which takes in the current Modified Julian Date and extracts earth orientation parameters.
+        */
+        bool getCurrentEop(double &mjd,
+                           double &xPole,
+                           double &yPole,
+                           double &Ut1_Utc,
+                           double &lod,
+                           double &Tai_Utc);
+
         // Astronomical Constants
         struct {
             double mjdJ2000 = 51544.5;                  // Modified Julian Date of J2000
@@ -243,6 +257,17 @@ class Rotations {
             double Arcs = 3600.0 * 180 / M_PI;          // Arcseconds per Radian 
             double rad = M_PI / 180.0;                  // Radians     
         } astroConst;
+
+        // Earth Orientation Parameters
+        bool eopsSet_ = false;
+        struct {
+            std::vector<double> mjd;
+            std::vector<double> xPole;
+            std::vector<double> yPole;
+            std::vector<double> Ut1_Utc;
+            std::vector<double> lod;
+            std::vector<double> Tai_Utc;
+        } EOPs;
 
         // Utility Class Instantiations
         Gravity Gravity_;

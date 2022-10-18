@@ -172,7 +172,7 @@ bool Rotations::computeRJ2k2Ecef(std::vector<double> &dateVec,
     
     // Extract IERS Earth Orientation Parameters
     double xPole, yPole, Ut1_Utc, lod, Tai_Utc;
-    if (!getEops(mjdUtc, eopFile, xPole, yPole, Ut1_Utc, lod, Tai_Utc)) {
+    if (!getCurrentEop(mjdUtc, xPole, yPole, Ut1_Utc, lod, Tai_Utc)) {
         std::cout << "[Rotations::computeRJ2k2Ecef] Failed to get EOPs" << std::endl;
         return false;
     }
@@ -240,7 +240,7 @@ bool Rotations::computeREcef2J2k(std::vector<double> &dateVec,
 
     // Extract IERS Earth Orientation Parameters
     double xPole, yPole, Ut1_Utc, lod, Tai_Utc;
-    if (!getEops(mjdUtc, eopFile, xPole, yPole, Ut1_Utc, lod, Tai_Utc)) {
+    if (!getCurrentEop(mjdUtc, xPole, yPole, Ut1_Utc, lod, Tai_Utc)) {
         std::cout << "[Rotations::computeREcef2J2k] Failed to get EOPs" << std::endl;
         return false;
     }
@@ -283,6 +283,79 @@ bool Rotations::computeREcef2J2k(std::vector<double> &dateVec,
     // Compute Rotation from ECEF to J2K
     RE2J = (RPole * RGha * RNutation * RPrecession).transpose();
     
+    // Successful Return
+    return true;
+
+}
+
+// Get Earth Orientation Parameters
+bool Rotations::getEops(const std::string eop) {
+
+    // Initialize Outputs
+    std::vector<double> mjd;
+    std::vector<double> xPole;
+    std::vector<double> yPole;
+    std::vector<double> Ut1_Utc;
+    std::vector<double> lod;
+    std::vector<double> Tai_Utc;
+    
+    // Open CSV File
+    std::fstream file;
+    file.open(eop);
+    std::string line, data;
+
+    // Get Rows
+    double element;
+    std::getline(file, line, '\n');
+    while (std::getline(file, line, '\n')) {
+
+        // Set String Stream
+        int temp = 0;
+        std::stringstream str(line);
+
+        // Get Columns
+        while (std::getline(str, data, ',')) {
+
+            // Get Data
+            if (temp == 1) {
+                element = std::stod(data);
+                mjd.push_back(element); 
+            } else if (temp == 2) {
+                element = std::stod(data);
+                xPole.push_back(element);
+            } else if (temp == 3) {
+                element = std::stod(data);
+                yPole.push_back(element);
+            } else if (temp == 4) {
+                element = std::stod(data);
+                Ut1_Utc.push_back(element);
+            } else if (temp == 5) {
+                element = std::stod(data);
+                lod.push_back(element);
+            } else if (temp == 10) {
+                element = std::stod(data);
+                Tai_Utc.push_back(element);
+            }
+
+            // Increment Temporary Iterator
+            temp++;
+        }
+    }
+
+    // Close File
+    file.close();
+
+    // Set EOPs to Class Variable
+    EOPs.mjd = mjd;
+    EOPs.xPole = xPole;
+    EOPs.yPole = yPole;
+    EOPs.Ut1_Utc = Ut1_Utc;
+    EOPs.lod = lod;
+    EOPs.Tai_Utc = Tai_Utc;
+
+    // Set Flag for EOPs Set
+    eopsSet_ = true;
+
     // Successful Return
     return true;
 
@@ -341,28 +414,6 @@ bool Rotations::convertDatevec2Mjd(std::vector<double> &dateVec,
     // Compute Modified Julian Date
     mjd = MjdMidnight + fracDay;
     
-    // Successful Return
-    return true;
-
-}
-
-// Get Earth Orientation Parameters
-bool Rotations::getEops(double &mjd,
-                        std::string &eop,
-                        double &xPole,
-                        double &yPole,
-                        double &Ut1_Utc,
-                        double &lod,
-                        double &Tai_Utc) {
-
-    // Insert Function
-    // Temp for Testing
-    xPole = 9.2766723101295e-07;
-    yPole = 1.56530447659865e-06;
-    Ut1_Utc = -0.173106168291667;
-    lod = -0.000138995999999996;
-    Tai_Utc = 37.0;
-
     // Successful Return
     return true;
 
@@ -652,6 +703,30 @@ bool Rotations::nutationAngles(double &Mjd_Tt,
     dpsi = 1e-5 * dpsi / astroConst.Arcs;
     deps = 1e-5 * deps / astroConst.Arcs;
 
+    // Successful Return
+    return true;
+
+}
+
+// Get Current Earth Orientation Parameters
+bool Rotations::getCurrentEop(double &mjd,
+                              double &xPole,
+                              double &yPole,
+                              double &Ut1_Utc,
+                              double &lod,
+                              double &Tai_Utc) {
+
+    // Find Index of Current MJD Start of Day
+    double mjdStart = std::floor(mjd);
+    
+    // Insert Interpolation Here...
+    // Temp for Testing
+    xPole = 9.2766723101295e-07;
+    yPole = 1.56530447659865e-06;
+    Ut1_Utc = -0.173106168291667;
+    lod = -0.000138995999999996;
+    Tai_Utc = 37.0;
+    
     // Successful Return
     return true;
 
