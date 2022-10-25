@@ -718,14 +718,43 @@ bool Rotations::getCurrentEop(double &mjd,
 
     // Find Index of Current MJD Start of Day
     double mjdStart = std::floor(mjd);
-    
-    // Insert Interpolation Here...
-    // Temp for Testing
-    xPole = 9.2766723101295e-07;
-    yPole = 1.56530447659865e-06;
-    Ut1_Utc = -0.173106168291667;
-    lod = -0.000138995999999996;
-    Tai_Utc = 37.0;
+    int idx = -1;
+    for (int ii = 0; ii < EOPs.mjd.size(); ii++) {
+        if (EOPs.mjd[ii] == mjdStart) {
+            idx = ii;
+            break;
+        }
+    }
+
+    // Check for MJD Out of Range
+    if (idx == -1) {
+        std::cout << "[Rotations::getCurrentEop] Current EOP data out of range" << std::endl;
+        return false;
+    }
+
+    // Compute Pre and Post Indices
+    double preXPole = EOPs.xPole[idx];
+    double preYPole = EOPs.yPole[idx];
+    double preUt1_Utc = EOPs.Ut1_Utc[idx];
+    double preLod = EOPs.lod[idx];
+    double preTai_Utc = EOPs.Tai_Utc[idx];
+    if (!(idx == EOPs.mjd.size() - 1)) {
+        idx += 1;
+    }
+    double postXPole = EOPs.xPole[idx];
+    double postYPole = EOPs.yPole[idx];
+    double postUt1_Utc = EOPs.Ut1_Utc[idx];
+    double postLod = EOPs.lod[idx];
+
+    // Get Interpolation Stepsize
+    double fixf = mjd - mjdStart;
+
+    // Interpolate EOPS
+    xPole = (preXPole + (postXPole - preXPole) * fixf) / astroConst.Arcs;
+    yPole = (preYPole + (postYPole - preYPole) * fixf) / astroConst.Arcs;
+    Ut1_Utc = preUt1_Utc + (postUt1_Utc - preUt1_Utc) * fixf;
+    lod = preLod + (postLod- preLod) * fixf;
+    Tai_Utc = preTai_Utc;
     
     // Successful Return
     return true;
