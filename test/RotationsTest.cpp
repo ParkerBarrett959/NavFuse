@@ -364,7 +364,7 @@ TEST(ComputeRJ2E, ComputeResult)
 
     // Initialize Variables
     std::vector<double> dateVec{2020.0, 10.0, 2.0, 23.0, 41.0, 24.0};
-    std::string eopFile = "../data/EOP-Last5Years.csv";
+    std::string eopFile = "../test/testData/EOP-Last5Years.csv";
     Eigen::Matrix3d RJ2E(3,3);
 
     // Load EOPs
@@ -527,7 +527,7 @@ TEST(ComputeRE2J, ComputeResult)
 
     // Initialize Variables
     std::vector<double> dateVec{2020.0, 10.0, 2.0, 23.0, 41.0, 24.0};
-    std::string eopFile = "../data/EOP-Last5Years.csv";
+    std::string eopFile = "../test/testData/EOP-Last5Years.csv";
     Eigen::Matrix3d RE2J(3,3);
 
     // Load EOPs
