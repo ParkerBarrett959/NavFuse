@@ -716,6 +716,12 @@ bool Rotations::getCurrentEop(double &mjd,
                               double &lod,
                               double &Tai_Utc) {
 
+    // Check to Verify EOPs have been Set from File
+    if (!eopsSet_) {
+        std::cout << "[Rotations::getCurrentEop] CEOPs have not been set from file" << std::endl;
+        return false;
+    }
+
     // Find Index of Current MJD Start of Day
     double mjdStart = std::floor(mjd);
     int idx = -1;
