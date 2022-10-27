@@ -300,6 +300,11 @@ bool Rotations::getEops(const std::string eop) {
     std::vector<double> Tai_Utc;
     
     // Open CSV File
+    std::ifstream infile(eop);
+    if (!infile.good()) {
+        std::cout << "[Rotations::getEops] Invalid EOP file path" << std::endl;
+        return false;
+    }
     std::fstream file;
     file.open(eop);
     std::string line, data;

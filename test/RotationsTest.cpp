@@ -221,6 +221,21 @@ TEST(ComputeLla2Ecef, ComputeResult)
 
 }
 
+// Parse EOPs: EOP File Does Not Exist
+TEST(ParseEops, EopFileDne)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::string eopFile = "../test/testData/EOP-Last6Years.csv";
+
+    // Load EOPs
+    EXPECT_FALSE(rot.getEops(eopFile));
+
+}
+
 // Compute RJ2E: Invalid Date Vector Size
 TEST(ComputeRJ2E, InvalidDateVectorSize)
 {
@@ -237,8 +252,6 @@ TEST(ComputeRJ2E, InvalidDateVectorSize)
     EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
 
 }
-
-// Compute RJ2E: EOP File Does Not Exist
 
 // Compute RJ2E: EOPs Not Set
 TEST(ComputeRJ2E, EopsUnset)
@@ -437,8 +450,6 @@ TEST(ComputeRE2J, InvalidDateVectorSize)
     EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
 
 }
-
-// Compute RE2J: EOP File Does Not Exist
 
 // Compute RE2J: EOPs Not Set
 TEST(ComputeRE2J, EopsUnset)
