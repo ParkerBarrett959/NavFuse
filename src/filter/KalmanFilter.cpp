@@ -230,8 +230,7 @@ bool KalmanFilter::filterUkfUpdate(Eigen::VectorXd &xk,
         std::cout << "[KalmanFilter::filterUkfUpdate] K has incorrect dimensions: Expected " << 
                 numStates << "x" << numMeasDimensions << ", Got " << K.rows() << "x" << K.cols() << std::endl;
         return false;
-    } 
-    //std::cout << T << std::endl;
+    }
     
     // Get Measurement Residual
     Eigen::VectorXd nu = zk - zhat;
@@ -242,7 +241,7 @@ bool KalmanFilter::filterUkfUpdate(Eigen::VectorXd &xk,
     // Update Covariance
     Pkp1 = Pk - (K * S * K.transpose());
 
-    // Return Statement for Successful Prediction
+    // Return Statement for Successful Update
     return true;
 
 }
