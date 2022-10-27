@@ -240,6 +240,43 @@ TEST(ComputeRJ2E, InvalidDateVectorSize)
 
 // Compute RJ2E: EOP File Does Not Exist
 
+// Compute RJ2E: EOPs Not Set
+TEST(ComputeRJ2E, EopsUnset)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<double> dateVec{2020.0, 10.0, 2.0, 23.0, 41.0, 24.0};
+    std::string eopFile = "../test/testData/EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Compute Result
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
+// Compute RJ2E: Valid Date not in EOP Data
+TEST(ComputeRJ2E, ValidDateNotFound)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<double> dateVec{2025.0, 10.0, 2.0, 23.0, 41.0, 24.0};
+    std::string eopFile = "../test/testData/EOP-Last5Years.csv";
+    Eigen::Matrix3d RJ2E(3,3);
+
+    // Load EOPs
+    EXPECT_TRUE(rot.getEops(eopFile));
+
+    // Compute Result
+    EXPECT_FALSE(rot.computeRJ2k2Ecef(dateVec, eopFile, RJ2E));
+
+}
+
 // Compute RJ2E: Invalid Month
 TEST(ComputeRJ2E, InvalidMonth)
 {
@@ -402,6 +439,43 @@ TEST(ComputeRE2J, InvalidDateVectorSize)
 }
 
 // Compute RE2J: EOP File Does Not Exist
+
+// Compute RE2J: EOPs Not Set
+TEST(ComputeRE2J, EopsUnset)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<double> dateVec{2020.0, 10.0, 2.0, 23.0, 41.0, 24.0};
+    std::string eopFile = "../test/testData/EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Compute Result
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
+
+// Compute RE2J: Valid Date not in EOP Data
+TEST(ComputeRE2J, ValidDateNotFound)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    std::vector<double> dateVec{2025.0, 10.0, 2.0, 23.0, 41.0, 24.0};
+    std::string eopFile = "../test/testData/EOP-Last5Years.csv";
+    Eigen::Matrix3d RE2J(3,3);
+
+    // Load EOPs
+    EXPECT_TRUE(rot.getEops(eopFile));
+
+    // Compute Result
+    EXPECT_FALSE(rot.computeREcef2J2k(dateVec, eopFile, RE2J));
+
+}
 
 // Compute RE2J: Invalid Month
 TEST(ComputeRE2J, InvalidMonth)

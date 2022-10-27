@@ -718,7 +718,7 @@ bool Rotations::getCurrentEop(double &mjd,
 
     // Check to Verify EOPs have been Set from File
     if (!eopsSet_) {
-        std::cout << "[Rotations::getCurrentEop] CEOPs have not been set from file" << std::endl;
+        std::cout << "[Rotations::getCurrentEop] EOPs have not been set from file" << std::endl;
         return false;
     }
 
