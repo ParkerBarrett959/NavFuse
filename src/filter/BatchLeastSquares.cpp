@@ -35,7 +35,7 @@ bool BatchLeastSquares::UnweightedLinearLeastSquares(Eigen::VectorXd &yk,
     }
 
     // Compute State Estimate
-    xk = (Hk.transpose() * Hk).inverse() * Hk.transpose() * yk; 
+    xk = (Hk.transpose() * Hk).ldlt().solve(Hk.transpose() * yk); 
 
     // Compute Cost Function
     if (!ComputeCostFunction(yk, Hk, xk, J)) {
@@ -74,7 +74,7 @@ bool BatchLeastSquares::WeightedLinearLeastSquares(Eigen::VectorXd &yk,
     }
 
     // Compute State Estimate
-    xk = (Hk.transpose() * Wk * Hk).inverse() * Hk.transpose() * Wk * yk; 
+    xk = (Hk.transpose() * Wk * Hk).ldlt().solve(Hk.transpose() * Wk * yk);
 
     // Compute Cost Function
     if (!ComputeCostFunction(yk, Hk, xk, J)) {
@@ -135,7 +135,7 @@ bool BatchLeastSquares::UnweightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 	    }
 
         // Iterate State Estimate
-        xkp1 = xk + ((Hk.transpose() * Hk).inverse() * Hk.transpose() * (yk - yx));
+        xkp1 = xk + (Hk.transpose() * Hk).ldlt().solve(Hk.transpose() * (yk - yx));
 
         // Compute New Residual
         res = xkp1 - xk;
@@ -209,7 +209,7 @@ bool BatchLeastSquares::WeightedNonlinearLeastSquares(Eigen::VectorXd &yk,
 	    }
 
         // Iterate State Estimate
-        xkp1 = xk + ((Hk.transpose() * Wk * Hk).inverse() * Hk.transpose() * Wk * (yk - yx));
+        xkp1 = xk + (Hk.transpose() * Wk * Hk).ldlt().solve(Hk.transpose() * Wk * (yk - yx));
 
         // Compute New Residual
         res = xkp1 - xk;
