@@ -27,5 +27,8 @@ NavFuse requires external data, primary time-varying earth orientation parameter
 * Step 1: Navigate to the CelesTrak Space Data Page: https://celestrak.org/SpaceData/
 * Step 2: In the "Earth Orientation Parameter (EOP) Data" Box, download the latest csv file
 * Step 3: Move the downloaded csv file to the /NavFuse/data/ directory
+* Step 4: Use the public Rotations::getEops() function in your code with a string path to the csv file as an argument to parse the csv and extract the EOPs
 
-Note: NavFuse looks for the EOP file specified at runtime - you do not need to rebuild if you change files or did not follow these instructions during the initial build
+For an example of what the csv file should look like, the file titled "EOP-Last5Years.csv" in the "test/testData" directory is a good reference. This file may be outdated at the time you are reading this, but it is used for unit testing. For an example reference of how to call the public "getEops()" function, see the usage in unit tests here: https://github.com/ParkerBarrett959/NavFuse/blob/main/test/RotationsTest.cpp#L421
+
+Note: NavFuse looks for the EOP file specified at runtime - you do not need to rebuild if you change files or did not follow these instructions during the initial build, as long as the file location does not change.
