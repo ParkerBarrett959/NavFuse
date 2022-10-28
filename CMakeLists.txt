@@ -24,7 +24,6 @@ FetchContent_MakeAvailable(googletest)
 # Add Header List
 set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
                 ${PROJECT_SOURCE_DIR}/include/filter/KalmanFilter.hpp
-		${PROJECT_SOURCE_DIR}/include/sensors/gps.hpp
                 ${PROJECT_SOURCE_DIR}/include/inertial/compensator.hpp
 		${PROJECT_SOURCE_DIR}/include/inertial/pvaErrorDynamics.hpp
                 ${PROJECT_SOURCE_DIR}/include/inertial/initialization.hpp
@@ -37,7 +36,6 @@ set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
 # Add Library
 add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares.cpp
                               ${PROJECT_SOURCE_DIR}/src/filter/KalmanFilter.cpp
-			      ${PROJECT_SOURCE_DIR}/src/sensors/gps.cpp
                               ${PROJECT_SOURCE_DIR}/src/inertial/compensator.cpp
 			      ${PROJECT_SOURCE_DIR}/src/inertial/pvaErrorDynamics.cpp
                               ${PROJECT_SOURCE_DIR}/src/inertial/initialization.cpp
@@ -49,8 +47,7 @@ add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares
 
 # Target Include Directories
 target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filter
-	                              PUBLIC ${PROJECT_SOURCE_DIR}/include/sensors
-                                      PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
+	                              PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
                                       PUBLIC ${PROJECT_SOURCE_DIR}/include/util
                                       PUBLIC ${EIGEN_INSTALL_PATH})
 
