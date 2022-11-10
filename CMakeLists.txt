@@ -31,7 +31,8 @@ set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
                 ${PROJECT_SOURCE_DIR}/include/util/Gravity.hpp
                 ${PROJECT_SOURCE_DIR}/include/util/NavUtils.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Attitude.hpp
-		${PROJECT_SOURCE_DIR}/include/util/Rotations.hpp)
+		${PROJECT_SOURCE_DIR}/include/util/Rotations.hpp
+		${PROJECT_SOURCE_DIR}/include/util/dataTypes.hpp)
 
 # Add Library
 add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares.cpp
