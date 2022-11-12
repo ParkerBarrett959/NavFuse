@@ -18,8 +18,8 @@
 struct imuCalibrationData_t {
     Eigen::Vector3d ba;         // Accelerometer Bias [micro-g's]
     Eigen::Vector3d sfa;        // Accelerometer Scale Factor Error [ppm]
-    Eigen::VectorXd ma;         // Accelerometer Misalignment Coefficients [6x1]
+    Eigen::VectorXd ma(6);      // Accelerometer Misalignment Coefficients [6x1]
     Eigen::Vector3d bg;         // Gyroscope Bias [deg/hr]
     Eigen::Vector3d sfg;        // Gyroscope Scale Factor Error [ppm]
-    Eigen::VectorXd mg;         // Gyroscope Misalignment Coefficients [6x1]
+    Eigen::VectorXd mg(6);      // Gyroscope Misalignment Coefficients [6x1]
  };
