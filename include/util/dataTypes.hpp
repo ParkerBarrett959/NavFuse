@@ -14,6 +14,11 @@
 #include <vector>
 #include <Eigen/Dense>
 
+// Master Configuration Data
+struct masterConfig_t {
+    std::string imuCalibrationFile;     // Path to IMU Calibration Configuration File
+};
+
 // IMU Calibration Data
 struct imuCalibrationData_t {
     Eigen::Vector3d ba;         // Accelerometer Bias [micro-g's]
@@ -22,4 +27,4 @@ struct imuCalibrationData_t {
     Eigen::Vector3d bg;         // Gyroscope Bias [deg/hr]
     Eigen::Vector3d sfg;        // Gyroscope Scale Factor Error [ppm]
     Eigen::VectorXd mg;         // Gyroscope Misalignment Coefficients [6x1]
- };
+};
