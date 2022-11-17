@@ -16,6 +16,7 @@
 
 // Master Configuration Data
 struct masterConfig_t {
+    std::string configPath;             // Path to Configuration Files
     std::string imuCalibrationFile;     // Path to IMU Calibration Configuration File
 };
 
