@@ -56,7 +56,7 @@ struct looselyCoupledGpsSensorSimData_t {
 
 // Sensor Simulator Data
 struct sensorSimData_t {
-    imuSensorSimData_t imu;                   // Sensor Simulator IMU Model
-    looselyCoupledGpsSensorSimData_t gps;     // Sensor Simulator Loosely Coupled GPS Model
-    std::string trajectoryFile;               // Path to Trajectory CSV File
+    imuSensorSimData_t imu;                                 // Sensor Simulator IMU Model
+    looselyCoupledGpsSensorSimData_t looselyCoupledGps;     // Sensor Simulator Loosely Coupled GPS Model
+    std::string trajectoryFile;                             // Path to Trajectory CSV File
 };
