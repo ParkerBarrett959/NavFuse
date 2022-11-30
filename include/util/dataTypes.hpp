@@ -54,6 +54,14 @@ struct looselyCoupledGpsSensorSimData_t {
     double vertical_pos_sigma;      // Vertical (Down) Position Error 1-Sigma [m]
 };
 
+// NED Trajectory Sensor Simulator Data
+struct nedTrajSensorSimData_t {
+    std::vector<int64_t> tov;               // UTC Time of Validity [micro-seconds since Epoch]
+    std::vector<Eigen::Vector3d> lla;       // Lat/Lon/Alt Time History [rad/rad/m]
+    std::vector<Eigen::Vector3d> rph;       // Roll/Pitch/Heading Time History [rad/rad/rad]
+    std::vector<Eigen::Vector3d> vNed;      // North/East/Down Velocity Time History [m/s]
+};
+
 // Sensor Simulator Data
 struct sensorSimData_t {
     imuSensorSimData_t imu;                                 // Sensor Simulator IMU Model
