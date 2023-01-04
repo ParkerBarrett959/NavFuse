@@ -148,6 +148,27 @@ class Rotations {
         */
         bool getEops(const std::string eop);
 
+	/* @unixTimestampToDateVec
+            Inputs:
+                t_utc: int64_t Number of Microseconds since epoch (January 1st 1970)
+            Outputs:
+	        YYYY: double Year
+                MM: double Month
+                DD: double Day
+                HH: double Hour
+	        MM: double Minute
+	        SS: double Second	
+            Description:
+                Function which takes in the UTC timestamp in microseconds and the date vector elements
+        */
+        bool unixTimestampToDateVec(int64_t t_utc,
+			            int &YYYY,
+				    int &MoMo,
+				    int &DD,
+				    int &HH,
+				    int &MM,
+				    int &SS);
+
     // Private Class Members/Function
     private:
 

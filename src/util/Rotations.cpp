@@ -366,6 +366,109 @@ bool Rotations::getEops(const std::string eop) {
 
 }
 
+// Convert UTC Timestamp to Date Vector
+bool Rotations::unixTimestampToDateVec(int64_t t_utc,
+                                       int &YYYY,
+                                       int &MoMo,
+                                       int &DD,
+                                       int &HH,
+                                       int &MM,
+                                       int &SS) {
+
+    // Convert UTC Microseconds to Seconds
+    long int sec = t_utc / 1e6;
+
+    // Define Days in Each Month
+    int daysOfMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    // Helpful Variables
+    long int currYear, daysTillNow, extraTime, extraDays, index, date,
+	 month, hours, minutes, seconds, flag = 0;
+
+    // Calculate Total Days Unix Time
+    daysTillNow = sec / (24 * 60 * 60);
+    extraTime = sec % (24 * 60 * 60);
+    currYear = 1970;
+
+    // Calculate Current Year
+    while (true) {
+        if ((currYear % 400 == 0) || (currYear % 4 == 0 && currYear % 100 != 0)) {
+            if (daysTillNow < 366) {
+                break;
+	    }
+	    daysTillNow -= 366;
+	} else {
+	    if (daysTillNow < 365) {
+                break;
+	    }
+	    daysTillNow -= 365;
+	}
+	currYear += 1;
+    }
+
+    // Update Extra Days
+    extraDays = daysTillNow + 1;
+    if ((currYear % 400 == 0) || (currYear % 4 == 0 && currYear % 100 != 0)) {
+        flag = 1;
+    }
+
+    // Calculate Month and Date
+    month = 0, index = 0;
+    if (flag == 1) {
+        while (true) {
+            if (index == 1) {
+                if (extraDays - 29 < 0) {
+                    break;
+		}
+		month += 1;
+		extraDays -= 29;
+	    } else {
+	        if (extraDays - daysOfMonth[index] < 0) {
+                    break;
+		}
+                month += 1;
+		extraDays -= daysOfMonth[index];
+	    }
+	    index += 1;
+	}
+    } else {
+        while (true) {
+            if (extraDays - daysOfMonth[index] < 0) {
+                break;
+	    }
+            month += 1;
+	    extraDays -= daysOfMonth[index];
+	    index += 1;
+	}
+    }
+
+    // Current Month
+    if (extraDays > 0) {
+        month += 1;
+	date = extraDays;
+    } else {
+	if (month == 2 && flag == 1) {
+            date = 29;
+	} else {
+            date = daysOfMonth[month-1];
+	}
+    }
+
+    // Set Year/Month/Day Outputs
+    YYYY = currYear;
+    MoMo = month;
+    DD = date;
+
+    // Calculate Hours/Minutes/Seconds
+    HH = extraTime / 3600;
+    MM = (extraTime % 3600) / 60;
+    SS = (extraTime % 3600) % 60;
+
+    // Successful Return
+    return true;
+
+}
+
 // Convert Date Vector to Modified Julian Date
 bool Rotations::convertDatevec2Mjd(std::vector<double> &dateVec,
                                    double &mjd) {
