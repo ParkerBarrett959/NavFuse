@@ -631,3 +631,35 @@ TEST(ComputeRE2J, ComputeResult)
     EXPECT_TRUE(RE2J.isApprox(RE2JSol, 1e-6));
 
 }
+
+// Compute Date Vector from Unix Timestamp: Compute Result
+TEST(ComputeDateVecFromTimestamp, ComputeResult)
+{
+
+    // Create Rotations Object
+    Rotations rot;
+
+    // Initialize Variables
+    int64_t t_utc = 1672860613000000;
+    int YYYY, MoMo, DD, HH, MM, SS = 0;
+
+    // Compute Date Vector
+    EXPECT_TRUE(rot.unixTimestampToDateVec(t_utc, YYYY, MoMo, DD, HH, MM, SS));
+
+    // Define Expected Result
+    int YYYYTrue = 2023;
+    int MoMoTrue = 1;
+    int DDTrue = 4;
+    int HHTrue = 19;
+    int MMTrue = 30;
+    int SSTrue = 13;
+    
+    // Check Results
+    EXPECT_EQ(YYYY, YYYYTrue);
+    EXPECT_EQ(MoMo, MoMoTrue);
+    EXPECT_EQ(DD, DDTrue);
+    EXPECT_EQ(HH, HHTrue);
+    EXPECT_EQ(MM, MMTrue);
+    EXPECT_EQ(SS, SSTrue);
+
+}
