@@ -368,12 +368,7 @@ bool Rotations::getEops(const std::string eop) {
 
 // Convert UTC Timestamp to Date Vector
 bool Rotations::unixTimestampToDateVec(int64_t t_utc,
-                                       int &YYYY,
-                                       int &MoMo,
-                                       int &DD,
-                                       int &HH,
-                                       int &MM,
-                                       int &SS) {
+                                       std::vector<double> &dateVec) {
 
     // Convert UTC Microseconds to Seconds
     long int sec = t_utc / 1e6;
@@ -455,14 +450,19 @@ bool Rotations::unixTimestampToDateVec(int64_t t_utc,
     }
 
     // Set Year/Month/Day Outputs
-    YYYY = currYear;
-    MoMo = month;
-    DD = date;
+    dateVec.push_back((double) currYear);
+    dateVec.push_back((double) month);
+    dateVec.push_back((double) date);
 
     // Calculate Hours/Minutes/Seconds
-    HH = extraTime / 3600;
-    MM = (extraTime % 3600) / 60;
-    SS = (extraTime % 3600) % 60;
+    int HH = extraTime / 3600;
+    int MM = (extraTime % 3600) / 60;
+    int SS = (extraTime % 3600) % 60;
+
+    // Set Hour/Minute/Second Outputs
+    dateVec.push_back((double) HH);
+    dateVec.push_back((double) MM);
+    dateVec.push_back((double) SS);
 
     // Successful Return
     return true;

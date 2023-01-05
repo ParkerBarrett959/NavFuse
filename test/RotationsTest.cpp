@@ -641,25 +641,15 @@ TEST(ComputeDateVecFromTimestamp, ComputeResult)
 
     // Initialize Variables
     int64_t t_utc = 1672860613000000;
-    int YYYY, MoMo, DD, HH, MM, SS = 0;
+    std::vector<double> dateVec;
 
     // Compute Date Vector
-    EXPECT_TRUE(rot.unixTimestampToDateVec(t_utc, YYYY, MoMo, DD, HH, MM, SS));
+    EXPECT_TRUE(rot.unixTimestampToDateVec(t_utc, dateVec));
 
     // Define Expected Result
-    int YYYYTrue = 2023;
-    int MoMoTrue = 1;
-    int DDTrue = 4;
-    int HHTrue = 19;
-    int MMTrue = 30;
-    int SSTrue = 13;
+    std::vector<double> dateVecTrue{2023.0, 1.0, 4.0, 19.0, 30.0, 13.0};
     
     // Check Results
-    EXPECT_EQ(YYYY, YYYYTrue);
-    EXPECT_EQ(MoMo, MoMoTrue);
-    EXPECT_EQ(DD, DDTrue);
-    EXPECT_EQ(HH, HHTrue);
-    EXPECT_EQ(MM, MMTrue);
-    EXPECT_EQ(SS, SSTrue);
+    EXPECT_EQ(dateVec, dateVecTrue);
 
 }

@@ -152,22 +152,12 @@ class Rotations {
             Inputs:
                 t_utc: int64_t Number of Microseconds since epoch (January 1st 1970)
             Outputs:
-	        YYYY: double Year
-                MM: double Month
-                DD: double Day
-                HH: double Hour
-	        MM: double Minute
-	        SS: double Second	
+	        dateVec: 6x1 date vector of format [YYYY, MM, DD, HH, MM, SS]
             Description:
-                Function which takes in the UTC timestamp in microseconds and the date vector elements
+                Function which takes in the UTC timestamp in microseconds and computes the date vector
         */
         bool unixTimestampToDateVec(int64_t t_utc,
-			            int &YYYY,
-				    int &MoMo,
-				    int &DD,
-				    int &HH,
-				    int &MM,
-				    int &SS);
+			            std::vector<double> &dateVec);
 
     // Private Class Members/Function
     private:
