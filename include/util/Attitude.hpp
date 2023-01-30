@@ -55,6 +55,17 @@ class Attitude {
         bool computeQuaternionFromRotationVec(Eigen::VectorXd &phi,
                                               Eigen::VectorXd &qA2B);
 
+	/* @computeRotationVecFromQuaternion
+            Inputs:
+	        qA2B: 4x1 dimensional quaternion relating reference frame A to frame B. The first element is the scalar element.
+            Outputs:
+	        phi: 3x1 dimensional rotation vector
+            Description:
+                Function which takes in a quaternion and computes the rotation vector.
+        */
+        bool computeRotationVecFromQuaternion(Eigen::VectorXd &qA2B,
+                                              Eigen::VectorXd &phi);
+
         /* @buildQuaternionEquivalent
             Inputs:
                 qA2B: 4x1 dimensional quaternion relating reference frame A to frame B. The first element is the scalar element.

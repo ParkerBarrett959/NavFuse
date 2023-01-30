@@ -271,6 +271,68 @@ TEST(ComputeQuatFromRotVec, ComputeResult)
 
 }
 
+// Compute Rotation Vector from Quaternion: Incorrect Rotation Vector Size
+TEST(ComputeRotVecFromQuat, incorrectRotationVectorSize)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(4);
+    Eigen::VectorXd phi = Eigen::VectorXd::Zero(4);
+
+    // Rotation Vector has Incorrect Number of Rows
+    ASSERT_FALSE(att.computeRotationVecFromQuaternion(qA2B, phi));
+
+}
+
+// Compute Rotation Vector from Quaternion: Incorrect Quaternion Size
+TEST(ComputeRotVecFromQuat, incorrectQuaternionSize)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(4);
+    Eigen::VectorXd phi = Eigen::VectorXd::Zero(4);
+
+    // Rotation Vector has Incorrect Number of Rows
+    ASSERT_FALSE(att.computeRotationVecFromQuaternion(qA2B, phi));
+
+}
+
+// Compute Rotation Vector from Quaternion: Case 1
+/*
+TEST(ComputeRotVecFromQuat, NegativeScalar)
+{
+
+    // Create Attitude Object
+    Attitude att;
+
+    // Initialize Variables
+    Eigen::VectorXd qA2B(4);
+    qA2B << -0.637848847370359, 0.0653574088345108, 0.235558994341049, 0.730335003408557;
+    Eigen::VectorXd phi(3);
+
+    // Successfully Compute Rotation Vector
+    EXPECT_TRUE(att.computeRotationVecFromQuaternion(qA2B, phi));
+
+    // Define Expected Solutions
+    Eigen::VectorXd phiSol(3);
+    phiSol << 0.384, 1.384, 4.291;
+    std::cout << phi << std::endl;
+
+    // Check Results
+    EXPECT_TRUE(phi.isApprox(phiSol, 1e-6));
+
+}
+*/
+
+// Compute Rotation Vector from Quaternion: Case 2
+// Insert Here...
+
 // Compute Quaternion Equivalent Matrix: Incorrect Quaternion Size
 TEST(ComputeQuatEquivalent, incorrectQuaternionSize)
 {

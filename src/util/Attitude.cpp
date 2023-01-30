@@ -145,6 +145,48 @@ bool Attitude::computeQuaternionFromRotationVec(Eigen::VectorXd &phi,
 
 }
 
+// Compute Rotation Vector from Quaternion
+bool Attitude::computeRotationVecFromQuaternion(Eigen::VectorXd &qA2B,
+                                                Eigen::VectorXd &phi) {
+
+    // Verify Correct Dimensions
+    if (phi.size() != 3) {
+        std::cout << "[Attitude::computeRotationVecFromQuaternion] phi has incorrect dimensions: Expected " <<
+                "3x1, Got " << phi.size() << "x1" << std::endl;
+        return false;
+    } else if (qA2B.size() != 4) {
+        std::cout << "[Attitude::computeRotationVecFromQuaternion] qA2B has incorrect dimensions: Expected " <<
+                "4x1, Got " << qA2B.size() << "x1" << std::endl;
+        return false;
+    }
+
+    // Get Vector Part of Quaternion and Enforce Sign Convention
+    Eigen::Vector3d quatVec(3);
+    quatVec << qA2B[1], qA2B[2], qA2B[3];
+    if (qA2B[0] < 0) {
+        quatVec *= -1.0;
+    }
+
+    // Get Norm of Vector Part of Quaternion
+    double length = quatVec.norm();
+
+    // Compute Angle-Axis
+    double angle = 0.0;
+    Eigen::Vector3d axis(3);
+    axis << 1.0, 0.0, 0.0;
+    if (length > 1.0e-6) {
+        axis = quatVec / length;
+        angle = -2.0 * std::asin(length);
+    }
+
+    // Compute Rotation Vector
+    phi = angle * axis;
+	
+    // Successful Return
+    return true;
+
+}
+
 // Build Quaternion Equivalent Matrix
 bool Attitude::buildQuaternionEquivalent(Eigen::VectorXd &qA2B,
                                          Eigen::MatrixXd &QA2B) {
