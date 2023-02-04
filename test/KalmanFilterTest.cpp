@@ -12,6 +12,68 @@
 #include "KalmanFilter.hpp"
 #include <Eigen/Dense>
 
+// Filter Initialize: Incorrect P0 Dimensions
+TEST(FilterInitialize, IncorrectP0Dimensions)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Set State and Covariance
+    Eigen::VectorXd x0 = Eigen::VectorXd::Zero(4);
+    Eigen::MatrixXd P0 = Eigen::MatrixXd::Zero(4,3);
+
+    // P0 Matrix has Incorrect Number of Columns
+    ASSERT_FALSE(kf.filterInitialize(x0, P0));
+
+    // Redefine P0
+    P0 = Eigen::MatrixXd::Zero(3, 4);
+
+    // Pk Matrix has Incorrect Number of Rows
+    ASSERT_FALSE(kf.filterInitialize(x0, P0));
+
+}
+
+// Filter Initialize: Set Values
+TEST(FilterInitialize, SetValues)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Set State and Covariance
+    Eigen::VectorXd x0(4);
+    x0 << 3.452, 8.375, 5.285, 9.453;
+    Eigen::MatrixXd P0(4, 4);
+    P0 << 4.675, 0.000, 0.000, 0.000,
+          0.000, 6.295, 0.000, 0.000,
+          0.000, 0.000, 8.294, 0.000,
+          0.000, 0.000, 0.000, 4.385;
+
+    // Set Values
+    kf.filterInitialize(x0, P0);
+
+    // Get Output Values
+    Eigen::VectorXd xOut = kf.getState();
+    Eigen::MatrixXd POut = kf.getCovariance();
+
+    // Define Expected Solutions
+    Eigen::VectorXd xOutSol(4);
+    xOutSol << 3.452, 8.375, 5.285, 9.453;
+    Eigen::MatrixXd POutSol(4, 4);
+    POutSol << 4.675, 0.000, 0.000, 0.000,
+               0.000, 6.295, 0.000, 0.000,
+               0.000, 0.000, 8.294, 0.000,
+               0.000, 0.000, 0.000, 4.385;
+
+    // Correct State
+    EXPECT_TRUE(xOut.isApprox(xOutSol, 1e-6));
+
+    // Correct Covariance
+    EXPECT_TRUE(POut.isApprox(POutSol, 1e-6));
+
+}
+
 // Filter Predict: Incorrect Phik Dimensions
 TEST(FilterPredict, IncorrectPhikDimensions)
 {
@@ -229,5 +291,59 @@ TEST(FilterUpdate, ComputeFilterUpdate)
 
     // Correct Covariance
     EXPECT_TRUE(Pkp1.isApprox(PkSol, 1e-3));
+
+}
+
+// Get Filter Covariance
+TEST(FilterGetters, GetCovariance)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Set State and Covariance
+    Eigen::VectorXd x0(4);
+    x0 << 3.452, 8.375, 5.285, 9.453;
+    Eigen::MatrixXd P0(4, 4);
+    P0 << 4.675, 0.000, 0.000, 0.000,
+          0.000, 6.295, 0.000, 0.000,
+          0.000, 0.000, 8.294, 0.000,
+          0.000, 0.000, 0.000, 4.385;
+
+    // Set Values
+    kf.filterInitialize(x0, P0);
+
+    // Get Output Values
+    Eigen::MatrixXd POut = kf.getCovariance();
+
+    // Correct Covariance
+    EXPECT_TRUE(POut.isApprox(P0, 1e-6));
+
+}
+
+// Get Filter State
+TEST(FilterGetters, GetState)
+{
+
+    // Create Kalman Filter Object
+    KalmanFilter kf;
+
+    // Set State and Covariance
+    Eigen::VectorXd x0(4);
+    x0 << 3.452, 8.375, 5.285, 9.453;
+    Eigen::MatrixXd P0(4, 4);
+    P0 << 4.675, 0.000, 0.000, 0.000,
+          0.000, 6.295, 0.000, 0.000,
+          0.000, 0.000, 8.294, 0.000,
+          0.000, 0.000, 0.000, 4.385;
+
+    // Set Values
+    kf.filterInitialize(x0, P0);
+
+    // Get Output Values
+    Eigen::VectorXd xOut = kf.getState();
+
+    // Correct State
+    EXPECT_TRUE(xOut.isApprox(x0, 1e-6));
 
 }
