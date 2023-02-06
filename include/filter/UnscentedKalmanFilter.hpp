@@ -11,24 +11,13 @@
 #pragma once
 #include <iostream>
 #include <Eigen/Dense>
+#include "BaseFilter.hpp"
 
 // Unscented Kalman Filter Class
-class UnscentedKalmanFilter {
+class UnscentedKalmanFilter : public BaseFilter {
 
     // Public Class Members/Functions
     public:
-
-        /* @filterInitialize
-            Inputs:
-                x0: nx1 dimensional initial state vector
-                P0: nxn dimensional initial covariance matrix
-            Outputs:
-            Description:
-                Function which takes in the initial state vector and covariance matrix and sets
-                the filter class members
-        */
-        bool filterInitialize(Eigen::VectorXd x0,
-                              Eigen::MatrixXd P0);
 
         /* @filterUkfPredict
             Inputs:
@@ -68,30 +57,4 @@ class UnscentedKalmanFilter {
                              Eigen::VectorXd zk,
                              Eigen::MatrixXd Rk);
 
-        /* @getCovariance
-            Inputs:
-            Outputs:
-                Pk: nxn dimensional covariance matrix
-            Description:
-                Function which returns the current filter covariance matrix.
-        */
-        Eigen::MatrixXd getCovariance();
-
-        /* @getState
-            Inputs:
-            Outputs:
-                xk: nx1 dimensional state vector
-            Description:
-                Function which returns the current filter state vector.
-        */
-        Eigen::MatrixXd getState();
-
-    // Private Class Members/Function
-    private:
-
-        // Filter State and Covariance
-        Eigen::MatrixXd filterCovariance_;      // nxn dimensional filter covariance matrix
-        Eigen::VectorXd filterState_;           // nx1 dimensional filter state vector
-
 };
-

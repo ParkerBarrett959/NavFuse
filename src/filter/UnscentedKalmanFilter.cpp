@@ -11,33 +11,6 @@
 // Include Headers
 #include "UnscentedKalmanFilter.hpp"
 
-// Filter Initialization
-bool UnscentedKalmanFilter::filterInitialize(Eigen::VectorXd x0,
-                                             Eigen::MatrixXd P0) {
-
-    // Get Number of States
-    int numStates = x0.size();
-
-    // Verify Vectors/Matrices have Correct Dimensions
-    if ((P0.rows() != numStates) || (P0.cols() != numStates)) {
-        std::cout << "[UnscentedKalmanFilter::filterInitialization] P0 has incorrect dimensions: Expected " << 
-                numStates << "x" << numStates << ", Got " << P0.rows() << "x" << P0.cols() << std::endl;
-        return false;
-    }
-
-    // Resize Filter Class Variables
-    filterState_.resize(numStates);
-    filterCovariance_.resize(numStates, numStates);
-
-    // Initialize Filter Class Variables
-    filterState_ = x0;
-    filterCovariance_ = P0;
-
-    // Successful Return
-    return true;
-
-}
-
 // Unscented Kalman Filter Prediction
 bool UnscentedKalmanFilter::filterUkfPredict(Eigen::VectorXd Wi,
                                              Eigen::MatrixXd yi,
@@ -141,14 +114,4 @@ bool UnscentedKalmanFilter::filterUkfUpdate(Eigen::MatrixXd yi,
     // Return Statement for Successful Update
     return true;
 
-}
-
-// Get Filter Covariance
-Eigen::MatrixXd UnscentedKalmanFilter::getCovariance() {
-    return filterCovariance_;
-}
-
-// Get Filter State
-Eigen::MatrixXd UnscentedKalmanFilter::getState() {
-    return filterState_;
 }

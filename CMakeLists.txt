@@ -23,6 +23,7 @@ FetchContent_MakeAvailable(googletest)
 
 # Add Header List
 set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
+	        ${PROJECT_SOURCE_DIR}/include/filter/BaseFilter.hpp
                 ${PROJECT_SOURCE_DIR}/include/filter/KalmanFilter.hpp
 		${PROJECT_SOURCE_DIR}/include/filter/UnscentedKalmanFilter.hpp
 		#${PROJECT_SOURCE_DIR}/include/inertial/compensator.hpp
@@ -37,6 +38,7 @@ set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
 
 # Add Library
 add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares.cpp
+	                      ${PROJECT_SOURCE_DIR}/src/filter/BaseFilter.cpp
                               ${PROJECT_SOURCE_DIR}/src/filter/KalmanFilter.cpp
 			      ${PROJECT_SOURCE_DIR}/src/filter/UnscentedKalmanFilter.cpp
 			      #${PROJECT_SOURCE_DIR}/src/inertial/compensator.cpp
@@ -58,6 +60,7 @@ target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filte
 enable_testing()
 add_executable( test_nav_fuse ${PROJECT_SOURCE_DIR}/test/testMain.cpp 
 	                      ${PROJECT_SOURCE_DIR}/test/BatchLeastSquaresTest.cpp 
+			      ${PROJECT_SOURCE_DIR}/test/BaseFilterTest.cpp
 			      ${PROJECT_SOURCE_DIR}/test/KalmanFilterTest.cpp
 			      ${PROJECT_SOURCE_DIR}/test/UnscentedKalmanFilterTest.cpp 
 			      #${PROJECT_SOURCE_DIR}/test/CompensatorTest.cpp

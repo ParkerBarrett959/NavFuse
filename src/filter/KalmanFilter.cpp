@@ -11,33 +11,6 @@
 // Include Headers
 #include "KalmanFilter.hpp"
 
-// Filter Initialization
-bool KalmanFilter::filterInitialize(Eigen::VectorXd x0,
-                                    Eigen::MatrixXd P0) {
-
-    // Get Number of States
-    int numStates = x0.size();
-
-    // Verify Vectors/Matrices have Correct Dimensions
-    if ((P0.rows() != numStates) || (P0.cols() != numStates)) {
-        std::cout << "[KalmanFilter::filterInitialization] P0 has incorrect dimensions: Expected " << 
-                numStates << "x" << numStates << ", Got " << P0.rows() << "x" << P0.cols() << std::endl;
-        return false;
-    }
-
-    // Resize Filter Class Variables
-    filterState_.resize(numStates);
-    filterCovariance_.resize(numStates, numStates);
-
-    // Initialize Filter Class Variables
-    filterState_ = x0;
-    filterCovariance_ = P0;
-
-    // Successful Return
-    return true;
-
-}
-
 // Kalman Filter Prediction
 bool KalmanFilter::filterPredict(Eigen::MatrixXd Phik,
                                  Eigen::MatrixXd Qk) {
@@ -104,14 +77,4 @@ bool KalmanFilter::filterUpdate(Eigen::VectorXd zk,
     // Return Statement for Successful Measurement Updated
     return true;
     
-}
-
-// Get Filter Covariance
-Eigen::MatrixXd KalmanFilter::getCovariance() {
-    return filterCovariance_;
-}
-
-// Get Filter State
-Eigen::MatrixXd KalmanFilter::getState() {
-    return filterState_;
 }
