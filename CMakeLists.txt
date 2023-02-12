@@ -34,6 +34,7 @@ set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
                 ${PROJECT_SOURCE_DIR}/include/util/NavUtils.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Attitude.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Quaternion.hpp
+		${PROJECT_SOURCE_DIR}/include/util/DirectionCosinesMatrix.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Rotations.hpp)
 
 # Add Library
@@ -48,6 +49,7 @@ add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares
                               ${PROJECT_SOURCE_DIR}/src/util/Gravity.cpp
                               ${PROJECT_SOURCE_DIR}/src/util/NavUtils.cpp 
 			      ${PROJECT_SOURCE_DIR}/src/util/Attitude.cpp
+			      ${PROJECT_SOURCE_DIR}/src/util/Quaternion.cpp
 			      ${PROJECT_SOURCE_DIR}/src/util/Rotations.cpp ${HEADER_LIST})
 
 # Target Include Directories

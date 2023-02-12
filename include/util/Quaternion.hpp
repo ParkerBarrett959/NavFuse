@@ -12,71 +12,57 @@
 #include <iostream>
 #include <cmath>
 #include <Eigen/Dense>
+#include "DirectionCosinesMatrix.hpp"
+
+// Quaternion Type Definition
+struct quaternion_t {
+    double q0 = 1;
+    double q1 = 0;
+    double q2 = 0;
+    double q3 = 0;
+};
 
 // Quaternion Class
 class Quaternion {
 
     // Public Class Members/Functions
     public:
-
+        
         /* @isNormalized
             Inputs:
-                q: quaternion type structure
+                q: constant quaternion type structure
             Outputs:
                 normalized: boolean indicating whether input quaternion is normalized
             Description:
                 Function which takes in a quaternion type structure and returns a boolean
                 indicating whether the quaternion is normalized.
         */
-        bool isNormalized(quaternion q) {
-            bool normalized = false;
-            if (magnitude(q) == 1.0) {
-                normalized = true;
-            }
-            return normalized;
-        }
+        bool isNormalized(const quaternion_t& q);
 
         /* @normalize
             Inputs:
-                q: quaternion type structure
+                q: constant quaternion type structure
             Outputs:
                 qNormal: normalized quaternion type structure
             Description:
                 Function which takes in a quaternion type structure and returns the normalized
                 quaternion.
         */
-        quaternion normalize(quaternion q) {
-            double mag = magnitude(q);
-            quaternion qNormal;
-            qNormal.q0 = q.q0 / mag;
-            qNormal.q1 = q.q1 / mag;
-            qNormal.q2 = q.q2 / mag;
-            qNormal.q3 = q.q3 / mag;
-            return normalized;
-        }  
+        quaternion_t normalize(const quaternion_t& q);
+
+        /* @toDcm
+            Inputs:
+                q: constant quaternion type representing equivalent rotation
+            Outputs:
+                dcm: direction cosines matrix type
+            Description:
+                Function which takes in a quaternion type and returns the equivalent
+                direction cosines matrix representation
+        */
+        directionCosinesMatrix_t toDcm(const quaternion_t& q);
 
     // Private Class Members/Function
     private:
-
-        // Quaternion Type Definition
-        struct {
-            double q0 = 1;
-            double q1 = 0;
-            double q2 = 0;
-            double q3 = 0;
-        } quaternion;
-
-        /* @magnitude
-            Inputs:
-                q: quaternion type structure
-            Outputs:
-                mag: scalar double magnitude of the quaternion
-            Description:
-                Function which takes in a quaternion type structure and returns the magnitude.
-        */
-        double magnitude(quaternion q) {
-            return std::sqrt(q.q0*q.q0 + q.q1*q.q1 + q.q2*q.q2 + q.q3*q.q3);
-        }
 
         /* @conjugate
             Inputs:
@@ -86,30 +72,28 @@ class Quaternion {
             Description:
                 Function which takes in a quaternion type structure and returns the conjugate.
         */
-        quaternion conjugate(quaternion q) {
-            quaternion qP;
-            qP.q0 = q.q0; qP.q1 = -q.q1; qP.q2 = -q.q2; qP.q3 = -q.q3;
-            return qP;
-        }
-
+        quaternion_t conjugate(const quaternion_t& q);
+        
         /* @inverse
             Inputs:
-                q: quaternion type structure
+                q: constant quaternion type structure
             Outputs:
                 qInv: inverse quaternion type structure of input q
             Description:
                 Function which takes in a quaternion type structure and returns the inverse.
         */
-        quaternion inverse(quaternion q) {
-            quaternion qP = conjugate(q);
-            double mag = magnitude(q);
-            double magSq = mag*mag;
-            quaternion qInv;
-            qInv.q0 = qP.q0/magSq;
-            qInv.q1 = qP.q1/magSq;
-            qInv.q2 = qP.q2/magSq;
-            qInv.q3 = qP.q3/magSq;
-            return qInv;
+        quaternion_t inverse(const quaternion_t& q);
+        
+        /* @magnitude
+            Inputs:
+                q: constant quaternion type structure
+            Outputs:
+                mag: scalar double magnitude of the quaternion
+            Description:
+                Function which takes in a quaternion type structure and returns the magnitude.
+        */
+        double magnitude(const quaternion_t& q) {
+            return std::sqrt(q.q0*q.q0 + q.q1*q.q1 + q.q2*q.q2 + q.q3*q.q3);
         }
 
         /* @multiply
@@ -121,13 +105,7 @@ class Quaternion {
             Description:
                 Function which takes in two quaternions and computes qC = qA*qB.
         */
-        quaternion multiply(quaternion qA, quaternion qB) {
-            quaternion qC;
-            qC.q0 = qA.q0*qB.q0 - qA.q1*qB.q1 - qA.q2*qB.q2 - qA.q3*qB.q3;
-            qC.q1 = qA.q0*qB.q1 + qA.q1*qB.q0 - qA.q2*qB.q3 + qA.q3*qB.q2;
-            qC.q2 = qA.q0*qB.q2 + qA.q1*qB.q3 + qA.q2*qB.q0 - qA.q3*qB.q1;
-            qC.q3 = qA.q0*qB.q3 - qA.q1*qB.q2 + qA.q2*qB.q1 - qA.q3*qB.q0;
-            return qC;
-        }
+        quaternion_t multiply(const quaternion_t& qA,
+                              const quaternion_t& qB);
 
 };
