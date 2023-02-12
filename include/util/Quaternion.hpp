@@ -12,14 +12,17 @@
 #include <iostream>
 #include <cmath>
 #include <Eigen/Dense>
+
+// NavFuse Classes
 #include "DirectionCosinesMatrix.hpp"
+#include "EulerAngles.hpp"
 
 // Quaternion Type Definition
 struct quaternion_t {
-    double q0 = 1;
-    double q1 = 0;
-    double q2 = 0;
-    double q3 = 0;
+    double q0 = 1;    // Scalar Quaternion Element
+    double q1 = 0;    // Vector Quaternion Element 1
+    double q2 = 0;    // Vector Quaternion Element 2
+    double q3 = 0;    // Vector Quaternion Element 3
 };
 
 // Quaternion Class
@@ -60,6 +63,17 @@ class Quaternion {
                 direction cosines matrix representation
         */
         directionCosinesMatrix_t toDcm(const quaternion_t& q);
+
+        /* @toEuler
+            Inputs:
+                q: constant quaternion type representing equivalent rotation
+            Outputs:
+                rpy: Euler Angles type
+            Description:
+                Function which takes in a quaternion type and returns the equivalent
+                Euler Angle representation
+        */
+        eulerAngles_t toEuler(const quaternion_t& q);
 
     // Private Class Members/Function
     private:

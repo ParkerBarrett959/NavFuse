@@ -34,6 +34,7 @@ set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
                 ${PROJECT_SOURCE_DIR}/include/util/NavUtils.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Attitude.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Quaternion.hpp
+		${PROJECT_SOURCE_DIR}/include/util/EulerAngles.hpp
 		${PROJECT_SOURCE_DIR}/include/util/DirectionCosinesMatrix.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Rotations.hpp)
 

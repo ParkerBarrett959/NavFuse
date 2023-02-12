@@ -69,6 +69,51 @@ directionCosinesMatrix_t Quaternion::toDcm(const quaternion_t& q) {
 
 }
 
+// Compute Euler Angles from Quaternion
+eulerAngles_t Quaternion::toEuler(const quaternion_t& q) {
+
+    // Extract Elements of Quaternion
+    double q0 = q.q0;
+    double q1 = q.q1;
+    double q2 = q.q2;
+    double q3 = q.q3;
+    
+    // Compute Pitch
+    eulerAngles_t rpy;
+    rpy.pitch = std::asin(2*(q0*q2 - q1*q3));
+
+    // Check for Gimbal Lock Case - Within 1 deg
+    if (std::abs(rpy.pitch - M_PI / 2.0) < (M_PI / 180.0)) {
+        
+        // Set Euler Angles
+        rpy.pitch = M_PI / 2.0;
+        rpy.roll = 0.0;
+        rpy.yaw = -2.0 * std::atan2(q1, q0);
+
+        // Return Result
+        return rpy;
+
+    } else if (std::abs(rpy.pitch + M_PI / 2.0) < (M_PI / 180.0)) {
+
+        // Set Euler Angles
+        rpy.pitch = -M_PI / 2.0;
+        rpy.roll = 0.0;
+        rpy.yaw = 2.0 * std::atan2(q1, q0);
+
+        // Return Result
+        return rpy;
+
+    }
+
+    // Compute Roll and Yaw 
+    rpy.roll = std::atan2(2*(q0*q1 + q2*q3), q0*q0 - q1*q1 - q2*q2 + q3*q3);
+    rpy.yaw = std::atan2(2*(q0*q3 + q1*q2), q0*q0 + q1*q1 - q2*q2 - q3*q3);
+
+    // Return Result
+    return rpy;
+
+}
+
 // Compute Quaternion Conjugate
 quaternion_t Quaternion::conjugate(const quaternion_t& q) {
 
