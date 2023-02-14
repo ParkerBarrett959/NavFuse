@@ -17,109 +17,105 @@
 #include "DirectionCosinesMatrix.hpp"
 #include "EulerAngles.hpp"
 
-// Quaternion Type Definition
-struct quaternion_t {
-    double q0 = 1;    // Scalar Quaternion Element
-    double q1 = 0;    // Vector Quaternion Element 1
-    double q2 = 0;    // Vector Quaternion Element 2
-    double q3 = 0;    // Vector Quaternion Element 3
-};
-
 // Quaternion Class
 class Quaternion {
 
     // Public Class Members/Functions
     public:
+
+        // Quaternion Elements
+        double q0_, q1_, q2_, q3_;
+
+        /* @Quaternion
+            Inputs:
+                q0: Scalar quaternion element
+                q1: First vector quaternion element
+                q2: Second vector quaternion element
+                q3: Third vector quaternion element
+            Outputs:
+            Description:
+                Quaternion class constructor which initializes the quaternion elements.
+        */
+        Quaternion(double q0, double q1, double q2, double q3) : q0_(q0), q1_(q1), q2_(q2), q3_(q3) {};
         
         /* @isNormalized
             Inputs:
-                q: constant quaternion type structure
             Outputs:
-                normalized: boolean indicating whether input quaternion is normalized
+                isNormalized: Boolean indicating whether the quaternion is normalized
             Description:
-                Function which takes in a quaternion type structure and returns a boolean
-                indicating whether the quaternion is normalized.
+                Function which returns a boolean indicating whether the quaternion is normalized.
         */
-        bool isNormalized(const quaternion_t& q);
+        bool isNormalized();
 
         /* @normalize
             Inputs:
-                q: constant quaternion type structure
             Outputs:
-                qNormal: normalized quaternion type structure
             Description:
-                Function which takes in a quaternion type structure and returns the normalized
-                quaternion.
+                Function which normalizes the quaternion.
         */
-        quaternion_t normalize(const quaternion_t& q);
+        void normalize();
 
         /* @toDcm
             Inputs:
-                q: constant quaternion type representing equivalent rotation
             Outputs:
-                dcm: direction cosines matrix type
+                dcm: Direction cosines matrix object
             Description:
-                Function which takes in a quaternion type and returns the equivalent
-                direction cosines matrix representation
+                Function which converts the quaternion to the equivalent direction cosines matrix representation
         */
-        directionCosinesMatrix_t toDcm(const quaternion_t& q);
+        DirectionCosinesMatrix toDcm();
 
         /* @toEuler
             Inputs:
-                q: constant quaternion type representing equivalent rotation
             Outputs:
-                rpy: Euler Angles type
+                euler: Euler Angles object
             Description:
-                Function which takes in a quaternion type and returns the equivalent
-                Euler Angle representation
+                Function which converts the quaternion to the equivalent Euler Angle representation
         */
-        eulerAngles_t toEuler(const quaternion_t& q);
+        EulerAngles toEuler();
 
     // Private Class Members/Function
     private:
 
         /* @conjugate
             Inputs:
-                q: quaternion type structure
             Outputs:
-                qP: conjugate quaternion type structure of input q
+                q: Quaternion object containing conjugate.
             Description:
-                Function which takes in a quaternion type structure and returns the conjugate.
+                Function which returns a quaternion with value set to the conjugate of the
+                current quaternion.
         */
-        quaternion_t conjugate(const quaternion_t& q);
+        Quaternion conjugate();
         
         /* @inverse
             Inputs:
-                q: constant quaternion type structure
             Outputs:
-                qInv: inverse quaternion type structure of input q
+                q: Quaternion object containing inverse.
             Description:
-                Function which takes in a quaternion type structure and returns the inverse.
+                Function which returns a quaternion with value set to the inverse of the
+                current quaternion.
         */
-        quaternion_t inverse(const quaternion_t& q);
+        Quaternion inverse();
         
         /* @magnitude
             Inputs:
-                q: constant quaternion type structure
             Outputs:
                 mag: scalar double magnitude of the quaternion
             Description:
-                Function which takes in a quaternion type structure and returns the magnitude.
+                Function which returns the magnitude of the quaternion.
         */
-        double magnitude(const quaternion_t& q) {
-            return std::sqrt(q.q0*q.q0 + q.q1*q.q1 + q.q2*q.q2 + q.q3*q.q3);
+        double magnitude() {
+            return std::sqrt(q0_*q0_ + q1_*q1_ + q2_*q2_ + q3_*q3_);
         }
 
         /* @multiply
             Inputs:
-                qA: quaternion type structure
                 qB: quaternion type structure
             Outputs:
-                qC: quaternion type structure product of qA and qB
+                qC: Quaternion object containing product of two quaternions.
             Description:
-                Function which takes in two quaternions and computes qC = qA*qB.
+                Function which takes in multiplies the current quaternion with the input argument
+                qB and returns the product qC = q_*qB.
         */
-        quaternion_t multiply(const quaternion_t& qA,
-                              const quaternion_t& qB);
+        Quaternion multiply(const Quaternion& qB);
 
 };

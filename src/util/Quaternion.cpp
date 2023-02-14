@@ -11,13 +11,13 @@
 #include "Quaternion.hpp"
 
 // Verify if Quaternion is Normalized
-bool Quaternion::isNormalized(const quaternion_t& q) {
+bool Quaternion::isNormalized() {
 
     // Initialize Normalized Flag
     bool normalized = false;
 
     // Verify if Quaternion is Normalized
-    if (magnitude(q) == 1.0) {
+    if (magnitude() == 1.0) {
         normalized = true;
     }
     
@@ -26,141 +26,137 @@ bool Quaternion::isNormalized(const quaternion_t& q) {
 }
 
 // Normalize Quaternion
-quaternion_t Quaternion::normalize(const quaternion_t& q) {
+void Quaternion::normalize() {
 
     // Compute Magnitude
-    double mag = magnitude(q);
+    double mag = magnitude();
 
     // Normalize Quaternion
-    quaternion_t qNormalized;
-    qNormalized.q0 = q.q0 / mag;
-    qNormalized.q1 = q.q1 / mag;
-    qNormalized.q2 = q.q2 / mag;
-    qNormalized.q3 = q.q3 / mag;
+    q0_ /= mag;
+    q1_ /= mag;
+    q2_ /= mag;
+    q3_ /= mag;
 
     // Return Statement
-    return qNormalized;
+    return;
 
 } 
 
 // Compute DCM from Quaternion
-directionCosinesMatrix_t Quaternion::toDcm(const quaternion_t& q) {
-
-    // Extract Elements of Quaternion
-    double q0 = q.q0;
-    double q1 = q.q1;
-    double q2 = q.q2;
-    double q3 = q.q3;
+DirectionCosinesMatrix Quaternion::toDcm() {
     
     // Define DCM Elements
-    directionCosinesMatrix_t dcm;
-    dcm.dcm[0][0] = q0*q0 + q1*q1 - q2*q2 - q3*q3;
-    dcm.dcm[0][1] = 2*q1*q2 + 2*q0*q3;
-    dcm.dcm[0][2] = 2*q1*q3 - 2*q0*q2;
-    dcm.dcm[1][0] = 2*q1*q2 - 2*q0*q3;
-    dcm.dcm[1][1] = q0*q0 - q1*q1 + q2*q2 - q3*q3;
-    dcm.dcm[1][2] = 2*q2*q3 + 2*q0*q1;
-    dcm.dcm[2][0] = 2*q1*q3 + 2*q0*q2;
-    dcm.dcm[2][1] = 2*q2*q3 - 2*q0*q1;
-    dcm.dcm[2][2] = q0*q0 - q1*q1 - q2*q2 + q3*q3;
+    double R11 = q0_*q0_ + q1_*q1_ - q2_*q2_ - q3_*q3_;
+    double R12 = 2*q1_*q2_ + 2*q0_*q3_;
+    double R13 = 2*q1_*q3_ - 2*q0_*q2_;
+    double R21 = 2*q1_*q2_ - 2*q0_*q3_;
+    double R22 = q0_*q0_ - q1_*q1_ + q2_*q2_ - q3_*q3_;
+    double R23 = 2*q2_*q3_ + 2*q0_*q1_;
+    double R31 = 2*q1_*q3_ + 2*q0_*q2_;
+    double R32 = 2*q2_*q3_ - 2*q0_*q1_;
+    double R33 = q0_*q0_ - q1_*q1_ - q2_*q2_ + q3_*q3_;
 
-    // Return Statement
+    // Define DCM
+    std::array<std::array<double, 3>, 3> R = {{{R11, R12, R13},{R21, R22, R23},{R31, R32, R33}}};
+
+    // Set DCM Output
+    DirectionCosinesMatrix dcm(R);
+
+    // Return Result
     return dcm;
 
 }
 
 // Compute Euler Angles from Quaternion
-eulerAngles_t Quaternion::toEuler(const quaternion_t& q) {
-
-    // Extract Elements of Quaternion
-    double q0 = q.q0;
-    double q1 = q.q1;
-    double q2 = q.q2;
-    double q3 = q.q3;
+EulerAngles Quaternion::toEuler() {
     
     // Compute Pitch
-    eulerAngles_t rpy;
-    rpy.pitch = std::asin(2*(q0*q2 - q1*q3));
+    double pitch = std::asin(2*(q0_*q2_ - q1_*q3_));
 
     // Check for Gimbal Lock Case - Within 1 deg
-    if (std::abs(rpy.pitch - M_PI / 2.0) < (M_PI / 180.0)) {
+    double roll, yaw;
+    if (std::abs(pitch - M_PI / 2.0) < (M_PI / 180.0)) {
         
         // Set Euler Angles
-        rpy.pitch = M_PI / 2.0;
-        rpy.roll = 0.0;
-        rpy.yaw = -2.0 * std::atan2(q1, q0);
+        pitch = M_PI / 2.0;
+        roll = 0.0;
+        yaw = -2.0 * std::atan2(q1_, q0_);
 
-        // Return Result
-        return rpy;
-
-    } else if (std::abs(rpy.pitch + M_PI / 2.0) < (M_PI / 180.0)) {
+    } else if (std::abs(pitch + M_PI / 2.0) < (M_PI / 180.0)) {
 
         // Set Euler Angles
-        rpy.pitch = -M_PI / 2.0;
-        rpy.roll = 0.0;
-        rpy.yaw = 2.0 * std::atan2(q1, q0);
+        pitch = -M_PI / 2.0;
+        roll = 0.0;
+        yaw = 2.0 * std::atan2(q1_, q0_);
 
-        // Return Result
-        return rpy;
+    } else {
+
+        // Compute Roll and Yaw - Standard Case
+        roll = std::atan2(2*(q0_*q1_ + q2_*q3_), q0_*q0_ - q1_*q1_ - q2_*q2_ + q3_*q3_);
+        yaw = std::atan2(2*(q0_*q3_ + q1_*q2_), q0_*q0_ + q1_*q1_ - q2_*q2_ - q3_*q3_);
 
     }
 
-    // Compute Roll and Yaw 
-    rpy.roll = std::atan2(2*(q0*q1 + q2*q3), q0*q0 - q1*q1 - q2*q2 + q3*q3);
-    rpy.yaw = std::atan2(2*(q0*q3 + q1*q2), q0*q0 + q1*q1 - q2*q2 - q3*q3);
+    // Set Euler Angles Output
+    EulerAngles euler(roll, pitch, yaw);
 
     // Return Result
-    return rpy;
+    return euler;
 
 }
 
 // Compute Quaternion Conjugate
-quaternion_t Quaternion::conjugate(const quaternion_t& q) {
+Quaternion Quaternion::conjugate() {
 
     // Compute Conjugate
-    quaternion_t qP;
-    qP.q0 = q.q0; 
-    qP.q1 = -q.q1; 
-    qP.q2 = -q.q2; 
-    qP.q3 = -q.q3;
+    double q0 = q0_;
+    double q1 = -q1_; 
+    double q2 = -q2_; 
+    double q3 = -q3_;
+
+    // Create Quaternion Output
+    Quaternion q(q0, q1, q2, q3);
 
     // Return Statement
-    return qP;
+    return q;
 
 }
 
 // Compute Quaternion Inverse
-quaternion_t Quaternion::inverse(const quaternion_t& q) {
+Quaternion Quaternion::inverse() {
 
-    // Cpmpute Conjugate
-    quaternion_t qP = conjugate(q);
+    // Compute Conjugate
+    Quaternion qConj = conjugate();
 
     // Compute Squared Magnitude
-    double mag = magnitude(q);
+    double mag = magnitude();
     double magSq = mag*mag;
 
     // Compute Quaternion Inverse
-    quaternion_t qInv;
-    qInv.q0 = qP.q0/magSq;
-    qInv.q1 = qP.q1/magSq;
-    qInv.q2 = qP.q2/magSq;
-    qInv.q3 = qP.q3/magSq;
+    double q0 = qConj.q0_/magSq;
+    double q1 = qConj.q1_/magSq;
+    double q2 = qConj.q2_/magSq;
+    double q3 = qConj.q3_/magSq;
+
+    // Create Quaternion Output
+    Quaternion q(q0, q1, q2, q3);
 
     // Return Statement
-    return qInv;
+    return q;
 
 }
 
 // Quaternion Multiplication
-quaternion_t Quaternion::multiply(const quaternion_t& qA,
-                                  const quaternion_t& qB) {
+Quaternion Quaternion::multiply(const Quaternion& qB) {
 
     // Compute Quaternion Multiplication
-    quaternion_t qC;
-    qC.q0 = qA.q0*qB.q0 - qA.q1*qB.q1 - qA.q2*qB.q2 - qA.q3*qB.q3;
-    qC.q1 = qA.q0*qB.q1 + qA.q1*qB.q0 - qA.q2*qB.q3 + qA.q3*qB.q2;
-    qC.q2 = qA.q0*qB.q2 + qA.q1*qB.q3 + qA.q2*qB.q0 - qA.q3*qB.q1;
-    qC.q3 = qA.q0*qB.q3 - qA.q1*qB.q2 + qA.q2*qB.q1 - qA.q3*qB.q0;
+    double q0 = q0_*qB.q0_ - q1_*qB.q1_ - q2_*qB.q2_ - q3_*qB.q3_;
+    double q1 = q0_*qB.q1_ + q1_*qB.q0_ - q2_*qB.q3_ + q3_*qB.q2_;
+    double q2 = q0_*qB.q2_ + q1_*qB.q3_ + q2_*qB.q0_ - q3_*qB.q1_;
+    double q3 = q0_*qB.q3_ - q1_*qB.q2_ + q2_*qB.q1_ - q3_*qB.q0_;
+
+    // Create Quaternion Output
+    Quaternion qC(q0, q1, q2, q3);
     
     //Return Statement
     return qC;

@@ -13,18 +13,25 @@
 #include <cmath>
 #include <Eigen/Dense>
 
-// Euler Angles Type Definition
-struct eulerAngles_t {
-    double roll = 0.0;      // Roll Angle [rad]
-    double pitch = 0.0;     // Pitch Angle [rad]
-    double yaw = 0.0;       // Yaw Angle [rad]
-};
-
 // Euler Angles Class
 class EulerAngles {
 
     // Public Class Members/Functions
     public:
+
+        // Euler Angle Elements
+        double roll_, pitch_, yaw_;    // [rad]
+
+        /* @EulerAngles
+            Inputs:
+                roll: Roll Angle [rad]
+                pitch: Pitch Angle [rad]
+                yaw: Yaw Angle [rad]
+            Outputs:
+            Description:
+                Euler Angles class constructor which initializes the Euler Angle elements.
+        */
+        EulerAngles(double roll, double pitch, double yaw) : roll_(roll), pitch_(pitch), yaw_(yaw) {};
 
 
     // Private Class Members/Function
