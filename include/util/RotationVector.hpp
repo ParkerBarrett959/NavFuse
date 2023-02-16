@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                                                                                  // 
 // Author:      Parker Barrett                                                                      //
-// Overview:    Header file for the Rotation Vector class.                                             //           
+// Overview:    Header file for the Rotation Vector class.                                          //           
 //                                                                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
