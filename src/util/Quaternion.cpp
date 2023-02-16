@@ -42,6 +42,27 @@ void Quaternion::normalize() {
 
 } 
 
+// Rotate Vector
+Eigen::Vector3d Quaternion::rotateVector(const Eigen::Vector3d& vecIn) {
+
+    // Convert 3D Vector to Temporary Quaternion
+    Quaternion p(0.0, vecIn(0), vecIn(1), vecIn(2));
+
+    // Get Quaternion Inverse
+    Quaternion qP = inverse();
+
+    // Perform Multiplication
+    Quaternion pP = multiply(p.multiply(qP));
+
+    // Set Output Vector
+    Eigen::Vector3d vecOut(3);
+    vecOut << pP.q1_, pP.q2_, pP.q3_; 
+
+    // Return Statement
+    return vecOut;
+
+}
+
 // Compute DCM from Quaternion
 DirectionCosinesMatrix Quaternion::toDcm() {
     

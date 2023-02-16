@@ -56,6 +56,17 @@ class Quaternion {
         */
         void normalize();
 
+        /* @rotateVector
+            Inputs:
+                vecIn: Eigen::Vector3d type input vector
+            Outputs:
+                vecOut: Eigen::Vector3d type output vector
+            Description:
+                Function which takes an Eigen::Vector3d type input vector and performs the quaternion rotation operation
+                on the vector and outputs the resulting, rotated Eigen::Vector3d vector.
+        */
+        Eigen::Vector3d rotateVector(const Eigen::Vector3d& vecIn);
+
         /* @toDcm
             Inputs:
             Outputs:
