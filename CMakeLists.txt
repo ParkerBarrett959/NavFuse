@@ -74,6 +74,7 @@ add_executable( test_nav_fuse ${PROJECT_SOURCE_DIR}/test/testMain.cpp
 			      ${PROJECT_SOURCE_DIR}/test/GravityTest.cpp
 			      ${PROJECT_SOURCE_DIR}/test/NavUtilsTest.cpp
 			      ${PROJECT_SOURCE_DIR}/test/AttitudeTest.cpp
+			      ${PROJECT_SOURCE_DIR}/test/QuaternionTest.cpp
 			      ${PROJECT_SOURCE_DIR}/test/RotationsTest.cpp ${HEADER_LIST})
 target_link_libraries(
   test_nav_fuse

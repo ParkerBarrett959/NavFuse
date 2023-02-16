@@ -207,9 +207,9 @@ Quaternion Quaternion::multiply(const Quaternion& qB) {
 
     // Compute Quaternion Multiplication
     double q0 = q0_*qB.q0_ - q1_*qB.q1_ - q2_*qB.q2_ - q3_*qB.q3_;
-    double q1 = q0_*qB.q1_ + q1_*qB.q0_ - q2_*qB.q3_ + q3_*qB.q2_;
-    double q2 = q0_*qB.q2_ + q1_*qB.q3_ + q2_*qB.q0_ - q3_*qB.q1_;
-    double q3 = q0_*qB.q3_ - q1_*qB.q2_ + q2_*qB.q1_ - q3_*qB.q0_;
+    double q1 = q0_*qB.q1_ + q1_*qB.q0_ + q2_*qB.q3_ - q3_*qB.q2_;
+    double q2 = q0_*qB.q2_ - q1_*qB.q3_ + q2_*qB.q0_ + q3_*qB.q1_;
+    double q3 = q0_*qB.q3_ + q1_*qB.q2_ - q2_*qB.q1_ + q3_*qB.q0_;
 
     // Create Quaternion Output
     Quaternion qC(q0, q1, q2, q3);
