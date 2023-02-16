@@ -105,6 +105,29 @@ EulerAngles Quaternion::toEuler() {
 
 }
 
+// Compute Rotation Vector from Quaternion
+RotationVector Quaternion::toRotationVector() {
+
+    // Compute Rotation Angle
+    double theta = 2.0 * std::acos(q0_);
+
+    // Compute Rotation Vector
+    double x, y, z = 0.0;
+    if (theta != 0.0) {
+        x = (theta * q1_) / std::sin(theta / 2.0);
+        y = (theta * q2_) / std::sin(theta / 2.0);
+        z = (theta * q3_) / std::sin(theta / 2.0);
+    }
+
+    // Set Rotation Vector Output
+    std::array<double, 3> vec = {x, y, z};
+    RotationVector rv(vec);
+
+    // Return Result
+    return rv;
+
+}
+
 // Compute Quaternion Conjugate
 Quaternion Quaternion::conjugate() {
 

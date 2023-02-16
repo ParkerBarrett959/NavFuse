@@ -16,6 +16,7 @@
 // NavFuse Classes
 #include "DirectionCosinesMatrix.hpp"
 #include "EulerAngles.hpp"
+#include "RotationVector.hpp"
 
 // Quaternion Class
 class Quaternion {
@@ -72,6 +73,15 @@ class Quaternion {
                 Function which converts the quaternion to the equivalent Euler Angle representation
         */
         EulerAngles toEuler();
+
+        /* @toRotationVector
+            Inputs:
+            Outputs:
+                rv: Rotation Vector object
+            Description:
+                Function which converts the quaternion to the equivalent rotation vector representation
+        */
+        RotationVector toRotationVector();
 
     // Private Class Members/Function
     private:
