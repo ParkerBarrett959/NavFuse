@@ -10,6 +10,18 @@
 // Include Headers
 #include "Quaternion.hpp"
 
+// Get Quaternion
+Eigen::Vector4d Quaternion::getQuaternion() {
+
+    // Initialize Vector and Set Values
+    Eigen::Vector4d q(4);
+    q << q0_, q1_, q2_, q3_;
+
+    // Return Statement
+    return q;
+
+}
+
 // Verify if Quaternion is Normalized
 bool Quaternion::isNormalized() {
 

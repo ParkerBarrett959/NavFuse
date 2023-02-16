@@ -39,6 +39,29 @@ class Quaternion {
         */
         Quaternion(double q0, double q1, double q2, double q3) : q0_(q0), q1_(q1), q2_(q2), q3_(q3) {};
         
+        /* @* (Multiplication Overload Operator)
+            Inputs:
+                q2: Quaternion Type Object
+            Outputs:
+                q3: Quaternion Type Object
+            Description:
+                Function overload which returns the product of two quaternion type objects as a new quaternion 
+                type object. This function allows users to easily chain togetehr multiple rotations without having
+                to access specific data elements of each quaternion class.
+        */
+        Quaternion operator* (Quaternion q2) {
+            return multiply(q2);
+        };
+        
+        /* @getQuaternion
+            Inputs:
+            Outputs:
+                q: Eigen::Vector4d containing the current quaternion elements - q = [q0, q1, q2, q3]
+            Description:
+                Function which returns the current quaternion elements as an Eigen::Vector4d.
+        */
+        Eigen::Vector4d getQuaternion();
+
         /* @isNormalized
             Inputs:
             Outputs:
