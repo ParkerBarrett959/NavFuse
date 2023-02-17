@@ -55,7 +55,31 @@ void Quaternion::normalize() {
 } 
 
 // Rotate Vector
-Eigen::Vector3d Quaternion::rotateVector(const Eigen::Vector3d& vecIn) {
+Eigen::Vector3d Quaternion::passiveRotateVector(const Eigen::Vector3d& vecIn) {
+
+    // Convert 3D Vector to Temporary Quaternion
+    Quaternion p(0.0, vecIn(0), vecIn(1), vecIn(2));
+
+    // Get Current Quaternion as new Variable (Required for right multiply)
+    Quaternion q(q0_, q1_, q2_, q3_);
+
+    // Get Quaternion Inverse
+    Quaternion qP = inverse();
+
+    // Perform Multiplication
+    Quaternion pP = qP.multiply(p.multiply(q));
+
+    // Set Output Vector
+    Eigen::Vector3d vecOut(3);
+    vecOut << pP.q1_, pP.q2_, pP.q3_; 
+
+    // Return Statement
+    return vecOut;
+
+}
+
+// Rotate Vector
+Eigen::Vector3d Quaternion::activeRotateVector(const Eigen::Vector3d& vecIn) {
 
     // Convert 3D Vector to Temporary Quaternion
     Quaternion p(0.0, vecIn(0), vecIn(1), vecIn(2));

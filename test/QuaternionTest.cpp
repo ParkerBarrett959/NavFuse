@@ -106,6 +106,52 @@ TEST(Normalize, NormalizeQuaternion)
 
 }
 
+// Rotate Vector by Quaternion: Passive
+TEST(RotateVector, PassiveRotation)
+{
+
+    // Create Quaternion Object
+    Quaternion q(1.0, 0.0, 1.0, 0.0);
+
+    // Create Eigen::Vector3d Object
+    Eigen::Vector3d vecIn(1.0, 1.0, 1.0);
+
+    // Noramlize Quaternion
+    q.normalize();
+
+    // Rotate Vector
+    Eigen::Vector3d vecOut = q.passiveRotateVector(vecIn);
+
+    // Check Values
+    EXPECT_EQ(vecOut(0), -1.0);
+    EXPECT_EQ(vecOut(1), 1.0);
+    EXPECT_EQ(vecOut(2), 1.0);
+
+}
+
+// Rotate Vector by Quaternion: Active
+TEST(RotateVector, ActiveRotation)
+{
+
+    // Create Quaternion Object
+    Quaternion q(1.0, 0.0, 1.0, 0.0);
+
+    // Create Eigen::Vector3d Object
+    Eigen::Vector3d vecIn(1.0, 1.0, 1.0);
+
+    // Noramlize Quaternion
+    q.normalize();
+
+    // Rotate Vector
+    Eigen::Vector3d vecOut = q.activeRotateVector(vecIn);
+
+    // Check Values
+    EXPECT_EQ(vecOut(0), 1.0);
+    EXPECT_EQ(vecOut(1), 1.0);
+    EXPECT_EQ(vecOut(2), -1.0);
+
+}
+
 /*
 // Compute DCM from Quaternion: Incorrect Quaternion Size
 TEST(ComputeDcmFromQuat, incorrectQuaternionSize)

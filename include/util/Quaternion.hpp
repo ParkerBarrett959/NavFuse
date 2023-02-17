@@ -79,16 +79,33 @@ class Quaternion {
         */
         void normalize();
 
-        /* @rotateVector
+        /* @passiveRotateVector
             Inputs:
                 vecIn: Eigen::Vector3d type input vector
             Outputs:
                 vecOut: Eigen::Vector3d type output vector
             Description:
-                Function which takes an Eigen::Vector3d type input vector and performs the quaternion rotation operation
-                on the vector and outputs the resulting, rotated Eigen::Vector3d vector.
+                Function which takes an Eigen::Vector3d type input vector and performs the passive quaternion
+                rotation operation on the vector and outputs the resulting, rotated Eigen::Vector3d vector. The
+                passive rotation is the rotation in which the coordinate system is rotated with respect to the 
+                point. Note: The passive rotation is equivalent to converting the quaternion to a direction cosines
+                matrix and performing the rotation v' = R * v.
         */
-        Eigen::Vector3d rotateVector(const Eigen::Vector3d& vecIn);
+        Eigen::Vector3d passiveRotateVector(const Eigen::Vector3d& vecIn);
+
+        /* @activeRotateVector
+            Inputs:
+                vecIn: Eigen::Vector3d type input vector
+            Outputs:
+                vecOut: Eigen::Vector3d type output vector
+            Description:
+                Function which takes an Eigen::Vector3d type input vector and performs the active quaternion
+                rotation operation on the vector and outputs the resulting, rotated Eigen::Vector3d vector. The
+                active rotation is the rotation in which the point itself is rotated with respect to the coordinate
+                system. Note: The active rotation is equivalent to converting the quaternion to a direction cosines
+                matrix, trnasposing it, and performing the rotation v' = R' * v.
+        */
+        Eigen::Vector3d activeRotateVector(const Eigen::Vector3d& vecIn);
 
         /* @toDcm
             Inputs:
