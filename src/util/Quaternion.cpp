@@ -14,8 +14,7 @@
 Eigen::Vector4d Quaternion::getQuaternion() {
 
     // Initialize Vector and Set Values
-    Eigen::Vector4d q(4);
-    q << q0_, q1_, q2_, q3_;
+    Eigen::Vector4d q(q0_, q1_, q2_, q3_);
 
     // Return Statement
     return q;
@@ -70,8 +69,7 @@ Eigen::Vector3d Quaternion::passiveRotateVector(const Eigen::Vector3d& vecIn) {
     Quaternion pP = qP.multiply(p.multiply(q));
 
     // Set Output Vector
-    Eigen::Vector3d vecOut(3);
-    vecOut << pP.q1_, pP.q2_, pP.q3_; 
+    Eigen::Vector3d vecOut(pP.q1_, pP.q2_, pP.q3_);
 
     // Return Statement
     return vecOut;
@@ -91,8 +89,7 @@ Eigen::Vector3d Quaternion::activeRotateVector(const Eigen::Vector3d& vecIn) {
     Quaternion pP = multiply(p.multiply(qP));
 
     // Set Output Vector
-    Eigen::Vector3d vecOut(3);
-    vecOut << pP.q1_, pP.q2_, pP.q3_; 
+    Eigen::Vector3d vecOut(pP.q1_, pP.q2_, pP.q3_); 
 
     // Return Statement
     return vecOut;
