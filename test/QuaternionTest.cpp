@@ -219,7 +219,7 @@ TEST(ConvertQuaternion, ToEuler_Plus90Gimbal)
     // Check Values
     EXPECT_NEAR(eul.pitch_, 90*(M_PI / 180.0), 1.0e-3);
     EXPECT_EQ(eul.roll_, 0);
-    //EXPECT_NEAR(eul.yaw_, 1.5708, 1.0e-3);
+    EXPECT_NEAR(eul.yaw_, 0.0, 1.0e-3);
 
 }
 
@@ -239,6 +239,6 @@ TEST(ConvertQuaternion, ToEuler_Minus90Gimbal)
     // Check Values
     EXPECT_NEAR(eul.pitch_, -90*(M_PI / 180.0), 1.0e-3);
     EXPECT_EQ(eul.roll_, 0);
-    //EXPECT_NEAR(eul.yaw_, 1.5708, 1.0e-3);
+    EXPECT_NEAR(eul.yaw_, 2.0*1.5708, 1.0e-3);
 
 }
