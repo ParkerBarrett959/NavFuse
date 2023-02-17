@@ -124,19 +124,19 @@ DirectionCosinesMatrix Quaternion::toDcm() {
 // Compute Euler Angles from Quaternion
 EulerAngles Quaternion::toEuler() {
     
-    // Compute Pitch
-    double pitch = std::asin(2*(q0_*q2_ - q1_*q3_));
+    // Compute Pitch Argument
+    double pitchArg = 2*(q0_*q2_ - q1_*q3_);
 
     // Check for Gimbal Lock Case - Within 1 deg
-    double roll, yaw;
-    if (std::abs(pitch - M_PI / 2.0) < (M_PI / 180.0)) {
+    double roll, pitch, yaw;
+    if (pitchArg >= sin(89.0 * (M_PI / 180.0))) {
         
         // Set Euler Angles
         pitch = M_PI / 2.0;
         roll = 0.0;
         yaw = -2.0 * std::atan2(q1_, q0_);
 
-    } else if (std::abs(pitch + M_PI / 2.0) < (M_PI / 180.0)) {
+    } else if (pitchArg <= sin(-89.0 * (M_PI / 180.0))) {
 
         // Set Euler Angles
         pitch = -M_PI / 2.0;
@@ -144,8 +144,9 @@ EulerAngles Quaternion::toEuler() {
         yaw = 2.0 * std::atan2(q1_, q0_);
 
     } else {
-
+        
         // Compute Roll and Yaw - Standard Case
+        pitch = std::asin(pitchArg);
         roll = std::atan2(2*(q0_*q1_ + q2_*q3_), q0_*q0_ - q1_*q1_ - q2_*q2_ + q3_*q3_);
         yaw = std::atan2(2*(q0_*q3_ + q1_*q2_), q0_*q0_ + q1_*q1_ - q2_*q2_ - q3_*q3_);
 

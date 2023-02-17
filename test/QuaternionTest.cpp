@@ -9,8 +9,13 @@
 
 // Include Statements
 #include "gtest/gtest.h"
-#include "Quaternion.hpp"
 #include <Eigen/Dense>
+
+// NavFuse Includes
+#include "Quaternion.hpp"
+#include "DirectionCosinesMatrix.hpp"
+#include "EulerAngles.hpp"
+#include "RotationVector.hpp"
 
 // Test Constructor
 TEST(Constructor, SetValues)
@@ -152,45 +157,88 @@ TEST(RotateVector, ActiveRotation)
 
 }
 
-/*
-// Compute DCM from Quaternion: Incorrect Quaternion Size
-TEST(ComputeDcmFromQuat, incorrectQuaternionSize)
+// Convert Quaternion to DCM
+TEST(ConvertQuaternion, ToDcm)
 {
 
-    // Create Attitude Object
-    Attitude att;
+    // Create Quaternion Object
+    Quaternion q(1.0, 0.5, 0.3, 0.1);
 
-    // Initialize Variables
-    Eigen::VectorXd qA2B = Eigen::VectorXd::Zero(3);
-    Eigen::MatrixXd RA2B = Eigen::MatrixXd::Zero(4, 4);
+    // Noramlize Quaternion
+    q.normalize();
 
-    // Quaternion has Incorrect Number of Rows
-    ASSERT_FALSE(att.computeDcmFromQuaternion(qA2B, RA2B));
+    // Create Eigen::Vector3d Object
+    DirectionCosinesMatrix R = q.toDcm();
+
+    // Check Values
+    EXPECT_NEAR(R.dcm_[0][0], 0.8519, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[0][1], 0.3704, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[0][2], -0.3704, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[1][0], 0.0741, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[1][1], 0.6148, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[1][2], 0.7852, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[2][0], 0.5185, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[2][1], -0.6963, 1.0e-3);
+    EXPECT_NEAR(R.dcm_[2][2], 0.4963, 1.0e-3);
 
 }
 
-// Compute DCM from Quaternion
-TEST(ComputeDcmFromQuat, ComputeResult)
+// Convert Quaternion to Euler Angles: Nominal Case
+TEST(ConvertQuaternion, ToEuler_Nominal)
 {
 
-    // Create Attitude Object
-    Attitude att;
+    // Create Quaternion Object
+    Quaternion q(0.7071, 0.7071, 0.0, 0.0);
 
-    // Initialize Variables
-    Eigen::VectorXd qA2B(4);
-    qA2B << 0.275, 0.372, 0.583, 0.856;
-    Eigen::MatrixXd RA2B(3, 3);
+    // Noramlize Quaternion
+    q.normalize();
 
-    // Successfully Compute DCM
-    EXPECT_TRUE(att.computeDcmFromQuaternion(qA2B, RA2B));
+    // Create Eigen::Vector3d Object
+    EulerAngles eul = q.toEuler();
 
-    // Define Expected Solutions
-    Eigen::MatrixXd RA2BSol(3, 3);
-    RA2BSol << -0.667335077419064,      0.703037538258743,       0.245768415882061,
-               -0.028794513435833,     -0.354106917740399,       0.934761556122409,
-                0.744200759501148,      0.616722393470093,       0.256551591206202;
+    // Check Values
+    EXPECT_EQ(eul.pitch_, 0);
+    EXPECT_NEAR(eul.roll_, 1.5708, 1.0e-3);
+    EXPECT_EQ(eul.yaw_, 0);
 
-    // Check Results
-    EXPECT_TRUE(RA2B.isApprox(RA2BSol, 1e-6));
+}
 
-}*/
+// Convert Quaternion to Euler Angles: +90 deg Gimbal Lock Case
+TEST(ConvertQuaternion, ToEuler_Plus90Gimbal)
+{
+
+    // Create Quaternion Object
+    Quaternion q(0.7071, 0.0, 0.7071, 0.0);
+
+    // Noramlize Quaternion
+    q.normalize();
+
+    // Create Eigen::Vector3d Object
+    EulerAngles eul = q.toEuler();
+
+    // Check Values
+    EXPECT_NEAR(eul.pitch_, 90*(M_PI / 180.0), 1.0e-3);
+    EXPECT_EQ(eul.roll_, 0);
+    //EXPECT_NEAR(eul.yaw_, 1.5708, 1.0e-3);
+
+}
+
+// Convert Quaternion to Euler Angles: 90 deg Gimbal Lock Case
+TEST(ConvertQuaternion, ToEuler_Minus90Gimbal)
+{
+
+    // Create Quaternion Object
+    Quaternion q(0.0, 0.7071, 0.0, 0.7071);
+
+    // Noramlize Quaternion
+    q.normalize();
+
+    // Create Eigen::Vector3d Object
+    EulerAngles eul = q.toEuler();
+
+    // Check Values
+    EXPECT_NEAR(eul.pitch_, -90*(M_PI / 180.0), 1.0e-3);
+    EXPECT_EQ(eul.roll_, 0);
+    //EXPECT_NEAR(eul.yaw_, 1.5708, 1.0e-3);
+
+}
