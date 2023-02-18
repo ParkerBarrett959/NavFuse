@@ -33,10 +33,10 @@ set(HEADER_LIST ${PROJECT_SOURCE_DIR}/include/filter/BatchLeastSquares.hpp
                 ${PROJECT_SOURCE_DIR}/include/util/Gravity.hpp
                 ${PROJECT_SOURCE_DIR}/include/util/NavUtils.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Attitude.hpp
-		${PROJECT_SOURCE_DIR}/include/util/Quaternion.hpp
-		${PROJECT_SOURCE_DIR}/include/util/EulerAngles.hpp
-		${PROJECT_SOURCE_DIR}/include/util/DirectionCosinesMatrix.hpp
-		${PROJECT_SOURCE_DIR}/include/util/RotationVector.hpp
+		${PROJECT_SOURCE_DIR}/include/rotations/Quaternion.hpp
+		${PROJECT_SOURCE_DIR}/include/rotations/EulerAngles.hpp
+		${PROJECT_SOURCE_DIR}/include/rotations/DirectionCosinesMatrix.hpp
+		${PROJECT_SOURCE_DIR}/include/rotations/RotationVector.hpp
 		${PROJECT_SOURCE_DIR}/include/util/Rotations.hpp)
 
 # Add Library
@@ -51,13 +51,14 @@ add_library(navigation STATIC ${PROJECT_SOURCE_DIR}/src/filter/BatchLeastSquares
                               ${PROJECT_SOURCE_DIR}/src/util/Gravity.cpp
                               ${PROJECT_SOURCE_DIR}/src/util/NavUtils.cpp 
 			      ${PROJECT_SOURCE_DIR}/src/util/Attitude.cpp
-			      ${PROJECT_SOURCE_DIR}/src/util/Quaternion.cpp
+			      ${PROJECT_SOURCE_DIR}/src/rotations/Quaternion.cpp
 			      ${PROJECT_SOURCE_DIR}/src/util/Rotations.cpp ${HEADER_LIST})
 
 # Target Include Directories
 target_include_directories(navigation PUBLIC ${PROJECT_SOURCE_DIR}/include/filter
 	                              #PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
                                       PUBLIC ${PROJECT_SOURCE_DIR}/include/util
+				      PUBLIC ${PROJECT_SOURCE_DIR}/include/rotations
                                       PUBLIC ${EIGEN_INSTALL_PATH})
 
 # Unit Testing Build
@@ -86,6 +87,7 @@ target_link_libraries(
 target_include_directories(test_nav_fuse PUBLIC ${PROJECT_SOURCE_DIR}/include/filter
 	#PUBLIC ${PROJECT_SOURCE_DIR}/include/inertial
                                          PUBLIC ${PROJECT_SOURCE_DIR}/include/util
+					 PUBLIC ${PROJECT_SOURCE_DIR}/include/rotations
                                          PUBLIC ${EIGEN_INSTALL_PATH})
 
 include(GoogleTest)
