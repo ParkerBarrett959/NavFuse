@@ -28,7 +28,7 @@ bool Quaternion::isNormalized() {
     bool normalized = false;
 
     // Verify if Quaternion is Normalized
-    if (magnitude() == 1.0) {
+    if (std::abs(magnitude() - 1.0) < 1.0e-12) {
         normalized = true;
     }
     
