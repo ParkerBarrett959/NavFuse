@@ -167,7 +167,7 @@ TEST(ConvertQuaternion, ToDcm)
     // Noramlize Quaternion
     q.normalize();
 
-    // Create Eigen::Vector3d Object
+    // Convert to DCM
     DirectionCosinesMatrix R = q.toDcm();
 
     // Check Values
@@ -193,7 +193,7 @@ TEST(ConvertQuaternion, ToEuler_Nominal)
     // Noramlize Quaternion
     q.normalize();
 
-    // Create Eigen::Vector3d Object
+    // Convert to Euler Angles
     EulerAngles eul = q.toEuler();
 
     // Check Values
@@ -213,7 +213,7 @@ TEST(ConvertQuaternion, ToEuler_Plus90Gimbal)
     // Noramlize Quaternion
     q.normalize();
 
-    // Create Eigen::Vector3d Object
+    // Convert to Euler Angles
     EulerAngles eul = q.toEuler();
 
     // Check Values
@@ -223,7 +223,7 @@ TEST(ConvertQuaternion, ToEuler_Plus90Gimbal)
 
 }
 
-// Convert Quaternion to Euler Angles: 90 deg Gimbal Lock Case
+// Convert Quaternion to Euler Angles: -90 deg Gimbal Lock Case
 TEST(ConvertQuaternion, ToEuler_Minus90Gimbal)
 {
 
@@ -233,12 +233,49 @@ TEST(ConvertQuaternion, ToEuler_Minus90Gimbal)
     // Noramlize Quaternion
     q.normalize();
 
-    // Create Eigen::Vector3d Object
+    // Convert to Euler Angles
     EulerAngles eul = q.toEuler();
 
     // Check Values
     EXPECT_NEAR(eul.pitch_, -90*(M_PI / 180.0), 1.0e-3);
     EXPECT_EQ(eul.roll_, 0);
     EXPECT_NEAR(eul.yaw_, 2.0*1.5708, 1.0e-3);
+
+}
+
+// Convert Quaternion to Rotation Vector: 0 Magnitude Case
+TEST(ConvertQuaternion, ToRotVec_ZeroMag)
+{
+
+    // Create Quaternion Object
+    Quaternion q(1.0, 0.0, 0.0, 0.0);
+
+    // Convert to Rotation Vector
+    RotationVector rotVec = q.toRotationVector();
+
+    // Check Values
+    EXPECT_NEAR(rotVec.rv_[0], 0.0, 1.0e-12);
+    EXPECT_NEAR(rotVec.rv_[1], 0.0, 1.0e-12);
+    EXPECT_NEAR(rotVec.rv_[2], 0.0, 1.0e-12);
+
+}
+
+// Convert Quaternion to Rotation Vector: General Case
+TEST(ConvertQuaternion, ToRotVec)
+{
+
+    // Create Quaternion Object
+    Quaternion q(1.0, 2.0, 3.0, 4.0);
+
+    // Normalize Quaternion
+    q.normalize();
+
+    // Convert to Rotation Vector
+    RotationVector rotVec = q.toRotationVector();
+
+    // Check Values
+    EXPECT_NEAR(rotVec.rv_[0], 1.0303806, 1.0e-6);
+    EXPECT_NEAR(rotVec.rv_[1], 1.5455709, 1.0e-6);
+    EXPECT_NEAR(rotVec.rv_[2], 2.0607612, 1.0e-6);
 
 }
