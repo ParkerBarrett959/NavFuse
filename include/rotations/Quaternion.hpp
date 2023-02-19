@@ -18,6 +18,9 @@
 #include "EulerAngles.hpp"
 #include "RotationVector.hpp"
 
+// Forward Declarations
+class DirectionCosinesMatrix;
+
 // Quaternion Class
 class Quaternion {
 
