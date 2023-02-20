@@ -66,32 +66,50 @@ void DirectionCosinesMatrix::transpose() {
     dcm_ = ROut;
 
 }
-/*
-// Compute DCM from Quaternion
-DirectionCosinesMatrix Quaternion::toDcm() {
+
+// Compute Quaternion from DCM
+Quaternion DirectionCosinesMatrix::toQuaternion() {
     
-    // Define DCM Elements
-    double R11 = q0_*q0_ + q1_*q1_ - q2_*q2_ - q3_*q3_;
-    double R12 = 2*q1_*q2_ + 2*q0_*q3_;
-    double R13 = 2*q1_*q3_ - 2*q0_*q2_;
-    double R21 = 2*q1_*q2_ - 2*q0_*q3_;
-    double R22 = q0_*q0_ - q1_*q1_ + q2_*q2_ - q3_*q3_;
-    double R23 = 2*q2_*q3_ + 2*q0_*q1_;
-    double R31 = 2*q1_*q3_ + 2*q0_*q2_;
-    double R32 = 2*q2_*q3_ - 2*q0_*q1_;
-    double R33 = q0_*q0_ - q1_*q1_ - q2_*q2_ + q3_*q3_;
+    // Compute Squared Magnitude of each Element
+    double q0Sq = 0.25 * (1 + dcm_[0][0] + dcm_[1][1] + dcm_[2][2]);
+    double q1Sq = 0.25 * (1 + dcm_[0][0] - dcm_[1][1] - dcm_[2][2]);
+    double q2Sq = 0.25 * (1 - dcm_[0][0] + dcm_[1][1] - dcm_[2][2]);
+    double q3Sq = 0.25 * (1 + dcm_[0][0] - dcm_[1][1] + dcm_[2][2]);
 
-    // Define DCM
-    std::array<std::array<double, 3>, 3> R = {{{R11, R12, R13},{R21, R22, R23},{R31, R32, R33}}};
+    // Initialize Quaternion Elements
+    double q0, q1, q2, q3;
 
-    // Set DCM Output
-    DirectionCosinesMatrix dcm(R);
+    // Check for Maximum Squared Value and Set Quaternion Values
+    if ((q0Sq >= q1Sq) && (q0Sq >= q2Sq) && (q0Sq >= q3Sq)) {
+        q0 = std::sqrt(q0Sq);
+        q1 = (1.0/(4.0*q0)) * (dcm_[1][2] - dcm_[2][1]);
+        q2 = (1.0/(4.0*q0)) * (dcm_[2][0] - dcm_[0][2]);
+        q3 = (1.0/(4.0*q0)) * (dcm_[0][1] - dcm_[1][0]);
+    } else if ((q1Sq >= q0Sq) && (q1Sq >= q2Sq) && (q1Sq >= q3Sq)) {
+        q1 = std::sqrt(q1Sq);
+        q0 = (1.0/(4.0*q1)) * (dcm_[1][2] - dcm_[2][1]);
+        q2 = (1.0/(4.0*q1)) * (dcm_[0][1] + dcm_[1][0]);
+        q3 = (1.0/(4.0*q1)) * (dcm_[2][0] + dcm_[0][2]);
+    } else if ((q2Sq >= q0Sq) && (q2Sq >= q1Sq) && (q2Sq >= q3Sq)) {
+        q2 = std::sqrt(q2Sq);
+        q0 = (1.0/(4.0*q2)) * (dcm_[2][0] - dcm_[0][2]);
+        q1 = (1.0/(4.0*q2)) * (dcm_[0][1] + dcm_[1][0]);
+        q3 = (1.0/(4.0*q2)) * (dcm_[1][2] + dcm_[2][1]);
+    } else {
+        q3 = std::sqrt(q3Sq);
+        q0 = (1.0/(4.0*q3)) * (dcm_[0][1] - dcm_[1][0]);
+        q1 = (1.0/(4.0*q3)) * (dcm_[2][0] + dcm_[0][2]);
+        q2 = (1.0/(4.0*q3)) * (dcm_[1][2] + dcm_[2][1]);
+    }
+    
+    // Set Quaternion
+    Quaternion q(q0, q1, q2, q3);
 
     // Return Result
-    return dcm;
+    return q;
 
 }
-
+/*
 // Compute Euler Angles from Quaternion
 EulerAngles Quaternion::toEuler() {
     

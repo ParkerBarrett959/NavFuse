@@ -152,33 +152,84 @@ TEST(TransposeMatrix, TransposeMatrix)
     EXPECT_EQ(Dcm.dcm_[2][2], 9.0);
 
 }
-/*
-// Convert Quaternion to DCM
-TEST(ConvertQuaternion, ToDcm)
+
+// Convert DCM to Quaternion: Case 1
+TEST(DcmToQuaternion, Case1)
 {
 
-    // Create Quaternion Object
-    Quaternion q(1.0, 0.5, 0.3, 0.1);
+    // Create Direction Cosines Matrix Object
+    std::array<std::array<double, 3>, 3> R = {{{1.0, 0.703, 0.245},{-0.028, 1.0, 0.934},{0.744, 0.616, 1.0}}};
+    DirectionCosinesMatrix Dcm(R);
 
-    // Noramlize Quaternion
-    q.normalize();
-
-    // Convert to DCM
-    DirectionCosinesMatrix R = q.toDcm();
+    // Convert to Quaternion
+    Quaternion q = Dcm.toQuaternion();
 
     // Check Values
-    EXPECT_NEAR(R.dcm_[0][0], 0.8519, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[0][1], 0.3704, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[0][2], -0.3704, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[1][0], 0.0741, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[1][1], 0.6148, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[1][2], 0.7852, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[2][0], 0.5185, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[2][1], -0.6963, 1.0e-3);
-    EXPECT_NEAR(R.dcm_[2][2], 0.4963, 1.0e-3);
+    EXPECT_NEAR(q.q0_, 1.0, 1.0e-3);
+    EXPECT_NEAR(q.q1_, 0.0795, 1.0e-3);
+    EXPECT_NEAR(q.q2_, 0.1248, 1.0e-3);
+    EXPECT_NEAR(q.q3_, 0.1828, 1.0e-3);
 
 }
 
+// Convert DCM to Quaternion: Case 2
+TEST(DcmToQuaternion, Case2)
+{
+
+    // Create Direction Cosines Matrix Object
+    std::array<std::array<double, 3>, 3> R = {{{0.0, 1.0, 0.0},{1.0, 0.0, 0.0},{0.0, 0.0, -1.0}}};
+    DirectionCosinesMatrix Dcm(R);
+
+    // Convert to Quaternion
+    Quaternion q = Dcm.toQuaternion();
+
+    // Check Values
+    EXPECT_NEAR(q.q0_, 0.0, 1.0e-3);
+    EXPECT_NEAR(q.q1_, 0.7071, 1.0e-3);
+    EXPECT_NEAR(q.q2_, 0.7071, 1.0e-3);
+    EXPECT_NEAR(q.q3_, 0.0, 1.0e-3);
+
+}
+
+// Convert DCM to Quaternion: Case 3
+TEST(DcmToQuaternion, Case3)
+{
+
+    // Create Direction Cosines Matrix Object
+    std::array<std::array<double, 3>, 3> R = {{{-0.667, 0.703, 0.245},{-0.028, -0.354, 0.934},{0.744, 0.616, 0.256}}};
+    DirectionCosinesMatrix Dcm(R);
+
+    // Convert to Quaternion
+    Quaternion q = Dcm.toQuaternion();
+
+    // Check Values
+    EXPECT_NEAR(q.q0_, 0.2422, 1.0e-3);
+    EXPECT_NEAR(q.q1_, 0.3277, 1.0e-3);
+    EXPECT_NEAR(q.q2_, 0.5136, 1.0e-3);
+    EXPECT_NEAR(q.q3_, 0.7545, 1.0e-3);
+
+}
+
+// Convert DCM to Quaternion: Case 4
+TEST(DcmToQuaternion, Case4)
+{
+
+    // Create Direction Cosines Matrix Object
+    std::array<std::array<double, 3>, 3> R = {{{1.0, 0.703, 0.245},{-0.028, -1.0, 0.934},{0.744, 0.616, 1.0}}};
+    DirectionCosinesMatrix Dcm(R);
+
+    // Convert to Quaternion
+    Quaternion q = Dcm.toQuaternion();
+
+    // Check Values
+    EXPECT_NEAR(q.q0_, 0.1828, 1.0e-3);
+    EXPECT_NEAR(q.q1_, 0.2473, 1.0e-3);
+    EXPECT_NEAR(q.q2_, 0.3875, 1.0e-3);
+    EXPECT_NEAR(q.q3_, 1.0, 1.0e-3);
+
+}
+
+/*
 // Convert Quaternion to Euler Angles: Nominal Case
 TEST(ConvertQuaternion, ToEuler_Nominal)
 {

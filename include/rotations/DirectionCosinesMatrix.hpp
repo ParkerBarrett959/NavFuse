@@ -19,6 +19,9 @@
 #include "EulerAngles.hpp"
 #include "RotationVector.hpp"
 
+// Forward Declarations
+class Quaternion;
+
 // Direction Cosines Matrix Class
 class DirectionCosinesMatrix {
 
@@ -95,6 +98,33 @@ class DirectionCosinesMatrix {
                 Function which computes the transpose of the direction cosines matrix
         */
         void transpose();
+
+        /* @toQuaternion
+            Inputs:
+            Outputs:
+                q: Quaternion object
+            Description:
+                Function which converts the Direction Cosines Matrix to the equivalent quaternion representation.
+        */
+        Quaternion toQuaternion();
+
+        /* @toEuler
+            Inputs:
+            Outputs:
+                euler: Euler Angles object
+            Description:
+                Function which converts the Direction Cosines Matrix to the equivalent Euler Angle representation
+        */
+        EulerAngles toEuler();
+
+        /* @toRotationVector
+            Inputs:
+            Outputs:
+                rv: Rotation Vector object
+            Description:
+                Function which converts the Direction Cosines Matrix to the equivalent rotation vector representation
+        */
+        RotationVector toRotationVector();
 
     // Private Class Members/Function
     private:
