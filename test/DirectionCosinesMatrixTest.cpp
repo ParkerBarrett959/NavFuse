@@ -229,39 +229,44 @@ TEST(DcmToQuaternion, Case4)
 
 }
 
-/*
-// Convert Quaternion to Euler Angles: Nominal Case
-TEST(ConvertQuaternion, ToEuler_Nominal)
+// Convert DCM to Euler Angles: Nominal Case
+TEST(ConvertDcm, ToEuler_Nominal)
 {
 
     // Create Quaternion Object
     Quaternion q(0.7071, 0.7071, 0.0, 0.0);
 
-    // Noramlize Quaternion
+    // Normalize Quaternion
     q.normalize();
 
+    // Convert Quaternion to DCM
+    DirectionCosinesMatrix Dcm = q.toDcm();
+
     // Convert to Euler Angles
-    EulerAngles eul = q.toEuler();
+    EulerAngles eul = Dcm.toEuler();
 
     // Check Values
-    EXPECT_EQ(eul.pitch_, 0);
+    EXPECT_NEAR(eul.pitch_, 0, 1.0e-3);
     EXPECT_NEAR(eul.roll_, 1.5708, 1.0e-3);
-    EXPECT_EQ(eul.yaw_, 0);
+    EXPECT_NEAR(eul.yaw_, 0, 1.0e-3);
 
 }
 
-// Convert Quaternion to Euler Angles: +90 deg Gimbal Lock Case
-TEST(ConvertQuaternion, ToEuler_Plus90Gimbal)
+// Convert DCM to Euler Angles: +90 deg Gimbal Lock Case
+TEST(ConvertDcm, ToEuler_Plus90Gimbal)
 {
 
     // Create Quaternion Object
     Quaternion q(0.7071, 0.0, 0.7071, 0.0);
 
-    // Noramlize Quaternion
+    // Normalize Quaternion
     q.normalize();
 
+    // Convert Quaternion to DCM
+    DirectionCosinesMatrix Dcm = q.toDcm();
+
     // Convert to Euler Angles
-    EulerAngles eul = q.toEuler();
+    EulerAngles eul = Dcm.toEuler();
 
     // Check Values
     EXPECT_NEAR(eul.pitch_, 90*(M_PI / 180.0), 1.0e-3);
@@ -270,18 +275,21 @@ TEST(ConvertQuaternion, ToEuler_Plus90Gimbal)
 
 }
 
-// Convert Quaternion to Euler Angles: -90 deg Gimbal Lock Case
-TEST(ConvertQuaternion, ToEuler_Minus90Gimbal)
+// Convert DCM to Euler Angles: -90 deg Gimbal Lock Case
+TEST(ConvertDcm, ToEuler_Minus90Gimbal)
 {
 
     // Create Quaternion Object
     Quaternion q(0.0, 0.7071, 0.0, 0.7071);
 
-    // Noramlize Quaternion
+    // Normalize Quaternion
     q.normalize();
 
+    // Convert Quaternion to DCM
+    DirectionCosinesMatrix Dcm = q.toDcm();
+
     // Convert to Euler Angles
-    EulerAngles eul = q.toEuler();
+    EulerAngles eul = Dcm.toEuler();
 
     // Check Values
     EXPECT_NEAR(eul.pitch_, -90*(M_PI / 180.0), 1.0e-3);
@@ -290,15 +298,21 @@ TEST(ConvertQuaternion, ToEuler_Minus90Gimbal)
 
 }
 
-// Convert Quaternion to Rotation Vector: 0 Magnitude Case
-TEST(ConvertQuaternion, ToRotVec_ZeroMag)
+// Convert DCM to Rotation Vector: 0 Magnitude Case
+TEST(ConvertDcm, ToRotVec_ZeroMag)
 {
 
     // Create Quaternion Object
     Quaternion q(1.0, 0.0, 0.0, 0.0);
 
+    // Normalize Quaternion
+    q.normalize();
+
+    // Convert Quaternion to DCM
+    DirectionCosinesMatrix Dcm = q.toDcm();
+    
     // Convert to Rotation Vector
-    RotationVector rotVec = q.toRotationVector();
+    RotationVector rotVec = Dcm.toRotationVector();
 
     // Check Values
     EXPECT_NEAR(rotVec.rv_[0], 0.0, 1.0e-12);
@@ -307,8 +321,8 @@ TEST(ConvertQuaternion, ToRotVec_ZeroMag)
 
 }
 
-// Convert Quaternion to Rotation Vector: General Case
-TEST(ConvertQuaternion, ToRotVec)
+// Convert DCM to Rotation Vector: General Case
+TEST(ConvertDcm, ToRotVec)
 {
 
     // Create Quaternion Object
@@ -317,12 +331,15 @@ TEST(ConvertQuaternion, ToRotVec)
     // Normalize Quaternion
     q.normalize();
 
+    // Convert Quaternion to DCM
+    DirectionCosinesMatrix Dcm = q.toDcm();
+
     // Convert to Rotation Vector
-    RotationVector rotVec = q.toRotationVector();
+    RotationVector rotVec = Dcm.toRotationVector();
 
     // Check Values
     EXPECT_NEAR(rotVec.rv_[0], 1.0303806, 1.0e-6);
     EXPECT_NEAR(rotVec.rv_[1], 1.5455709, 1.0e-6);
     EXPECT_NEAR(rotVec.rv_[2], 2.0607612, 1.0e-6);
 
-}*/
+}

@@ -109,93 +109,41 @@ Quaternion DirectionCosinesMatrix::toQuaternion() {
     return q;
 
 }
-/*
-// Compute Euler Angles from Quaternion
-EulerAngles Quaternion::toEuler() {
+
+// Compute Euler Angles from DCM
+EulerAngles DirectionCosinesMatrix::toEuler() {
     
-    // Compute Pitch Argument
-    double pitchArg = 2*(q0_*q2_ - q1_*q3_);
+    // Convert Direction Cosines Matrix to Quaternion
+    Quaternion q = toQuaternion();
 
-    // Check for Gimbal Lock Case - Within 1 deg
-    double roll, pitch, yaw;
-    if (pitchArg >= sin(89.0 * (M_PI / 180.0))) {
-        
-        // Set Euler Angles
-        pitch = M_PI / 2.0;
-        roll = 0.0;
-        yaw = -2.0 * std::atan2(q1_, q0_);
+    // Normalize Quaternion
+    q.normalize();
 
-    } else if (pitchArg <= sin(-89.0 * (M_PI / 180.0))) {
-
-        // Set Euler Angles
-        pitch = -M_PI / 2.0;
-        roll = 0.0;
-        yaw = 2.0 * std::atan2(q1_, q0_);
-
-    } else {
-        
-        // Compute Roll and Yaw - Standard Case
-        pitch = std::asin(pitchArg);
-        roll = std::atan2(2*(q0_*q1_ + q2_*q3_), q0_*q0_ - q1_*q1_ - q2_*q2_ + q3_*q3_);
-        yaw = std::atan2(2*(q0_*q3_ + q1_*q2_), q0_*q0_ + q1_*q1_ - q2_*q2_ - q3_*q3_);
-
-    }
-
-    // Set Euler Angles Output
-    EulerAngles euler(roll, pitch, yaw);
+    // Convert Quaternion to Euler Angles
+    EulerAngles euler = q.toEuler();
 
     // Return Result
     return euler;
 
 }
 
-// Compute Rotation Vector from Quaternion
-RotationVector Quaternion::toRotationVector() {
+// Compute Rotation Vector from Direction Cosines Matrix
+RotationVector DirectionCosinesMatrix::toRotationVector() {
 
-    // Compute Rotation Angle
-    double theta = 2.0 * std::acos(q0_);
-
-    // Compute Rotation Vector
-    double x, y, z = 0.0;
-    if (theta != 0.0) {
-        x = (theta * q1_) / std::sin(theta / 2.0);
-        y = (theta * q2_) / std::sin(theta / 2.0);
-        z = (theta * q3_) / std::sin(theta / 2.0);
-    }
-
-    // Set Rotation Vector Output
-    std::array<double, 3> vec = {x, y, z};
-    RotationVector rv(vec);
+    // Convert Direction Cosines Matrix to Quaternion
+    Quaternion q = toQuaternion();
+    std::cout << std::endl;
+    
+    // Normalize Quaternion
+    q.normalize();
+    
+    // Convert Quaternion to Rotation Vector
+    RotationVector rv = q.toRotationVector();
 
     // Return Result
     return rv;
 
 }
-
-
-// Compute Quaternion Inverse
-Quaternion Quaternion::inverse() {
-
-    // Compute Conjugate
-    Quaternion qConj = conjugate();
-
-    // Compute Squared Magnitude
-    double mag = magnitude();
-    double magSq = mag*mag;
-
-    // Compute Quaternion Inverse
-    double q0 = qConj.q0_/magSq;
-    double q1 = qConj.q1_/magSq;
-    double q2 = qConj.q2_/magSq;
-    double q3 = qConj.q3_/magSq;
-
-    // Create Quaternion Output
-    Quaternion q(q0, q1, q2, q3);
-
-    // Return Statement
-    return q;
-
-}*/
 
 // Direction Cosines Matrix Multiplication
 DirectionCosinesMatrix DirectionCosinesMatrix::multiply(const DirectionCosinesMatrix& RB) {
